@@ -1,6 +1,6 @@
 # Architecture
 
-Status: draft derived from `SPEC.md` (as of 2026-10-04) in the first session. Passages that depend on an open decision cite it as `ADR-0001 Dn` and assume the specification default until the decision is confirmed. Requirement identifiers from `SPEC.md` appear in square brackets so every design element traces back to a requirement.
+Status: derived from `SPEC.md` (as of 2026-10-04) in the first session and aligned with the accepted `docs/decisions/ADR-0001-stack.md`. Passages that depend on a decision cite it as `ADR-0001 Dn`. Requirement identifiers from `SPEC.md` appear in square brackets so every design element traces back to a requirement.
 
 ## 1. Purpose and scope
 
@@ -150,9 +150,9 @@ The API is a modular monolith. One deployable, one database, strict module bound
 
 ```text
 apps/api/
-  pyproject.toml                turath-api distribution (ADR-0001 D1)
+  pyproject.toml                jdhp-api distribution (ADR-0001 D1)
   alembic/                      forward-only migrations with documented reverse scripts
-  src/turath_api/
+  src/jdhp_api/
     main.py                     public ASGI app: routers, middleware, lifespan
     internal_app.py             internal ASGI app on a separate port: health, readiness, metrics
     tiles_app.py                tile gateway ASGI app (reader module), run as its own process
@@ -475,7 +475,7 @@ Policy rules that implement the spec's tables, in plain words:
 
 ### 7.4 Row-level security
 
-The API connects as `turath_app`, the worker as `turath_worker`, migrations as `turath_migrate`. None has `BYPASSRLS`. Every transaction starts with `SET LOCAL app.user_id`, `app.roles` and `app.institution_id`. Policies on institution-scoped tables (users, licenses, usage, grants by license) restrict rows to the caller's institution; policies on staff tables restrict them to the role's scope. Tests prove that a curator cannot read identity documents and that an institution admin cannot read another institution's users [SEC-7].
+The API connects as `jdhp_app`, the worker as `jdhp_worker`, migrations as `jdhp_migrate`. None has `BYPASSRLS`. Every transaction starts with `SET LOCAL app.user_id`, `app.roles` and `app.institution_id`. Policies on institution-scoped tables (users, licenses, usage, grants by license) restrict rows to the caller's institution; policies on staff tables restrict them to the role's scope. Tests prove that a curator cannot read identity documents and that an institution admin cannot read another institution's users [SEC-7].
 
 ## 8. Content protection architecture
 
@@ -487,7 +487,7 @@ The API connects as `turath_app`, the worker as `turath_worker`, migrations as `
 | Refresh token | Keycloak, rotated, reuse detected | user, client | 8 h members, 1 h staff | BFF session store only |
 | Grant token | Signed compact token issued by the API (format decided in Phase 0 ADR) | user, work, grant, device fingerprint hash, reader session | 10 min, refreshed by heartbeat | Reader memory, `Authorization` on reader endpoints |
 | Tile token | HMAC-SHA256 over session id, work, expiry, key id | reader session | 5 min, refreshed by heartbeat | `t` query parameter on tile URLs |
-| Internal image header | HMAC over path and timestamp | gateway to Cantaloupe | 30 s | `X-Turath-Image-Auth` |
+| Internal image header | HMAC over path and timestamp | gateway to Cantaloupe | 30 s | `X-Jdhp-Image-Auth` |
 | Download URL | Signed, single use | export or print object, user | 15 min | URL |
 
 Keys are per environment, rotated yearly or on suspected exposure [SEC-19], identified by `kid` so rotation is zero-downtime.
@@ -615,10 +615,10 @@ The OAIS mapping: the submission information package is the intake batch (manife
 
 | Prefix | Content | TTL |
 | --- | --- | --- |
-| `turath:grant:{session}:{page}` | Cached allow decision | 60 s |
-| `turath:rl:tiles:user:{id}`, `turath:rl:tiles:ip:{ip}` | Sliding window counters | window length |
-| `turath:hb:{session}` | Last heartbeat | 30 min |
-| `turath:sess:{id}` | BFF session (tokens, encrypted) | refresh lifetime |
+| `jdhp:grant:{session}:{page}` | Cached allow decision | 60 s |
+| `jdhp:rl:tiles:user:{id}`, `jdhp:rl:tiles:ip:{ip}` | Sliding window counters | window length |
+| `jdhp:hb:{session}` | Last heartbeat | 30 min |
+| `jdhp:sess:{id}` | BFF session (tokens, encrypted) | refresh lifetime |
 | Celery broker and results | Separate logical database | task dependent |
 
 ## 10. Search architecture
@@ -752,14 +752,14 @@ The layout is the one in `SPEC.md`, reproduced with ownership notes. Package nam
   docker-compose.yml         full local stack with seed data
   .env.example               every variable, documented, no real values
   apps/
-    web/                     Next.js, TypeScript, @turath/web
-    api/                     FastAPI, turath-api, owns schema and migrations
-    worker/                  Celery tasks, turath-worker, depends on turath-api as a library
+    web/                     Next.js, TypeScript, @jdhp/web
+    api/                     FastAPI, jdhp-api, owns schema and migrations
+    worker/                  Celery tasks, jdhp-worker, depends on jdhp-api as a library
   packages/
-    schemas/                 OpenAPI-generated TypeScript client and shared Pydantic models, @turath/schemas
-    design-tokens/           tokens as JSON, built to CSS variables and the Tailwind preset, @turath/design-tokens
-    metadata/                Dublin Core, MODS, MARC, METS, PREMIS mappers and validators, turath-metadata
-    ai-adapters/             OCR, language model and embedding interfaces and implementations, turath-adapters
+    schemas/                 OpenAPI-generated TypeScript client and shared Pydantic models, @jdhp/schemas
+    design-tokens/           tokens as JSON, built to CSS variables and the Tailwind preset, @jdhp/design-tokens
+    metadata/                Dublin Core, MODS, MARC, METS, PREMIS mappers and validators, jdhp-metadata
+    ai-adapters/             OCR, language model and embedding interfaces and implementations, jdhp-adapters
   policies/                  Cerbos policies, schemas and tests
   infra/
     compose/                 per-environment overrides
@@ -799,12 +799,12 @@ The layout is the one in `SPEC.md`, reproduced with ownership notes. Package nam
 
 ## 18. Design decisions that need ADRs
 
-Where this document makes a choice the specification leaves open, the choice is provisional until an ADR records it.
+Where this document makes a choice the specification leaves open, the choice is provisional until an ADR records it. ADR-0001 is accepted; the rest are due in the phase named.
 
 | Topic | Provisional choice here | ADR |
 | --- | --- | --- |
-| Stack confirmation and the open decisions | Specification defaults | ADR-0001 (proposed) |
-| Worker write path | Workers reuse the API package in-process under a restricted role | ADR-0001 D17 |
+| Stack confirmation and the open decisions | Specification defaults, repository name, worker option B | ADR-0001 (accepted) |
+| Worker write path | Workers reuse the API package in-process under a restricted role | ADR-0001 D17 (accepted) |
 | OIDC relying party pattern and library | Backend-for-frontend in the web app, server-side session in Redis | Phase 0 |
 | Grant token format | Signed compact token, format open (PASETO or JWT with EdDSA) | Phase 0 |
 | Tile gateway placement | The API's reader module run as its own process | Phase 1 |

@@ -1,6 +1,6 @@
 # Threat model
 
-Status: draft derived from `SPEC.md` (as of 2026-10-04) in the first session. It assumes the architecture in `docs/ARCHITECTURE.md` and the specification defaults for the open decisions in `docs/decisions/ADR-0001-stack.md`. Requirement identifiers appear in square brackets. Every control names the test that proves it; test names follow the convention `test_<requirement id>_<behaviour>` so a failure traces to the requirement.
+Status: derived from `SPEC.md` (as of 2026-10-04) in the first session. It assumes the architecture in `docs/ARCHITECTURE.md` and the decisions accepted in `docs/decisions/ADR-0001-stack.md`. Requirement identifiers appear in square brackets. Every control names the test that proves it; test names follow the convention `test_<requirement id>_<behaviour>` so a failure traces to the requirement.
 
 ## 1. Scope and method
 
