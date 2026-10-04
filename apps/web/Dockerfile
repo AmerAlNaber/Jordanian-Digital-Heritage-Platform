@@ -6,7 +6,8 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/schemas/package.json packages/schemas/package.json
 COPY packages/design-tokens/package.json packages/design-tokens/package.json
-RUN pnpm install --frozen-lockfile --filter @jdhp/web... 
+COPY tests/e2e/package.json tests/e2e/package.json
+RUN pnpm install --frozen-lockfile --filter @jdhp/web...
 COPY apps/web apps/web
 COPY packages/schemas packages/schemas
 COPY packages/design-tokens packages/design-tokens
@@ -22,5 +23,5 @@ COPY --from=build --chown=jdhp:jdhp /app/apps/web/.next/static ./apps/web/.next/
 COPY --from=build --chown=jdhp:jdhp /app/apps/web/public ./apps/web/public
 USER jdhp
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://localhost:3000/en/health >/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://localhost:3000/health >/dev/null || exit 1
 CMD ["node", "apps/web/server.js"]
