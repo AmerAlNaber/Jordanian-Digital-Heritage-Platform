@@ -31,7 +31,7 @@ GroundTruthLookup = Callable[[str], dict[str, Any] | None]
 
 
 def ground_truth_from_directory(directory: Path) -> GroundTruthLookup:
-    """Ground truth files are ``<stem>.json``: width, height and lines (text, x, y, w, h, confidence)."""
+    """Ground truth files ``<stem>.json`` hold width, height and lines (text, box, confidence)."""
 
     def lookup(page_ref: str) -> dict[str, Any] | None:
         ref = Path(page_ref)

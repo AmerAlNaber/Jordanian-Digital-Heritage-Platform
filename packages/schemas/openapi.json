@@ -1,0 +1,3673 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Jordanian Digital Heritage Platform API",
+    "description": "The core layer of the Jordanian Digital Heritage Platform. Protected content is served as watermarked tiles only; OCR text is internal and never returned.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/works": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "List Works",
+        "operationId": "list_works_works_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "access_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/AccessClass"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Class"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_WorkSummary_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Create Work",
+        "operationId": "create_work_works_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/works/{name}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Get Work",
+        "operationId": "get_work_works__name__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Update Work",
+        "operationId": "update_work_works__name__patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/works/{name}/pages": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "List Pages",
+        "operationId": "list_pages_works__name__pages_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PageSummary"
+                  },
+                  "type": "array",
+                  "title": "Response List Pages Works  Name  Pages Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "List Collections",
+        "operationId": "list_collections_collections_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_CollectionSummary_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{name}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Get Collection",
+        "operationId": "get_collection_collections__name__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vocabulary/{scheme}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "List Terms",
+        "operationId": "list_terms_vocabulary__scheme__get",
+        "parameters": [
+          {
+            "name": "scheme",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TermScheme"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_TermSummary_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resolve/{name}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Resolve",
+        "description": "Persistent identifier resolution (INT-7). The web app redirects to ``path``.",
+        "operationId": "resolve_resolve__name__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resolution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Get Me",
+        "operationId": "get_me_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/preferences": {
+      "patch": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Update Preferences",
+        "operationId": "update_preferences_me_preferences_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferencesUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/intake/batches": {
+      "post": {
+        "tags": [
+          "intake"
+        ],
+        "summary": "Submit Batch",
+        "operationId": "submit_batch_intake_batches_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntakeManifest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntakeBatchOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "intake"
+        ],
+        "summary": "List Batches",
+        "operationId": "list_batches_intake_batches_get",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IntakeState"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_IntakeBatchOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/intake/batches/{code}": {
+      "get": {
+        "tags": [
+          "intake"
+        ],
+        "summary": "Get Batch",
+        "operationId": "get_batch_intake_batches__code__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntakeBatchOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/works/{name}/content": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "List Content",
+        "operationId": "list_content_works__name__content_get",
+        "parameters": [
+          {
+            "name": "page_seq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Seq"
+            }
+          },
+          {
+            "name": "provenance_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ProvenanceType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Provenance Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContentObjectOut"
+                  },
+                  "title": "Response List Content Works  Name  Content Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Create Content",
+        "operationId": "create_content_works__name__content_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentObjectCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentObjectOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/{public_id}": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Get Content",
+        "operationId": "get_content_content__public_id__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentObjectOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/tasks": {
+      "get": {
+        "tags": [
+          "review"
+        ],
+        "summary": "List Tasks",
+        "operationId": "list_tasks_review_tasks_get",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReviewStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "work",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Work"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_ReviewTaskOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/tasks/{public_id}": {
+      "get": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Get Task",
+        "operationId": "get_task_review_tasks__public_id__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewTaskOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/tasks/{public_id}/approve": {
+      "post": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Approve Task",
+        "operationId": "approve_task_review_tasks__public_id__approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewTaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/tasks/{public_id}/reject": {
+      "post": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Reject Task",
+        "operationId": "reject_task_review_tasks__public_id__reject_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewTaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit/events": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "summary": "List Events",
+        "operationId": "list_events_audit_events_get",
+        "parameters": [
+          {
+            "name": "actor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Action"
+            }
+          },
+          {
+            "name": "resource_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resource Kind"
+            }
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resource Id"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_AuditEventOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit/verify": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "summary": "Verify",
+        "operationId": "verify_audit_verify_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChainVerification"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessClass": {
+        "type": "string",
+        "enum": [
+          "open",
+          "registered",
+          "paid",
+          "restricted",
+          "embargoed"
+        ],
+        "title": "AccessClass"
+      },
+      "AgentRef": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "name_ar": {
+            "type": "string",
+            "title": "Name Ar"
+          },
+          "name_latin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name Latin"
+          },
+          "role": {
+            "$ref": "#/components/schemas/AgentRole"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "name_ar",
+          "name_latin",
+          "role"
+        ],
+        "title": "AgentRef"
+      },
+      "AgentRole": {
+        "type": "string",
+        "enum": [
+          "author",
+          "editor",
+          "translator",
+          "scribe",
+          "commentator",
+          "printer",
+          "publisher",
+          "donor"
+        ],
+        "title": "AgentRole"
+      },
+      "ApproveRequest": {
+        "properties": {
+          "edited_body": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edited Body"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ApproveRequest"
+      },
+      "AuditEventOut": {
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "title": "Seq"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurred At"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "type": "string",
+            "title": "Actor Type"
+          },
+          "actor_roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Actor Roles"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "resource_kind": {
+            "type": "string",
+            "title": "Resource Kind"
+          },
+          "resource_id": {
+            "type": "string",
+            "title": "Resource Id"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/AuditOutcome"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/AuditSeverity"
+          },
+          "ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          },
+          "hash": {
+            "type": "string",
+            "title": "Hash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seq",
+          "occurred_at",
+          "actor_id",
+          "actor_type",
+          "actor_roles",
+          "action",
+          "resource_kind",
+          "resource_id",
+          "outcome",
+          "severity",
+          "ip",
+          "request_id",
+          "details",
+          "hash"
+        ],
+        "title": "AuditEventOut"
+      },
+      "AuditOutcome": {
+        "type": "string",
+        "enum": [
+          "allow",
+          "deny",
+          "success",
+          "failure"
+        ],
+        "title": "AuditOutcome"
+      },
+      "AuditSeverity": {
+        "type": "string",
+        "enum": [
+          "info",
+          "notice",
+          "warning",
+          "high"
+        ],
+        "title": "AuditSeverity"
+      },
+      "Capture": {
+        "properties": {
+          "device": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Device"
+          },
+          "captured_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Captured On"
+          },
+          "color_target_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color Target Ref"
+          },
+          "operator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "device",
+          "captured_on"
+        ],
+        "title": "Capture"
+      },
+      "ChainVerification": {
+        "properties": {
+          "intact": {
+            "type": "boolean",
+            "title": "Intact"
+          },
+          "events_checked": {
+            "type": "integer",
+            "title": "Events Checked"
+          }
+        },
+        "type": "object",
+        "required": [
+          "intact",
+          "events_checked"
+        ],
+        "title": "ChainVerification"
+      },
+      "Citation": {
+        "properties": {
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "ar": {
+            "type": "string",
+            "title": "Ar"
+          },
+          "en": {
+            "type": "string",
+            "title": "En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ark",
+          "ar",
+          "en"
+        ],
+        "title": "Citation"
+      },
+      "CollectionDetail": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/CollectionKind"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "description_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Ar"
+          },
+          "description_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description En"
+          },
+          "work_count": {
+            "type": "integer",
+            "title": "Work Count"
+          },
+          "works": {
+            "items": {
+              "$ref": "#/components/schemas/WorkSummary"
+            },
+            "type": "array",
+            "title": "Works"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "kind",
+          "title_ar",
+          "title_en",
+          "description_ar",
+          "description_en",
+          "work_count",
+          "works"
+        ],
+        "title": "CollectionDetail"
+      },
+      "CollectionKind": {
+        "type": "string",
+        "enum": [
+          "donor",
+          "series",
+          "project",
+          "thematic"
+        ],
+        "title": "CollectionKind"
+      },
+      "CollectionRef": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "title_ar",
+          "title_en"
+        ],
+        "title": "CollectionRef"
+      },
+      "CollectionSummary": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/CollectionKind"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "description_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Ar"
+          },
+          "description_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description En"
+          },
+          "work_count": {
+            "type": "integer",
+            "title": "Work Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "kind",
+          "title_ar",
+          "title_en",
+          "description_ar",
+          "description_en",
+          "work_count"
+        ],
+        "title": "CollectionSummary"
+      },
+      "ContentObjectCreate": {
+        "properties": {
+          "provenance_type": {
+            "$ref": "#/components/schemas/ProvenanceType"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Origin"
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Language"
+          },
+          "script": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "title": "Script"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 200000,
+            "minLength": 1,
+            "title": "Body"
+          },
+          "page_seq": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Seq"
+          },
+          "segments": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Segments"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version"
+          },
+          "prompt_template_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Template Version"
+          },
+          "glossary_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glossary Version"
+          },
+          "self_assessment": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Assessment"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provenance_type",
+          "origin",
+          "language",
+          "script",
+          "body"
+        ],
+        "title": "ContentObjectCreate"
+      },
+      "ContentObjectOut": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "work_public_id": {
+            "type": "string",
+            "title": "Work Public Id"
+          },
+          "page_seq": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Seq"
+          },
+          "provenance_type": {
+            "$ref": "#/components/schemas/ProvenanceType"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/Origin"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "script": {
+            "type": "string",
+            "title": "Script"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "segments": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Segments"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version"
+          },
+          "review_status": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed At"
+          },
+          "reviewer_subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Subject"
+          },
+          "generated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generated At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "label_ar": {
+            "type": "string",
+            "title": "Label Ar"
+          },
+          "label_en": {
+            "type": "string",
+            "title": "Label En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "work_public_id",
+          "page_seq",
+          "provenance_type",
+          "origin",
+          "language",
+          "script",
+          "body",
+          "segments",
+          "model",
+          "model_version",
+          "review_status",
+          "reviewed_at",
+          "reviewer_subject",
+          "generated_at",
+          "created_at",
+          "label_ar",
+          "label_en"
+        ],
+        "title": "ContentObjectOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InstitutionRef": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name_ar": {
+            "type": "string",
+            "title": "Name Ar"
+          },
+          "name_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name_ar",
+          "name_en"
+        ],
+        "title": "InstitutionRef"
+      },
+      "IntakeBatchOut": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "state": {
+            "$ref": "#/components/schemas/IntakeState"
+          },
+          "work_public_id": {
+            "type": "string",
+            "title": "Work Public Id"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "error_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Detail"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "state",
+          "work_public_id",
+          "page_count",
+          "error_detail",
+          "created_at",
+          "completed_at"
+        ],
+        "title": "IntakeBatchOut"
+      },
+      "IntakeManifest": {
+        "properties": {
+          "work_public_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Work Public Id"
+          },
+          "new_work": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkCreate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "item": {
+            "$ref": "#/components/schemas/ItemInfo"
+          },
+          "capture": {
+            "$ref": "#/components/schemas/Capture"
+          },
+          "staging_prefix": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Staging Prefix"
+          },
+          "pages": {
+            "items": {
+              "$ref": "#/components/schemas/ManifestPage"
+            },
+            "type": "array",
+            "maxItems": 2000,
+            "minItems": 1,
+            "title": "Pages"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "capture",
+          "staging_prefix",
+          "pages"
+        ],
+        "title": "IntakeManifest"
+      },
+      "IntakeState": {
+        "type": "string",
+        "enum": [
+          "received",
+          "validating",
+          "failed",
+          "ingested"
+        ],
+        "title": "IntakeState"
+      },
+      "ItemInfo": {
+        "properties": {
+          "shelfmark": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shelfmark"
+          },
+          "condition": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Condition"
+          },
+          "provenance": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provenance"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ItemInfo"
+      },
+      "ManifestPage": {
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Seq"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "page_type": {
+            "$ref": "#/components/schemas/PageType",
+            "default": "text"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 3,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "script": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4,
+                "minLength": 4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Script"
+          },
+          "section_title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Section Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "seq",
+          "filename",
+          "sha256"
+        ],
+        "title": "ManifestPage"
+      },
+      "Me": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "verification_level": {
+            "$ref": "#/components/schemas/UserVerification"
+          },
+          "institution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstitutionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "preferences": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Preferences"
+          },
+          "mfa": {
+            "type": "boolean",
+            "title": "Mfa"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "email",
+          "display_name",
+          "role",
+          "verification_level",
+          "institution",
+          "preferences",
+          "mfa"
+        ],
+        "title": "Me"
+      },
+      "Origin": {
+        "type": "string",
+        "enum": [
+          "human",
+          "ai"
+        ],
+        "title": "Origin"
+      },
+      "PageSummary": {
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "title": "Seq"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "page_type": {
+            "$ref": "#/components/schemas/PageType"
+          },
+          "width_px": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width Px"
+          },
+          "height_px": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Px"
+          },
+          "in_sample_range": {
+            "type": "boolean",
+            "title": "In Sample Range"
+          },
+          "thumbnail_available": {
+            "type": "boolean",
+            "title": "Thumbnail Available"
+          },
+          "section_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Section Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seq",
+          "ark",
+          "label",
+          "page_type",
+          "width_px",
+          "height_px",
+          "in_sample_range",
+          "thumbnail_available",
+          "section_title",
+          "description"
+        ],
+        "title": "PageSummary"
+      },
+      "PageType": {
+        "type": "string",
+        "enum": [
+          "cover",
+          "title",
+          "blank",
+          "text",
+          "illustration",
+          "map",
+          "table",
+          "colophon",
+          "endpaper"
+        ],
+        "title": "PageType"
+      },
+      "Paginated_AuditEventOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEventOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[AuditEventOut]"
+      },
+      "Paginated_CollectionSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CollectionSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[CollectionSummary]"
+      },
+      "Paginated_IntakeBatchOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/IntakeBatchOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[IntakeBatchOut]"
+      },
+      "Paginated_ReviewTaskOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReviewTaskOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[ReviewTaskOut]"
+      },
+      "Paginated_TermSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TermSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[TermSummary]"
+      },
+      "Paginated_WorkSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Paginated[WorkSummary]"
+      },
+      "PreferencesUpdate": {
+        "properties": {
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(ar|en)$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "numerals": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(eastern|western)$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numerals"
+          },
+          "theme": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(light|dark|system)$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theme"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PreferencesUpdate"
+      },
+      "ProvenanceType": {
+        "type": "string",
+        "enum": [
+          "scan",
+          "ocr",
+          "transcription",
+          "translation",
+          "editorial",
+          "visualization"
+        ],
+        "title": "ProvenanceType"
+      },
+      "PublishState": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "review",
+          "published",
+          "withdrawn"
+        ],
+        "title": "PublishState"
+      },
+      "RejectRequest": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 3,
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "RejectRequest"
+      },
+      "Resolution": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "public_id",
+          "ark",
+          "path"
+        ],
+        "title": "Resolution"
+      },
+      "ReviewStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "in_review",
+          "approved",
+          "rejected"
+        ],
+        "title": "ReviewStatus"
+      },
+      "ReviewTaskOut": {
+        "properties": {
+          "content_public_id": {
+            "type": "string",
+            "title": "Content Public Id"
+          },
+          "work_public_id": {
+            "type": "string",
+            "title": "Work Public Id"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          },
+          "assignee_subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Subject"
+          },
+          "due_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due At"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "attempt": {
+            "type": "integer",
+            "title": "Attempt"
+          },
+          "reviewer_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Note"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "content": {
+            "$ref": "#/components/schemas/ContentObjectOut"
+          },
+          "page_seq": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Seq"
+          },
+          "ocr_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ocr Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "content_public_id",
+          "work_public_id",
+          "state",
+          "assignee_subject",
+          "due_at",
+          "priority",
+          "attempt",
+          "reviewer_note",
+          "decided_at",
+          "created_at",
+          "content",
+          "page_seq",
+          "ocr_text"
+        ],
+        "title": "ReviewTaskOut"
+      },
+      "TermFacet": {
+        "type": "string",
+        "enum": [
+          "subject",
+          "place",
+          "period",
+          "theme",
+          "material"
+        ],
+        "title": "TermFacet"
+      },
+      "TermRef": {
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "title": "Scheme"
+          },
+          "facet": {
+            "$ref": "#/components/schemas/TermFacet"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "label_ar": {
+            "type": "string",
+            "title": "Label Ar"
+          },
+          "label_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scheme",
+          "facet",
+          "code",
+          "label_ar",
+          "label_en"
+        ],
+        "title": "TermRef"
+      },
+      "TermScheme": {
+        "type": "string",
+        "enum": [
+          "lcsh",
+          "local_ar",
+          "gazetteer_jo",
+          "period_jo",
+          "material",
+          "theme"
+        ],
+        "title": "TermScheme"
+      },
+      "TermSummary": {
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "title": "Scheme"
+          },
+          "facet": {
+            "$ref": "#/components/schemas/TermFacet"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "label_ar": {
+            "type": "string",
+            "title": "Label Ar"
+          },
+          "label_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label En"
+          },
+          "landing_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landing Ar"
+          },
+          "landing_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landing En"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "work_count": {
+            "type": "integer",
+            "title": "Work Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scheme",
+          "facet",
+          "code",
+          "label_ar",
+          "label_en",
+          "landing_ar",
+          "landing_en",
+          "latitude",
+          "longitude",
+          "work_count"
+        ],
+        "title": "TermSummary"
+      },
+      "UserRole": {
+        "type": "string",
+        "enum": [
+          "member",
+          "verified_researcher",
+          "institutional_user",
+          "institution_admin",
+          "curator",
+          "reviewer",
+          "rights_officer",
+          "platform_admin"
+        ],
+        "title": "UserRole"
+      },
+      "UserVerification": {
+        "type": "string",
+        "enum": [
+          "none",
+          "email",
+          "phone",
+          "researcher",
+          "institutional"
+        ],
+        "title": "UserVerification"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WorkCreate": {
+        "properties": {
+          "title_ar": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Title Ar"
+          },
+          "title_translit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Translit"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "uniform_title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uniform Title"
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Language",
+            "default": "ara"
+          },
+          "script": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "title": "Script",
+            "default": "Arab"
+          },
+          "date_edtf": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Edtf"
+          },
+          "date_hijri": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Hijri"
+          },
+          "description_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Ar"
+          },
+          "description_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description En"
+          },
+          "extent": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extent"
+          },
+          "rights_statement": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Statement"
+          },
+          "rights_basis": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Basis"
+          },
+          "access_class": {
+            "$ref": "#/components/schemas/AccessClass",
+            "default": "registered"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title_ar"
+        ],
+        "title": "WorkCreate"
+      },
+      "WorkDetail": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_translit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Translit"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "script": {
+            "type": "string",
+            "title": "Script"
+          },
+          "date_edtf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Edtf"
+          },
+          "date_hijri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Hijri"
+          },
+          "access_class": {
+            "$ref": "#/components/schemas/AccessClass"
+          },
+          "publish_state": {
+            "$ref": "#/components/schemas/PublishState"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "sample_page_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Page Limit"
+          },
+          "thumbnail_available": {
+            "type": "boolean",
+            "title": "Thumbnail Available"
+          },
+          "uniform_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uniform Title"
+          },
+          "description_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Ar"
+          },
+          "description_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description En"
+          },
+          "extent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extent"
+          },
+          "rights_statement": {
+            "type": "string",
+            "title": "Rights Statement"
+          },
+          "rights_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Basis"
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pricing"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "agents": {
+            "items": {
+              "$ref": "#/components/schemas/AgentRef"
+            },
+            "type": "array",
+            "title": "Agents"
+          },
+          "terms": {
+            "items": {
+              "$ref": "#/components/schemas/TermRef"
+            },
+            "type": "array",
+            "title": "Terms"
+          },
+          "collections": {
+            "items": {
+              "$ref": "#/components/schemas/CollectionRef"
+            },
+            "type": "array",
+            "title": "Collections"
+          },
+          "provenance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provenance"
+          },
+          "citation": {
+            "$ref": "#/components/schemas/Citation"
+          },
+          "can_read": {
+            "type": "boolean",
+            "title": "Can Read"
+          },
+          "can_request_access": {
+            "type": "boolean",
+            "title": "Can Request Access"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "title_ar",
+          "title_translit",
+          "title_en",
+          "language",
+          "script",
+          "date_edtf",
+          "date_hijri",
+          "access_class",
+          "publish_state",
+          "page_count",
+          "sample_page_limit",
+          "thumbnail_available",
+          "uniform_title",
+          "description_ar",
+          "description_en",
+          "extent",
+          "rights_statement",
+          "published_at",
+          "agents",
+          "terms",
+          "collections",
+          "provenance",
+          "citation",
+          "can_read",
+          "can_request_access"
+        ],
+        "title": "WorkDetail"
+      },
+      "WorkSummary": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_translit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Translit"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "script": {
+            "type": "string",
+            "title": "Script"
+          },
+          "date_edtf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Edtf"
+          },
+          "date_hijri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Hijri"
+          },
+          "access_class": {
+            "$ref": "#/components/schemas/AccessClass"
+          },
+          "publish_state": {
+            "$ref": "#/components/schemas/PublishState"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "sample_page_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Page Limit"
+          },
+          "thumbnail_available": {
+            "type": "boolean",
+            "title": "Thumbnail Available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "ark",
+          "title_ar",
+          "title_translit",
+          "title_en",
+          "language",
+          "script",
+          "date_edtf",
+          "date_hijri",
+          "access_class",
+          "publish_state",
+          "page_count",
+          "sample_page_limit",
+          "thumbnail_available"
+        ],
+        "title": "WorkSummary"
+      },
+      "WorkUpdate": {
+        "properties": {
+          "title_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Ar"
+          },
+          "title_translit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Translit"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "uniform_title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uniform Title"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 3,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "script": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4,
+                "minLength": 4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Script"
+          },
+          "date_edtf": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Edtf"
+          },
+          "date_hijri": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Hijri"
+          },
+          "description_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description Ar"
+          },
+          "description_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description En"
+          },
+          "extent": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extent"
+          },
+          "rights_statement": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Statement"
+          },
+          "rights_basis": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Basis"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WorkUpdate",
+        "description": "Partial update. Access class and pricing are not here: they need a second approver."
+      }
+    }
+  }
+}

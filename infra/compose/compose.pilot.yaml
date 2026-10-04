@@ -1,0 +1,26 @@
+# Pilot overrides: no published data ports, restart policies, resource limits, secrets from files.
+# Secrets are mounted by the host's secret store (SEC-19); JDHP_SECRETS_DIR points at them.
+services:
+  api:
+    restart: always
+    environment:
+      JDHP_SECRETS_DIR: /run/secrets
+    deploy:
+      resources:
+        limits: {cpus: "2", memory: 2g}
+  worker:
+    restart: always
+    environment:
+      JDHP_SECRETS_DIR: /run/secrets
+    deploy:
+      resources:
+        limits: {cpus: "2", memory: 4g}
+  postgres:
+    restart: always
+    deploy:
+      resources:
+        limits: {cpus: "2", memory: 4g}
+  opensearch:
+    restart: always
+    environment:
+      OPENSEARCH_JAVA_OPTS: "-Xms2g -Xmx2g"

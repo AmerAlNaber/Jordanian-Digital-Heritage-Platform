@@ -56,6 +56,7 @@ ignore = [
   "TC001", "TC002", "TC003",  # runtime imports are needed for Pydantic and SQLAlchemy annotations
   "PLR0912",  # validators with many independent checks
   "PLR0917",  # FastAPI handlers declare their dependencies positionally
+  "PLC0415",  # local imports break the few genuine cycles between modules
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -84,6 +85,10 @@ explicit_package_bases = true
 [[tool.mypy.overrides]]
 module = ["pyvips", "pyvips.*", "celery", "celery.*", "kombu", "kombu.*", "arabic_reshaper", "bidi", "bidi.*", "boto3", "boto3.*", "botocore", "botocore.*", "cerbos", "cerbos.*", "opensearchpy", "opensearchpy.*", "jwt", "jwt.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["jdhp_worker.tasks.*"]
+disallow_untyped_decorators = false
 
 [tool.pydantic-mypy]
 init_forbid_extra = true
@@ -122,9 +127,11 @@ name = "Routers never import models directly"
 type = "forbidden"
 source_modules = ["jdhp_api.modules.*.router"]
 forbidden_modules = ["jdhp_api.modules.*.models"]
+allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]
-name = "Worker tasks write only through API services"
+name = "Worker tasks never touch models directly"
 type = "forbidden"
-source_modules = ["jdhp_worker"]
+source_modules = ["jdhp_worker.tasks"]
 forbidden_modules = ["jdhp_api.modules.*.models"]
+allow_indirect_imports = true

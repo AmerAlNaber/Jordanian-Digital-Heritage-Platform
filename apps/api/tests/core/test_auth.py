@@ -71,7 +71,7 @@ def test_sec_1_wrong_audience_issuer_key_or_expired_is_refused(
     settings: Settings, make_token: Callable[..., str], kwargs: dict[str, object]
 ) -> None:
     with pytest.raises(UnauthorizedError):
-        TokenVerifier(settings).verify(make_token("alice", **kwargs))  # type: ignore[arg-type]
+        TokenVerifier(settings).verify(make_token("alice", **kwargs))
 
 
 def test_sec_2_token_living_longer_than_ten_minutes_is_refused(

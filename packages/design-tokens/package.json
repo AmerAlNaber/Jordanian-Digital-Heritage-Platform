@@ -1,0 +1,23 @@
+{
+  "name": "@jdhp/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design tokens for the Jordanian Digital Heritage Platform: JSON source, built to CSS variables and a Tailwind preset.",
+  "type": "module",
+  "main": "./dist/tailwind.preset.cjs",
+  "exports": {
+    ".": "./dist/tokens.json",
+    "./css": "./dist/tokens.css",
+    "./tailwind": "./dist/tailwind.preset.cjs"
+  },
+  "files": [
+    "dist",
+    "tokens.json"
+  ],
+  "scripts": {
+    "build": "node src/build.mjs",
+    "test": "node --test",
+    "lint": "echo 'no lint for tokens'",
+    "typecheck": "echo 'no typecheck for tokens'"
+  }
+}

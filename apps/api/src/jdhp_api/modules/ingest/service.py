@@ -285,3 +285,18 @@ async def set_digital_object_state(
             work.frozen = True
     await session.flush()
     return digital_object
+
+
+async def list_batches(
+    session: AsyncSession, *, state: IntakeState | None, limit: int, offset: int
+) -> tuple[list[IntakeBatchOut], int]:
+    from sqlalchemy import func
+
+    stmt = select(IntakeBatch)
+    if state is not None:
+        stmt = stmt.where(IntakeBatch.state == state)
+    total = await session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
+    rows = await session.scalars(
+        stmt.order_by(IntakeBatch.created_at.desc()).limit(limit).offset(offset)
+    )
+    return [await batch_out(session, b) for b in rows.all()], int(total)

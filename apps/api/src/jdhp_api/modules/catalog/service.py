@@ -486,3 +486,147 @@ async def list_terms(
         )
         for t in terms
     ], int(total)
+
+
+# --- Seeding and curation helpers used by the worker and the seed command ------------------
+
+
+async def create_agent(
+    session: AsyncSession,
+    settings: Settings,
+    *,
+    kind: str,
+    name_ar: str,
+    name_latin: str | None,
+    dates_edtf: str | None,
+) -> Agent:
+    from jdhp_api.core.orm import AgentKind
+
+    agent = Agent(
+        public_id=mint_name(settings.ark_shoulder_agent),
+        kind=AgentKind(kind),
+        name_ar=name_ar,
+        name_latin=name_latin,
+        dates_edtf=dates_edtf,
+    )
+    session.add(agent)
+    await session.flush()
+    return agent
+
+
+async def link_agent(
+    session: AsyncSession, work: Work, agent: Agent, role: str, ordinal: int = 0
+) -> None:
+    from jdhp_api.core.orm import AgentRole
+
+    session.add(
+        WorkAgent(work_id=work.id, agent_id=agent.id, role=AgentRole(role), ordinal=ordinal)
+    )
+    await session.flush()
+
+
+async def upsert_term(
+    session: AsyncSession,
+    *,
+    scheme: str,
+    facet: str,
+    code: str,
+    label_ar: str,
+    label_en: str | None,
+) -> VocabularyTerm:
+    from jdhp_api.core.orm import TermFacet
+
+    term = (
+        await session.scalars(
+            select(VocabularyTerm).where(
+                VocabularyTerm.scheme == TermScheme(scheme), VocabularyTerm.code == code
+            )
+        )
+    ).first()
+    if term is None:
+        term = VocabularyTerm(
+            scheme=TermScheme(scheme),
+            facet=TermFacet(facet),
+            code=code,
+            pref_label_ar=label_ar,
+            pref_label_en=label_en,
+        )
+        session.add(term)
+        await session.flush()
+    return term
+
+
+async def link_term(session: AsyncSession, work: Work, term: VocabularyTerm) -> None:
+    existing = (
+        await session.scalars(
+            select(WorkTerm).where(WorkTerm.work_id == work.id, WorkTerm.term_id == term.id)
+        )
+    ).first()
+    if existing is None:
+        session.add(WorkTerm(work_id=work.id, term_id=term.id, facet=term.facet))
+        await session.flush()
+
+
+async def create_collection(
+    session: AsyncSession,
+    settings: Settings,
+    *,
+    kind: str,
+    title_ar: str,
+    title_en: str | None,
+    description_ar: str | None,
+    description_en: str | None,
+    publish: bool,
+) -> Collection:
+    from jdhp_api.core.orm import CollectionKind
+
+    collection = Collection(
+        public_id=mint_name(settings.ark_shoulder_collection),
+        kind=CollectionKind(kind),
+        title_ar=title_ar,
+        title_en=title_en,
+        description_ar=description_ar,
+        description_en=description_en,
+        publish_state=PublishState.PUBLISHED if publish else PublishState.DRAFT,
+    )
+    session.add(collection)
+    await session.flush()
+    return collection
+
+
+async def add_to_collection(
+    session: AsyncSession, collection: Collection, work: Work, ordinal: int = 0
+) -> None:
+    session.add(CollectionWork(collection_id=collection.id, work_id=work.id, ordinal=ordinal))
+    await session.flush()
+
+
+async def set_publish_state(
+    session: AsyncSession,
+    work: Work,
+    state: PublishState,
+    *,
+    actor_id: str,
+    actor_roles: tuple[str, ...] | frozenset[str],
+    request_id: str | None = None,
+) -> Work:
+    """Direct state change for seeding and withdrawal. Staff publishing goes through four-eyes."""
+    previous = work.publish_state
+    work.publish_state = state
+    if state == PublishState.PUBLISHED and work.published_at is None:
+        work.published_at = dt.datetime.now(dt.UTC)
+    await session.flush()
+    await audit.write(
+        session,
+        actor_id=actor_id,
+        actor_type="system" if actor_id == "system" else "user",
+        actor_roles=actor_roles,
+        action="work.publish_state",
+        resource_kind="work",
+        resource_id=work.public_id,
+        outcome=AuditOutcome.SUCCESS,
+        severity=AuditSeverity.NOTICE,
+        details={"from": str(previous), "to": str(state)},
+        request_id=request_id,
+    )
+    return work

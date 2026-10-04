@@ -183,6 +183,7 @@ def upgrade() -> None:
     for table in WORKER_WRITE_TABLES:
         op.execute(f'GRANT INSERT, UPDATE ON "{table}" TO {WORKER_ROLE}')
     op.execute(f"GRANT INSERT ON audit_event TO {WORKER_ROLE}")
+    op.execute(f"GRANT DELETE ON page_embedding TO {WORKER_ROLE}")
     # The audit log is append-only for everyone, by privilege and by trigger.
     op.execute(f"REVOKE UPDATE, DELETE ON audit_event FROM {APP_ROLE}, {WORKER_ROLE}")
     op.execute(f"REVOKE DELETE ON content_object, page, work, digital_object FROM {WORKER_ROLE}")

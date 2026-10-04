@@ -15,11 +15,13 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from jdhp_api.core.auth import Role, UserFacts, VerificationLevel, roles_from_claims
+from jdhp_api.core.auth import Principal, Role, UserFacts, VerificationLevel, roles_from_claims
 from jdhp_api.core.db import Database, RlsContext
+from jdhp_api.core.errors import UnauthorizedError
 from jdhp_api.core.ids import uuid7
 from jdhp_api.core.orm import UserRole, UserVerification
-from jdhp_api.modules.identity.models import User
+from jdhp_api.modules.identity.models import Institution, User
+from jdhp_api.modules.identity.schemas import InstitutionRef, Me
 
 ROLE_PRECEDENCE = (
     Role.PLATFORM_ADMIN,
@@ -108,3 +110,38 @@ class DatabaseUserSync:
         async with self._database.session(RlsContext.system()) as session:
             user = await upsert_from_claims(session, claims)
             return facts_for(user)
+
+
+# --- Own profile (ACC-5) -----------------------------------------------------------------------
+
+
+async def profile(session: AsyncSession, principal: Principal) -> Me:
+    user = await get_by_subject(session, principal.id)
+    if user is None:
+        raise UnauthorizedError
+    institution = None
+    if user.institution_id is not None:
+        inst = await session.get(Institution, user.institution_id)
+        if inst is not None:
+            institution = InstitutionRef(slug=inst.slug, name_ar=inst.name_ar, name_en=inst.name_en)
+    return Me(
+        subject=user.keycloak_sub,
+        email=user.email,
+        display_name=user.display_name,
+        role=user.role,
+        verification_level=user.verification_level,
+        institution=institution,
+        preferences=user.preferences,
+        mfa=principal.mfa,
+    )
+
+
+async def update_preferences(
+    session: AsyncSession, principal: Principal, changes: dict[str, Any]
+) -> Me:
+    user = await get_by_subject(session, principal.id)
+    if user is None:
+        raise UnauthorizedError
+    user.preferences = {**user.preferences, **changes}
+    await session.flush()
+    return await profile(session, principal)

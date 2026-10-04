@@ -193,3 +193,43 @@ async def create(
         request_id=request_id,
     )
     return obj
+
+
+async def replace_page_embeddings(
+    session: AsyncSession,
+    page: Page,
+    *,
+    chunks: Sequence[str],
+    vectors: Sequence[Sequence[float]],
+    model: str,
+    model_version: str,
+    dimensions: int,
+) -> int:
+    """Replace the page's vectors for one model and version (SRCH-6). Returns the row count."""
+    import hashlib
+
+    from sqlalchemy import delete
+
+    from jdhp_api.modules.content.models import PageEmbedding
+
+    await session.execute(
+        delete(PageEmbedding).where(
+            PageEmbedding.page_id == page.id,
+            PageEmbedding.model == model,
+            PageEmbedding.model_version == model_version,
+        )
+    )
+    for index, (chunk, vector) in enumerate(zip(chunks, vectors, strict=True)):
+        session.add(
+            PageEmbedding(
+                page_id=page.id,
+                chunk_index=index,
+                embedding=list(vector),
+                dimensions=dimensions,
+                model=model,
+                model_version=model_version,
+                chunk_hash=hashlib.sha256(chunk.encode("utf-8")).hexdigest(),
+            )
+        )
+    await session.flush()
+    return len(chunks)

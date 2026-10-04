@@ -1,0 +1,136 @@
+@import "@jdhp/design-tokens/css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Logical properties only (INT-2). The interface direction follows the interface language and
+   content containers set their own dir from the record's language. */
+@layer base {
+  html {
+    background: var(--color-background);
+    color: var(--color-ink);
+    font-family: var(--font-interface);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-block-start: var(--space-8);
+  }
+  body {
+    min-block-size: 100dvh;
+    margin: 0;
+    line-height: var(--leading-0);
+    font-size: var(--text-0);
+    text-rendering: optimizeLegibility;
+  }
+  :lang(ar) {
+    font-family: var(--font-arabic-text);
+  }
+  :lang(ar) .font-interface,
+  :lang(ar) nav,
+  :lang(ar) button,
+  :lang(ar) label,
+  :lang(ar) input,
+  :lang(ar) select {
+    font-family: var(--font-interface);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-arabic-display);
+    font-weight: 500;
+    text-wrap: balance;
+    margin: 0;
+  }
+  :lang(en) h1,
+  :lang(en) h2,
+  :lang(en) h3 {
+    font-family: var(--font-latin-text);
+    font-weight: 500;
+  }
+  p {
+    margin: 0;
+    max-inline-size: var(--measure);
+  }
+  a {
+    color: inherit;
+    text-decoration-color: var(--color-hairline-strong);
+    text-underline-offset: 0.18em;
+  }
+  a:hover {
+    text-decoration-color: var(--color-accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-control);
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  img {
+    border-radius: var(--radius-image);
+  }
+}
+
+@layer components {
+  .reading {
+    font-family: var(--font-arabic-text);
+    font-size: calc(var(--text-reading) * var(--arabic-scale));
+    line-height: var(--leading-reading);
+    max-inline-size: var(--measure);
+  }
+  .reading:lang(en) {
+    font-family: var(--font-latin-text);
+    font-size: var(--text-reading);
+  }
+  .hairline-top {
+    border-block-start: var(--hairline);
+  }
+  .hairline-bottom {
+    border-block-end: var(--hairline);
+  }
+  .label {
+    font-family: var(--font-interface);
+    font-size: var(--text-n1);
+    line-height: var(--leading-n1);
+    color: var(--color-ink-muted);
+    letter-spacing: 0.01em;
+  }
+  .label-ai {
+    color: var(--color-label-ai);
+  }
+  .label-human {
+    color: var(--color-label-human);
+  }
+  .control {
+    font-family: var(--font-interface);
+    border: var(--hairline);
+    border-radius: var(--radius-control);
+    padding-block: var(--space-1);
+    padding-inline: var(--space-3);
+    background: var(--color-surface-raised);
+    color: var(--color-ink);
+    min-block-size: 44px;
+  }
+  .control-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    border-color: var(--color-accent);
+  }
+  .control-primary:hover {
+    filter: brightness(1.08);
+  }
+  .frame {
+    border: var(--hairline);
+    border-radius: var(--radius-frame);
+    background: var(--color-surface);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

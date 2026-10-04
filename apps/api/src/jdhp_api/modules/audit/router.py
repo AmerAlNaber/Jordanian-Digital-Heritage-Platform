@@ -6,12 +6,11 @@ import datetime as dt
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func, select
 
 from jdhp_api.core import audit
 from jdhp_api.core.authz import Authorize, Authorized
 from jdhp_api.core.pagination import PageParams, Paginated, page_params
-from jdhp_api.modules.audit.models import AuditEvent
+from jdhp_api.modules.audit import service
 from jdhp_api.modules.audit.schemas import AuditEventOut, ChainVerification
 
 router = APIRouter(prefix="/audit", tags=["audit"])
@@ -28,25 +27,19 @@ async def list_events(
     since: dt.datetime | None = None,
     until: dt.datetime | None = None,
 ) -> Paginated[AuditEventOut]:
-    stmt = select(AuditEvent)
-    if actor:
-        stmt = stmt.where(AuditEvent.actor_id == actor)
-    if action:
-        stmt = stmt.where(AuditEvent.action == action)
-    if resource_kind:
-        stmt = stmt.where(AuditEvent.resource_kind == resource_kind)
-    if resource_id:
-        stmt = stmt.where(AuditEvent.resource_id == resource_id)
-    if since:
-        stmt = stmt.where(AuditEvent.occurred_at >= since)
-    if until:
-        stmt = stmt.where(AuditEvent.occurred_at < until)
-    total = await authorized.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
-    rows = await authorized.session.scalars(
-        stmt.order_by(AuditEvent.seq.desc()).limit(page.limit).offset(page.offset)
+    events, total = await service.list_events(
+        authorized.session,
+        actor=actor,
+        action=action,
+        resource_kind=resource_kind,
+        resource_id=resource_id,
+        since=since,
+        until=until,
+        limit=page.limit,
+        offset=page.offset,
     )
-    items = [AuditEventOut.model_validate(e, from_attributes=True) for e in rows.all()]
-    return Paginated(items=items, total=int(total), limit=page.limit, offset=page.offset)
+    items = [AuditEventOut.model_validate(e, from_attributes=True) for e in events]
+    return Paginated(items=items, total=total, limit=page.limit, offset=page.offset)
 
 
 @router.get("/verify", response_model=ChainVerification)

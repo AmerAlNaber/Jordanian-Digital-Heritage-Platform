@@ -4,36 +4,19 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, status
-from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, status
 
-from jdhp_api.core.auth import Principal
-from jdhp_api.core.authz import Authorize, Authorized, ResourceRef
+from jdhp_api.core.authz import Authorize, Authorized
 from jdhp_api.core.config import Settings
 from jdhp_api.core.deps import current_settings
-from jdhp_api.core.errors import InvalidIdentifierError, NotFoundError
-from jdhp_api.core.ids import is_valid_name
 from jdhp_api.core.orm import IntakeState
 from jdhp_api.core.pagination import PageParams, Paginated, page_params
 from jdhp_api.core.tasks import TaskDispatcher, get_dispatcher
 from jdhp_api.modules.ingest import service
-from jdhp_api.modules.ingest.models import IntakeBatch
+from jdhp_api.modules.ingest.loaders import load_batch
 from jdhp_api.modules.ingest.schemas import IntakeBatchOut, IntakeManifest
 
 router = APIRouter(prefix="/intake", tags=["intake"])
-
-
-async def load_batch(
-    request: Request, session: AsyncSession, _principal: Principal
-) -> tuple[IntakeBatch, ResourceRef]:
-    code = str(request.path_params.get("code", ""))
-    if not is_valid_name(code):
-        raise InvalidIdentifierError
-    batch = await service.get_batch_by_code(session, code)
-    if batch is None:
-        raise NotFoundError
-    return batch, ResourceRef(kind="intake_batch", id=batch.code, attr={"state": str(batch.state)})
 
 
 @router.post("/batches", response_model=IntakeBatchOut, status_code=status.HTTP_202_ACCEPTED)
@@ -60,15 +43,10 @@ async def list_batches(
     page: Annotated[PageParams, Depends(page_params)],
     state: IntakeState | None = None,
 ) -> Paginated[IntakeBatchOut]:
-    stmt = select(IntakeBatch)
-    if state is not None:
-        stmt = stmt.where(IntakeBatch.state == state)
-    total = await authorized.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
-    rows = await authorized.session.scalars(
-        stmt.order_by(IntakeBatch.created_at.desc()).limit(page.limit).offset(page.offset)
+    items, total = await service.list_batches(
+        authorized.session, state=state, limit=page.limit, offset=page.offset
     )
-    items = [await service.batch_out(authorized.session, b) for b in rows.all()]
-    return Paginated(items=items, total=int(total), limit=page.limit, offset=page.offset)
+    return Paginated(items=items, total=total, limit=page.limit, offset=page.offset)
 
 
 @router.get("/batches/{code}", response_model=IntakeBatchOut)

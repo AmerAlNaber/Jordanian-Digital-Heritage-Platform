@@ -13,7 +13,6 @@ from jdhp_api.core.orm import AccessClass, TermScheme
 from jdhp_api.core.pagination import PageParams, Paginated, page_params
 from jdhp_api.modules.catalog import service
 from jdhp_api.modules.catalog.loaders import load_by_name, load_collection, load_work
-from jdhp_api.modules.catalog.models import Collection, Work
 from jdhp_api.modules.catalog.schemas import (
     CollectionDetail,
     CollectionSummary,
@@ -81,7 +80,7 @@ async def get_work(
     ],
     settings: Annotated[Settings, Depends(current_settings)],
 ) -> WorkDetail:
-    work: Work = authorized.resource
+    work = authorized.resource
     policy = request.app.state.policy_client
     can_read = await policy.is_allowed(
         authorized.principal, "read", authorized.ref, authorized.request_id
@@ -146,7 +145,7 @@ async def get_collection(
     ],
     settings: Annotated[Settings, Depends(current_settings)],
 ) -> CollectionDetail:
-    collection: Collection = authorized.resource
+    collection = authorized.resource
     public_cache(response, authorized)
     return await service.collection_detail(
         authorized.session, collection, authorized.principal, settings

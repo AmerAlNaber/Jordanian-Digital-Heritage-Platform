@@ -13,3 +13,7 @@ packages/metadata
 packages/ai-adapters
 policies
 infra
+packages/schemas/openapi.json
+packages/schemas/src/generated/
+.import_linter_cache
+docs/design/

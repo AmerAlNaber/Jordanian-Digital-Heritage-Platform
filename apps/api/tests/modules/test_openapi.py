@@ -11,12 +11,13 @@ PORTAL_SCHEMAS = {"ReviewTaskOut"}  # reviewers see OCR text side by side with t
 
 
 def properties(schema: dict[str, Any]) -> dict[str, Any]:
-    return schema.get("properties", {})
+    found: dict[str, Any] = schema.get("properties", {})
+    return found
 
 
 async def test_cat_4_public_schemas_have_no_text_fields(client: httpx.AsyncClient) -> None:
     document = (await client.get("/openapi.json")).json()
-    offenders = []
+    offenders: list[str] = []
     for name, schema in document["components"]["schemas"].items():
         if name in PORTAL_SCHEMAS:
             continue

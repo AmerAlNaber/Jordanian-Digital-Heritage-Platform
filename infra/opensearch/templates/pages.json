@@ -1,0 +1,74 @@
+{
+  "index_patterns": ["jdhp-pages*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "index": {"number_of_shards": 1, "number_of_replicas": 1, "max_result_window": 2000},
+      "analysis": {
+        "char_filter": {
+          "arabic_marks": {
+            "type": "pattern_replace",
+            "pattern": "[\\u064B-\\u0652\\u0670\\u0640\\u06D6-\\u06ED]",
+            "replacement": ""
+          },
+          "arabic_letters": {
+            "type": "mapping",
+            "mappings": ["أ=>ا", "إ=>ا", "آ=>ا", "ٱ=>ا", "ة=>ه", "ى=>ي", "ؤ=>و", "ئ=>ي"]
+          }
+        },
+        "filter": {
+          "arabic_stop": {"type": "stop", "stopwords": "_arabic_"},
+          "english_stop": {"type": "stop", "stopwords": "_english_"},
+          "arabic_stemmer": {"type": "stemmer", "language": "arabic"},
+          "english_stemmer": {"type": "stemmer", "language": "english"}
+        },
+        "analyzer": {
+          "arabic_heritage": {
+            "type": "custom",
+            "char_filter": ["arabic_marks", "arabic_letters"],
+            "tokenizer": "icu_tokenizer",
+            "filter": ["lowercase", "icu_normalizer", "arabic_normalization", "arabic_stop", "arabic_stemmer", "icu_folding"]
+          },
+          "arabic_exact": {
+            "type": "custom",
+            "char_filter": ["arabic_marks", "arabic_letters"],
+            "tokenizer": "icu_tokenizer",
+            "filter": ["lowercase", "icu_normalizer", "arabic_normalization"]
+          },
+          "latin_heritage": {
+            "type": "custom",
+            "tokenizer": "icu_tokenizer",
+            "filter": ["lowercase", "icu_folding", "english_stop", "english_stemmer"]
+          }
+        }
+      }
+    },
+    "mappings": {
+      "_source": {"excludes": ["text"]},
+      "dynamic": "strict",
+      "properties": {
+        "page_id": {"type": "keyword"},
+        "work_id": {"type": "keyword"},
+        "work_public_id": {"type": "keyword"},
+        "seq": {"type": "integer"},
+        "label": {"type": "keyword"},
+        "language": {"type": "keyword"},
+        "access_class": {"type": "keyword"},
+        "publish_state": {"type": "keyword"},
+        "frozen": {"type": "boolean"},
+        "text": {
+          "type": "text",
+          "analyzer": "arabic_heritage",
+          "search_analyzer": "arabic_heritage",
+          "term_vector": "with_positions_offsets",
+          "store": false,
+          "fields": {
+            "exact": {"type": "text", "analyzer": "arabic_exact", "term_vector": "with_positions_offsets"},
+            "latin": {"type": "text", "analyzer": "latin_heritage", "term_vector": "with_positions_offsets"}
+          }
+        }
+      }
+    }
+  },
+  "_meta": {"description": "OCR page text for matching only. _source excludes text; highlights come from ALTO offsets (CAT-4)."}
+}

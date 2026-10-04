@@ -22,22 +22,18 @@ from typing import Any
 
 import httpx
 import jwt
-import psycopg
 import pytest
 import pytest_asyncio
-from alembic import command
-from alembic.config import Config
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi import FastAPI
-from psycopg import sql
-from sqlalchemy import create_engine
 
 from jdhp_api.core.auth import TokenVerifier
 from jdhp_api.core.config import Settings, load_settings
 from jdhp_api.core.db import Database
 from jdhp_api.core.tasks import RecordingDispatcher
 from jdhp_api.main import create_app
+from jdhp_api.testing import db as testing_db
 
 API_DIR = Path(__file__).resolve().parents[1]
 REPO_DIR = API_DIR.parents[1]
@@ -46,8 +42,6 @@ POLICIES_DIR = REPO_DIR / "policies"
 ADMIN_URL = os.environ.get(
     "JDHP_TEST_ADMIN_DATABASE_URL", "postgresql://postgres@localhost:54329/postgres"
 )
-APP_ROLE = "jdhp_app"
-WORKER_ROLE = "jdhp_worker"
 APP_PASSWORD = "jdhp_app_test_password"
 STRONG = "test-" + "k" * 40
 TEST_ISSUER = "http://keycloak.test/realms/jdhp"
@@ -59,17 +53,6 @@ def _free_port() -> int:
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         return int(sock.getsockname()[1])
-
-
-def _admin_conn(dbname: str | None = None) -> psycopg.Connection[Any]:
-    url = ADMIN_URL if dbname is None else ADMIN_URL.rsplit("/", 1)[0] + f"/{dbname}"
-    return psycopg.connect(url, autocommit=True)
-
-
-def _admin_host_port() -> tuple[str, str]:
-    rest = ADMIN_URL.split("@")[-1].split("/")[0]
-    host, _, port = rest.partition(":")
-    return host, port or "5432"
 
 
 # --- Cerbos -------------------------------------------------------------------------------
@@ -161,62 +144,23 @@ def redis_url() -> Iterator[str]:
 
 @pytest.fixture(scope="session")
 def template_database() -> Iterator[str]:
-    name = f"jdhp_tmpl_{uuid.uuid4().hex[:10]}"
-    with _admin_conn() as conn:
-        for role in (APP_ROLE, WORKER_ROLE):
-            exists = conn.execute("SELECT 1 FROM pg_roles WHERE rolname = %s", (role,)).fetchone()
-            verb = "ALTER" if exists else "CREATE"
-            conn.execute(
-                sql.SQL("{verb} ROLE {role} LOGIN PASSWORD {password} NOBYPASSRLS").format(
-                    verb=sql.SQL(verb),
-                    role=sql.Identifier(role),
-                    password=sql.Literal(APP_PASSWORD),
-                )
-            )
-        conn.execute(f'CREATE DATABASE "{name}"')
-    with _admin_conn(name) as conn:
-        conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
-    sync_url = (
-        ADMIN_URL.replace("postgresql://", "postgresql+psycopg://").rsplit("/", 1)[0] + f"/{name}"
-    )
-    engine = create_engine(sync_url)
-    config = Config(str(API_DIR / "alembic.ini"))
-    with engine.begin() as connection:
-        config.attributes["connection"] = connection
-        command.upgrade(config, "head")
-    engine.dispose()
-    try:
-        yield name
-    finally:
-        with _admin_conn() as conn:
-            conn.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+    yield from testing_db.create_template()
 
 
 @pytest.fixture
 def database_name(template_database: str) -> Iterator[str]:
-    name = f"jdhp_test_{uuid.uuid4().hex[:10]}"
-    with _admin_conn() as conn:
-        conn.execute(f'CREATE DATABASE "{name}" TEMPLATE "{template_database}"')
-    try:
-        yield name
-    finally:
-        with _admin_conn() as conn:
-            conn.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+    yield from testing_db.clone_database(template_database)
 
 
 @pytest.fixture
 def app_database_url(database_name: str) -> str:
-    host, port = _admin_host_port()
-    return f"postgresql+asyncpg://{APP_ROLE}:{APP_PASSWORD}@{host}:{port}/{database_name}"
+    return testing_db.role_url(database_name, testing_db.APP_ROLE)
 
 
 @pytest.fixture
 def admin_database_url(database_name: str) -> str:
     """Superuser access for test setup that bypasses row-level security on purpose."""
-    return (
-        ADMIN_URL.replace("postgresql://", "postgresql+asyncpg://").rsplit("/", 1)[0]
-        + f"/{database_name}"
-    )
+    return testing_db.admin_async_url(database_name)
 
 
 # --- Keys and tokens ---------------------------------------------------------------------

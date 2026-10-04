@@ -1,0 +1,157 @@
+{
+  "brand": {
+    "name": "منصة التراث الأردني الرقمي",
+    "tagline": "نحفظ المعرفة. نحمي التراث. نفتح الوصول للعالم."
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "catalog": "الفهرس",
+    "collections": "المجموعات",
+    "places": "الأماكن",
+    "periods": "الحقب",
+    "subjects": "الموضوعات",
+    "account": "حسابي",
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "staffSignIn": "دخول العاملين",
+    "skipToContent": "انتقل إلى المحتوى",
+    "switchLocale": "English",
+    "menu": "القائمة"
+  },
+  "home": {
+    "statement": "مكتبة رقمية آمنة لمجموعة تراثية محمية: الكتاب الأصلي ومصادره الموثقة هما المرجع دائمًا.",
+    "searchLabel": "ابحث في الفهرس والنصوص",
+    "searchPlaceholder": "عنوان، مؤلف، مكان، أو كلمة من نص الكتاب",
+    "search": "ابحث",
+    "entryPoints": "مداخل إلى المجموعة",
+    "browseCollections": "تصفّح المجموعات",
+    "browsePlaces": "تصفّح حسب المكان",
+    "browsePeriods": "تصفّح حسب الحقبة",
+    "trustTitle": "الثقة والحفظ",
+    "trustBody": "تُعرض الصفحات الممسوحة كما هي، ولا يغادر أي أصل الخادم. كل محتوى ثانوي يحمل تسمية تقول ما هو ومن أنتجه، وكل ما يولّده نموذج ذكاء اصطناعي يُراجعه خبير قبل نشره.",
+    "recentTitle": "أحدث الأعمال المتاحة",
+    "catalogSize": "{count, plural, =0 {لا أعمال منشورة بعد} one {عمل واحد منشور} two {عملان منشوران} few {# أعمال منشورة} many {# عملًا منشورًا} other {# عمل منشور}}"
+  },
+  "catalog": {
+    "title": "الفهرس",
+    "results": "{count, plural, =0 {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+    "filters": "تصفية",
+    "accessClass": "فئة الوصول",
+    "allClasses": "كل الفئات",
+    "clear": "مسح",
+    "query": "البحث",
+    "pages": "{count, plural, =0 {بلا صفحات} one {صفحة واحدة} two {صفحتان} few {# صفحات} many {# صفحة} other {# صفحة}}",
+    "empty": "لا توجد أعمال تطابق البحث.",
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "access": {
+    "open": "مفتوح",
+    "registered": "للأعضاء",
+    "paid": "مدفوع",
+    "restricted": "مقيّد",
+    "embargoed": "محجوب",
+    "read": "اقرأ الكتاب",
+    "signInToRead": "سجّل الدخول للقراءة",
+    "request": "اطلب الوصول",
+    "noAccess": "يتطلب موافقة",
+    "samplePages": "{count, plural, =0 {لا صفحات عيّنة} one {صفحة عيّنة واحدة} two {صفحتا عيّنة} few {# صفحات عيّنة} many {# صفحة عيّنة} other {# صفحة عيّنة}}",
+    "allPagesSample": "كل الصفحات متاحة للمعاينة",
+    "readerSoon": "القارئ الآمن يصل في المرحلة الأولى؛ هذه الصفحة تعرض السجل فقط."
+  },
+  "work": {
+    "author": "{count, plural, one {المؤلف} other {المؤلفون}}",
+    "published": "النشر",
+    "language": "اللغة",
+    "extent": "الحجم",
+    "subjects": "الموضوعات",
+    "places": "الأماكن",
+    "periods": "الحقب",
+    "material": "نوع المادة",
+    "collections": "ضمن المجموعات",
+    "provenance": "المصدر والتاريخ",
+    "rights": "بيان الحقوق",
+    "citation": "الاستشهاد",
+    "copyCitation": "انسخ الاستشهاد",
+    "copied": "تم النسخ",
+    "identifier": "المعرّف الدائم",
+    "pagesTitle": "الصفحات",
+    "pageLabel": "صفحة {label}",
+    "sample": "عيّنة",
+    "description": "الوصف",
+    "secondaryContent": "محتوى ثانوي",
+    "scanLabel": "المسح الأصلي",
+    "noThumbnail": "لا معاينة بعد",
+    "arabicDirection": "rtl"
+  },
+  "labels": {
+    "scan": "المسح الأصلي: الصفحة كما هي",
+    "humanPrefix": "من إعداد إنسان",
+    "aiPrefix": "أنتجه نموذج ذكاء اصطناعي",
+    "reviewedBy": "راجعه {name}",
+    "reviewedOn": "في {date}"
+  },
+  "collections": {
+    "title": "المجموعات",
+    "works": "{count, plural, =0 {لا أعمال} one {عمل واحد} two {عملان} few {# أعمال} many {# عملًا} other {# عمل}}",
+    "empty": "لا مجموعات منشورة بعد."
+  },
+  "subjects": {
+    "place": "الأماكن",
+    "period": "الحقب",
+    "subject": "الموضوعات",
+    "material": "أنواع المواد",
+    "theme": "المحاور",
+    "empty": "لا مصطلحات في هذه القائمة بعد.",
+    "works": "{count, plural, =0 {لا أعمال} one {عمل واحد} two {عملان} few {# أعمال} many {# عملًا} other {# عمل}}"
+  },
+  "account": {
+    "title": "حسابي",
+    "signedInAs": "مسجّل الدخول باسم",
+    "role": "الدور",
+    "verification": "مستوى التحقق",
+    "mfa": "التحقق بخطوتين",
+    "mfaOn": "مفعّل في هذه الجلسة",
+    "mfaOff": "غير مفعّل",
+    "preferences": "التفضيلات",
+    "numerals": "الأرقام",
+    "eastern": "عربية مشرقية (١٢٣)",
+    "western": "عربية غربية (123)",
+    "notSignedIn": "لم تسجّل الدخول.",
+    "roles": {
+      "member": "عضو",
+      "verified_researcher": "باحث موثّق",
+      "institutional_user": "مستخدم مؤسسي",
+      "institution_admin": "مدير مؤسسة",
+      "curator": "أمين فهرسة",
+      "reviewer": "مراجع",
+      "rights_officer": "مسؤول حقوق",
+      "platform_admin": "مدير المنصة"
+    },
+    "verifications": {
+      "none": "بدون تحقق",
+      "email": "البريد الإلكتروني",
+      "phone": "البريد والهاتف",
+      "researcher": "باحث موثّق",
+      "institutional": "عبر المؤسسة"
+    }
+  },
+  "footer": {
+    "about": "عن المنصة",
+    "openData": "البيانات المفتوحة",
+    "privacy": "الخصوصية",
+    "accessibility": "إمكانية الوصول",
+    "notice": "المحتوى المحمي يُعرض كصور مرقّمة بعلامة مائية فقط، ولا تُقدَّم نسخ قابلة للتنزيل. التسجيل المتاح حاليًا هو كتاب خيالي للعرض."
+  },
+  "errors": {
+    "notFound": "لا يوجد سجل بهذا المعرّف.",
+    "notFoundTitle": "غير موجود",
+    "generic": "تعذّر تحميل البيانات. حاول مرة أخرى.",
+    "genericTitle": "حدث خطأ",
+    "backHome": "العودة إلى الرئيسية"
+  },
+  "meta": {
+    "description": "مكتبة رقمية آمنة للتراث الأردني: فهرس، بحث، وقراءة محمية للكتب التراثية.",
+    "catalog": "الفهرس — منصة التراث الأردني الرقمي"
+  }
+}

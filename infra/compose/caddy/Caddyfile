@@ -1,0 +1,51 @@
+# Reverse proxy for every environment. Protected paths are never cached and carry the full
+# security header set (SEC-16, PRF-4). TLS is automatic for public hostnames; localhost is plain.
+{
+	admin off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$JDHP_PUBLIC_HOST:localhost:8080} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		Cross-Origin-Opener-Policy same-origin
+		X-Frame-Options DENY
+		-Server
+	}
+	@https {
+		protocol https
+	}
+	header @https Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+	# Identity provider under /auth (Keycloak runs with --http-relative-path /auth).
+	handle_path /auth/* {
+		rewrite * /auth{uri}
+		reverse_proxy keycloak:8080 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {host}
+		}
+	}
+
+	# API. Private and uncacheable unless the handler says otherwise.
+	handle_path /api/* {
+		header Cache-Control "private, no-store" defer
+		reverse_proxy api:8000
+	}
+
+	# IIIF tiles: the authorizing gateway (Phase 1). Never cached at the edge.
+	handle /iiif/* {
+		header Cache-Control "private, no-store"
+		reverse_proxy tiles:8001
+	}
+
+	# Everything else is the web application.
+	handle {
+		reverse_proxy web:3000
+	}
+}
