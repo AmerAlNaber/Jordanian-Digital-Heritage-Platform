@@ -67,7 +67,7 @@ services:
       OIDC_STAFF_CLIENT_SECRET: ${KC_STAFF_CLIENT_SECRET}
       SESSION_SECRET: ${WEB_SESSION_SECRET}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
-    networks: [app]
+    networks: [app, data]
     depends_on:
       api:
         condition: service_healthy
@@ -331,7 +331,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
@@ -347,7 +347,7 @@ services:
       retries: 20
 
   minio-init:
-    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    image: quay.io/minio/mc:RELEASE.2025-04-16T18-13-26Z
     entrypoint: ["sh", "/opt/jdhp/init.sh"]
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}

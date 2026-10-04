@@ -215,7 +215,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.image }}
           cache-to: type=gha,scope=${{ matrix.image }},mode=max
       - name: Trivy (high and critical, fixed vulnerabilities only)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: jdhp/${{ matrix.image }}:ci
           format: table
