@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Principal attributes",
+  "type": "object",
+  "properties": {
+    "authenticated": { "type": "boolean" },
+    "verification_level": { "type": "string", "enum": ["none", "email", "phone", "researcher", "institutional"] },
+    "institution_id": { "type": "string" },
+    "mfa": { "type": "boolean" },
+    "session_age_seconds": { "type": "integer", "minimum": 0 },
+    "active_devices": { "type": "integer", "minimum": 0 },
+    "is_staff": { "type": "boolean" }
+  },
+  "required": ["authenticated", "verification_level", "is_staff"]
+}

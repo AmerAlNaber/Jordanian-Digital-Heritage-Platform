@@ -1,0 +1,20 @@
+# Cerbos policy decision point configuration. Policies are baked into the image and read
+# from disk; nothing is writable at runtime (THREAT_MODEL T-C10).
+server:
+  httpListenAddr: ":3592"
+  grpcListenAddr: ":3593"
+  requestLimits:
+    maxActionsPerResource: 50
+    maxResourcesPerRequest: 50
+
+storage:
+  driver: "disk"
+  disk:
+    directory: "/policies"
+    watchForChanges: false
+
+schema:
+  enforcement: reject
+
+audit:
+  enabled: false

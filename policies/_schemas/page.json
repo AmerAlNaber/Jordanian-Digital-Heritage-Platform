@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Page attributes",
+  "type": "object",
+  "properties": {
+    "access_class": {
+      "type": "string",
+      "enum": [
+        "open",
+        "registered",
+        "paid",
+        "restricted",
+        "embargoed"
+      ]
+    },
+    "publish_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "withdrawn"
+      ]
+    },
+    "frozen": {
+      "type": "boolean"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "in_sample_range": {
+      "type": "boolean"
+    },
+    "has_grant": {
+      "type": "boolean"
+    },
+    "in_grant_range": {
+      "type": "boolean"
+    },
+    "break_glass_active": {
+      "type": "boolean"
+    }
+  },
+  "description": "Kind-level checks (list, create) carry no attributes, so nothing is required; provided attributes are type-checked."
+}

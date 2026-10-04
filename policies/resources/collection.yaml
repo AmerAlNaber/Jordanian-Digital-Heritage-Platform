@@ -1,0 +1,29 @@
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: collection
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///work.json
+  rules:
+    - actions: [list]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      derivedRoles: [staff]
+
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          expr: R.attr.publish_state == "published"
+
+    - actions: [create, edit]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]

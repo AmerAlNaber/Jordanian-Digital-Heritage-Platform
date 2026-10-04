@@ -1,0 +1,22 @@
+{
+  "errors.not_found.title": "Not found",
+  "errors.not_found.detail": "No resource exists with this identifier.",
+  "errors.forbidden.title": "Forbidden",
+  "errors.forbidden.detail": "You are not allowed to perform this action.",
+  "errors.unauthorized.title": "Sign-in required",
+  "errors.unauthorized.detail": "This action requires a valid session.",
+  "errors.validation.title": "Invalid request",
+  "errors.validation.detail": "The request could not be accepted because some fields are invalid.",
+  "errors.conflict.title": "Conflict",
+  "errors.conflict.detail": "This operation conflicts with the current state of the resource.",
+  "errors.policy_engine_unavailable.title": "Policy engine unavailable",
+  "errors.policy_engine_unavailable.detail": "The permission check could not be completed, so the request was denied.",
+  "errors.rate_limited.title": "Too many requests",
+  "errors.rate_limited.detail": "You exceeded the allowed request rate. Try again later.",
+  "errors.internal.title": "Internal error",
+  "errors.internal.detail": "An unexpected error occurred. It was recorded under the request identifier.",
+  "errors.invalid_identifier.title": "Invalid identifier",
+  "errors.invalid_identifier.detail": "The public identifier is malformed or contains a typing error.",
+  "errors.review_transition.title": "Review transition not allowed",
+  "errors.review_transition.detail": "The review task cannot move to this state from its current state."
+}

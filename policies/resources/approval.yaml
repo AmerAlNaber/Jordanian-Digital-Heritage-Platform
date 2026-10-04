@@ -1,0 +1,29 @@
+# Four-eyes approvals (SEC-9, ADM-3): the approver must be a different person than the proposer.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: approval
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///owned.json
+  rules:
+    - actions: [list, view]
+      effect: EFFECT_ALLOW
+      derivedRoles: [staff]
+
+    - actions: [approve, reject]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: R.attr.proposed_by == P.id
+
+    - actions: [approve, reject]
+      effect: EFFECT_ALLOW
+      roles: [curator, rights_officer, platform_admin]
+      condition:
+        match:
+          expr: P.attr.mfa == true && R.attr.state == "proposed"

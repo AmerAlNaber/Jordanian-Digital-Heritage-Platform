@@ -1,0 +1,22 @@
+{
+  "errors.not_found.title": "غير موجود",
+  "errors.not_found.detail": "لا يوجد مورد بهذا المعرّف.",
+  "errors.forbidden.title": "غير مسموح",
+  "errors.forbidden.detail": "لا تملك صلاحية تنفيذ هذا الإجراء.",
+  "errors.unauthorized.title": "مطلوب تسجيل الدخول",
+  "errors.unauthorized.detail": "يتطلب هذا الإجراء جلسة صالحة.",
+  "errors.validation.title": "طلب غير صالح",
+  "errors.validation.detail": "تعذّر قبول الطلب لأن بعض الحقول غير صالحة.",
+  "errors.conflict.title": "تعارض",
+  "errors.conflict.detail": "تتعارض هذه العملية مع الحالة الحالية للمورد.",
+  "errors.policy_engine_unavailable.title": "محرك الصلاحيات غير متاح",
+  "errors.policy_engine_unavailable.detail": "تعذّر التحقق من الصلاحية، ورُفض الطلب احتياطًا.",
+  "errors.rate_limited.title": "طلبات كثيرة",
+  "errors.rate_limited.detail": "تجاوزت حدّ الطلبات المسموح به. حاول لاحقًا.",
+  "errors.internal.title": "خطأ داخلي",
+  "errors.internal.detail": "حدث خطأ غير متوقع. تم تسجيله برقم الطلب.",
+  "errors.invalid_identifier.title": "معرّف غير صالح",
+  "errors.invalid_identifier.detail": "المعرّف العام غير صالح أو يحتوي على خطأ مطبعي.",
+  "errors.review_transition.title": "انتقال مراجعة غير مسموح",
+  "errors.review_transition.detail": "لا يمكن نقل مهمة المراجعة إلى هذه الحالة من حالتها الحالية."
+}

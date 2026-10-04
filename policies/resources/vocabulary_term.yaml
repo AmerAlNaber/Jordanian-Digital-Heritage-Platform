@@ -1,0 +1,18 @@
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: vocabulary_term
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///empty.json
+  rules:
+    - actions: [list, view]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+
+    - actions: [create, edit]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]

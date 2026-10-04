@@ -1,0 +1,143 @@
+name: ContentAndReview
+description: AI objects are invisible until approved (REV-1); only MFA reviewers approve; four-eyes (SEC-9); audit viewer needs MFA.
+principals:
+  anonymous:
+    id: anonymous
+    roles: [anonymous]
+    attr: {authenticated: false, verification_level: none, institution_id: "", mfa: false, session_age_seconds: 0, active_devices: 0, is_staff: false}
+  member:
+    id: member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  curator:
+    id: curator
+    roles: [curator]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  reviewer_mfa:
+    id: reviewer_mfa
+    roles: [reviewer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  reviewer_no_mfa:
+    id: reviewer_no_mfa
+    roles: [reviewer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  rights_officer:
+    id: rights_officer
+    roles: [rights_officer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  rights_officer_no_mfa:
+    id: rights_officer_no_mfa
+    roles: [rights_officer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  platform_admin:
+    id: platform_admin
+    roles: [platform_admin]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+resources:
+  ai_pending:
+    kind: content_object
+    id: ai_pending
+    attr: {origin: ai, review_status: pending, provenance_type: translation, work_access_class: registered, work_publish_state: published}
+  ai_rejected:
+    kind: content_object
+    id: ai_rejected
+    attr: {origin: ai, review_status: rejected, provenance_type: translation, work_access_class: registered, work_publish_state: published}
+  ai_approved:
+    kind: content_object
+    id: ai_approved
+    attr: {origin: ai, review_status: approved, provenance_type: translation, work_access_class: registered, work_publish_state: published}
+  ai_approved_embargoed_work:
+    kind: content_object
+    id: ai_approved_embargoed_work
+    attr: {origin: ai, review_status: approved, provenance_type: translation, work_access_class: embargoed, work_publish_state: published}
+  human_note:
+    kind: content_object
+    id: human_note
+    attr: {origin: human, review_status: approved, provenance_type: editorial, work_access_class: registered, work_publish_state: published}
+  task_pending:
+    kind: review_task
+    id: task_pending
+    attr: {state: pending, assignee_id: ""}
+  approval_by_officer:
+    kind: approval
+    id: approval_by_officer
+    attr: {state: proposed, proposed_by: rights_officer}
+  approval_by_someone_else:
+    kind: approval
+    id: approval_by_someone_else
+    attr: {state: proposed, proposed_by: curator}
+  audit:
+    kind: audit_event
+    id: any
+    attr: {kind: audit_event}
+  self_user:
+    kind: user
+    id: any
+    attr: {owner_id: member}
+tests:
+  - name: unapproved ai objects are invisible to the public (REV-1)
+    input:
+      principals: [anonymous, member]
+      resources: [ai_pending, ai_rejected, ai_approved, ai_approved_embargoed_work, human_note]
+      actions: [view]
+    expected:
+      - {principal: anonymous, resource: ai_pending, actions: {view: EFFECT_DENY}}
+      - {principal: anonymous, resource: ai_rejected, actions: {view: EFFECT_DENY}}
+      - {principal: anonymous, resource: ai_approved, actions: {view: EFFECT_ALLOW}}
+      - {principal: anonymous, resource: ai_approved_embargoed_work, actions: {view: EFFECT_DENY}}
+      - {principal: anonymous, resource: human_note, actions: {view: EFFECT_ALLOW}}
+      - {principal: member, resource: ai_pending, actions: {view: EFFECT_DENY}}
+      - {principal: member, resource: ai_rejected, actions: {view: EFFECT_DENY}}
+      - {principal: member, resource: ai_approved, actions: {view: EFFECT_ALLOW}}
+      - {principal: member, resource: ai_approved_embargoed_work, actions: {view: EFFECT_DENY}}
+      - {principal: member, resource: human_note, actions: {view: EFFECT_ALLOW}}
+  - name: reviewers and curators see pending objects in the portal
+    input:
+      principals: [reviewer_mfa, curator, rights_officer]
+      resources: [ai_pending]
+      actions: [view]
+    expected:
+      - {principal: reviewer_mfa, resource: ai_pending, actions: {view: EFFECT_ALLOW}}
+      - {principal: curator, resource: ai_pending, actions: {view: EFFECT_ALLOW}}
+      - {principal: rights_officer, resource: ai_pending, actions: {view: EFFECT_DENY}}
+  - name: only a reviewer with MFA approves or rejects
+    input:
+      principals: [reviewer_mfa, reviewer_no_mfa, curator, platform_admin, member]
+      resources: [task_pending]
+      actions: [list, view, approve, reject]
+    expected:
+      - {principal: reviewer_mfa, resource: task_pending, actions: {list: EFFECT_ALLOW, view: EFFECT_ALLOW, approve: EFFECT_ALLOW, reject: EFFECT_ALLOW}}
+      - {principal: reviewer_no_mfa, resource: task_pending, actions: {list: EFFECT_ALLOW, view: EFFECT_ALLOW, approve: EFFECT_DENY, reject: EFFECT_DENY}}
+      - {principal: curator, resource: task_pending, actions: {list: EFFECT_DENY, view: EFFECT_DENY, approve: EFFECT_DENY, reject: EFFECT_DENY}}
+      - {principal: platform_admin, resource: task_pending, actions: {list: EFFECT_ALLOW, view: EFFECT_ALLOW, approve: EFFECT_DENY, reject: EFFECT_DENY}}
+      - {principal: member, resource: task_pending, actions: {list: EFFECT_DENY, view: EFFECT_DENY, approve: EFFECT_DENY, reject: EFFECT_DENY}}
+  - name: the proposer never approves their own proposal (SEC-9)
+    input:
+      principals: [rights_officer, curator, rights_officer_no_mfa]
+      resources: [approval_by_officer, approval_by_someone_else]
+      actions: [approve, reject]
+    expected:
+      - {principal: rights_officer, resource: approval_by_officer, actions: {approve: EFFECT_DENY, reject: EFFECT_DENY}}
+      - {principal: rights_officer, resource: approval_by_someone_else, actions: {approve: EFFECT_ALLOW, reject: EFFECT_ALLOW}}
+      - {principal: curator, resource: approval_by_someone_else, actions: {approve: EFFECT_DENY, reject: EFFECT_DENY}}
+      - {principal: curator, resource: approval_by_officer, actions: {approve: EFFECT_ALLOW, reject: EFFECT_ALLOW}}
+      - {principal: rights_officer_no_mfa, resource: approval_by_someone_else, actions: {approve: EFFECT_DENY, reject: EFFECT_DENY}}
+  - name: the audit viewer needs a rights officer or platform admin with MFA (ADM-5)
+    input:
+      principals: [rights_officer, rights_officer_no_mfa, platform_admin, curator, member]
+      resources: [audit]
+      actions: [list, verify, export]
+    expected:
+      - {principal: rights_officer, resource: audit, actions: {list: EFFECT_ALLOW, verify: EFFECT_ALLOW, export: EFFECT_ALLOW}}
+      - {principal: rights_officer_no_mfa, resource: audit, actions: {list: EFFECT_DENY, verify: EFFECT_DENY, export: EFFECT_DENY}}
+      - {principal: platform_admin, resource: audit, actions: {list: EFFECT_ALLOW, verify: EFFECT_ALLOW, export: EFFECT_ALLOW}}
+      - {principal: curator, resource: audit, actions: {list: EFFECT_DENY, verify: EFFECT_DENY, export: EFFECT_DENY}}
+      - {principal: member, resource: audit, actions: {list: EFFECT_DENY, verify: EFFECT_DENY, export: EFFECT_DENY}}
+  - name: only signed-in users have a profile
+    input:
+      principals: [anonymous, member]
+      resources: [self_user]
+      actions: [view_self, edit_self]
+    expected:
+      - {principal: anonymous, resource: self_user, actions: {view_self: EFFECT_DENY, edit_self: EFFECT_DENY}}
+      - {principal: member, resource: self_user, actions: {view_self: EFFECT_ALLOW, edit_self: EFFECT_ALLOW}}

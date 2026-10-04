@@ -1,0 +1,23 @@
+# Grants (ACS-2): visible to their holder, managed by rights officers, extension needs four eyes.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: grant
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///owned.json
+  rules:
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      derivedRoles: [owner, same_institution_admin]
+
+    - actions: [list, view, create, revoke, propose_extension]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer]
+
+    - actions: [list, view]
+      effect: EFFECT_ALLOW
+      roles: [platform_admin]

@@ -1,0 +1,106 @@
+name: PageAccess
+description: Sample ranges and grant page ranges on tile requests (RDR-1, SEC-10, CAT-1).
+principals:
+  anonymous:
+    id: anonymous
+    roles: [anonymous]
+    attr: {authenticated: false, verification_level: none, institution_id: "", mfa: false, session_age_seconds: 0, active_devices: 0, is_staff: false}
+  member:
+    id: member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  curator:
+    id: curator
+    roles: [curator]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  platform_admin:
+    id: platform_admin
+    roles: [platform_admin]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+resources:
+  restricted_sample_page:
+    kind: page
+    id: restricted_sample_page
+    attr: {access_class: restricted, publish_state: published, frozen: false, seq: 2, in_sample_range: true, has_grant: false, in_grant_range: false, break_glass_active: false}
+  restricted_page_no_grant:
+    kind: page
+    id: restricted_page_no_grant
+    attr: {access_class: restricted, publish_state: published, frozen: false, seq: 20, in_sample_range: false, has_grant: false, in_grant_range: false, break_glass_active: false}
+  restricted_page_in_grant_range:
+    kind: page
+    id: restricted_page_in_grant_range
+    attr: {access_class: restricted, publish_state: published, frozen: false, seq: 20, in_sample_range: false, has_grant: true, in_grant_range: true, break_glass_active: false}
+  restricted_page_outside_grant_range:
+    kind: page
+    id: restricted_page_outside_grant_range
+    attr: {access_class: restricted, publish_state: published, frozen: false, seq: 35, in_sample_range: false, has_grant: true, in_grant_range: false, break_glass_active: false}
+  embargoed_cover:
+    kind: page
+    id: embargoed_cover
+    attr: {access_class: embargoed, publish_state: published, frozen: false, seq: 1, in_sample_range: true, has_grant: false, in_grant_range: false, break_glass_active: false}
+  registered_page_11:
+    kind: page
+    id: registered_page_11
+    attr: {access_class: registered, publish_state: published, frozen: false, seq: 11, in_sample_range: false, has_grant: false, in_grant_range: false, break_glass_active: false}
+  frozen_open_page:
+    kind: page
+    id: frozen_open_page
+    attr: {access_class: open, publish_state: published, frozen: true, seq: 1, in_sample_range: true, has_grant: false, in_grant_range: false, break_glass_active: false}
+tests:
+  - name: anonymous sees samples only
+    input:
+      principals: [anonymous]
+      resources: [restricted_sample_page, restricted_page_no_grant, embargoed_cover, registered_page_11, frozen_open_page]
+      actions: [view, read, view_ocr_text]
+    expected:
+      - principal: anonymous
+        resource: restricted_sample_page
+        actions: {view: EFFECT_ALLOW, read: EFFECT_ALLOW, view_ocr_text: EFFECT_DENY}
+      - principal: anonymous
+        resource: restricted_page_no_grant
+        actions: {view: EFFECT_ALLOW, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: anonymous
+        resource: embargoed_cover
+        actions: {view: EFFECT_DENY, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: anonymous
+        resource: registered_page_11
+        actions: {view: EFFECT_ALLOW, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: anonymous
+        resource: frozen_open_page
+        actions: {view: EFFECT_DENY, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+  - name: member reads within the grant range only
+    input:
+      principals: [member]
+      resources: [restricted_page_no_grant, restricted_page_in_grant_range, restricted_page_outside_grant_range, registered_page_11]
+      actions: [read, view_ocr_text]
+    expected:
+      - principal: member
+        resource: restricted_page_no_grant
+        actions: {read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: member
+        resource: restricted_page_in_grant_range
+        actions: {read: EFFECT_ALLOW, view_ocr_text: EFFECT_DENY}
+      - principal: member
+        resource: restricted_page_outside_grant_range
+        actions: {read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: member
+        resource: registered_page_11
+        actions: {read: EFFECT_ALLOW, view_ocr_text: EFFECT_DENY}
+  - name: curators see OCR text, platform admins have no content bypass
+    input:
+      principals: [curator, platform_admin]
+      resources: [restricted_page_no_grant, embargoed_cover]
+      actions: [view, read, view_ocr_text]
+    expected:
+      - principal: curator
+        resource: restricted_page_no_grant
+        actions: {view: EFFECT_ALLOW, read: EFFECT_ALLOW, view_ocr_text: EFFECT_ALLOW}
+      - principal: curator
+        resource: embargoed_cover
+        actions: {view: EFFECT_ALLOW, read: EFFECT_DENY, view_ocr_text: EFFECT_ALLOW}
+      - principal: platform_admin
+        resource: restricted_page_no_grant
+        actions: {view: EFFECT_ALLOW, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}
+      - principal: platform_admin
+        resource: embargoed_cover
+        actions: {view: EFFECT_ALLOW, read: EFFECT_DENY, view_ocr_text: EFFECT_DENY}

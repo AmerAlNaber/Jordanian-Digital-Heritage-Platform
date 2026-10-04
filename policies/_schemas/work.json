@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Work attributes",
+  "type": "object",
+  "properties": {
+    "access_class": {
+      "type": "string",
+      "enum": [
+        "open",
+        "registered",
+        "paid",
+        "restricted",
+        "embargoed"
+      ]
+    },
+    "publish_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "withdrawn"
+      ]
+    },
+    "frozen": {
+      "type": "boolean"
+    },
+    "has_grant": {
+      "type": "boolean"
+    },
+    "grant_page_from": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "grant_page_to": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "owner_institution_id": {
+      "type": "string"
+    },
+    "break_glass_active": {
+      "type": "boolean"
+    }
+  },
+  "description": "Kind-level checks (list, create) carry no attributes, so nothing is required; provided attributes are type-checked."
+}

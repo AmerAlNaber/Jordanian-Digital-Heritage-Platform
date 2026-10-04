@@ -1,0 +1,40 @@
+# Derived roles: dynamic roles computed from the principal and the resource.
+apiVersion: api.cerbos.dev/v1
+derivedRoles:
+  name: common
+  definitions:
+    - name: staff
+      parentRoles: [curator, reviewer, rights_officer, platform_admin]
+
+    - name: signed_in
+      parentRoles: [member, verified_researcher, institutional_user, institution_admin, curator, reviewer, rights_officer, platform_admin]
+      condition:
+        match:
+          expr: P.attr.authenticated == true
+
+    - name: grant_holder
+      parentRoles: [member, verified_researcher, institutional_user, institution_admin, curator, reviewer, rights_officer, platform_admin]
+      condition:
+        match:
+          expr: R.attr.has_grant == true
+
+    - name: owner
+      parentRoles: [member, verified_researcher, institutional_user, institution_admin, curator, reviewer, rights_officer, platform_admin]
+      condition:
+        match:
+          expr: R.attr.owner_id == P.id
+
+    - name: same_institution_admin
+      parentRoles: [institution_admin]
+      condition:
+        match:
+          all:
+            of:
+              - expr: P.attr.institution_id != ""
+              - expr: R.attr.institution_id == P.attr.institution_id
+
+    - name: break_glass_admin
+      parentRoles: [platform_admin]
+      condition:
+        match:
+          expr: R.attr.break_glass_active == true

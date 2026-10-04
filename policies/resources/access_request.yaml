@@ -1,0 +1,23 @@
+# Access requests (ACS-1): members ask, rights officers decide with a logged reason.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: access_request
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///owned.json
+  rules:
+    - actions: [create]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+
+    - actions: [view, withdraw]
+      effect: EFFECT_ALLOW
+      derivedRoles: [owner]
+
+    - actions: [list, view, decide]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer]

@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+build
+coverage
+pnpm-lock.yaml
+packages/schemas/src/generated
+*.md
+.venv
+apps/api
+apps/worker
+packages/metadata
+packages/ai-adapters
+policies
+infra

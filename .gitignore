@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+coverage/
+*.tsbuildinfo
+.eslintcache
+
+# Environment and secrets: only the documented example is tracked (SEC-19)
+.env
+.env.*
+!.env.example
+secrets/
+
+# Generated artefacts
+apps/api/src/jdhp_api/seed/build/
+packages/schemas/openapi.json.tmp
+.data/
+*.log
+
+# Test output
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/load/results/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

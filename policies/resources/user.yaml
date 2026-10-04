@@ -1,0 +1,34 @@
+# Accounts. People manage their own; staff within their scope (ACC-5, SEC-5).
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: user
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///owned.json
+  rules:
+    - actions: [view_self, edit_self, list_sessions, revoke_session, export_data, delete_account]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+
+    - actions: [view, list]
+      effect: EFFECT_ALLOW
+      roles: [platform_admin, rights_officer]
+
+    - actions: [view, list]
+      effect: EFFECT_ALLOW
+      derivedRoles: [same_institution_admin]
+
+    - actions: [revoke_sessions]
+      effect: EFFECT_ALLOW
+      roles: [platform_admin, rights_officer]
+
+    - actions: [manage]
+      effect: EFFECT_ALLOW
+      roles: [platform_admin]
+      condition:
+        match:
+          expr: P.attr.mfa == true

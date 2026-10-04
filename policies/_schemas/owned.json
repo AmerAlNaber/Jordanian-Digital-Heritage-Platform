@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Attributes of a resource owned by a user or an institution",
+  "type": "object",
+  "properties": {
+    "owner_id": { "type": "string" },
+    "institution_id": { "type": "string" },
+    "state": { "type": "string" },
+    "proposed_by": { "type": "string" },
+    "requester_id": { "type": "string" },
+    "assignee_id": { "type": "string" }
+  }
+}

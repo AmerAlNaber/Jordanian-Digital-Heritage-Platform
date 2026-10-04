@@ -1,0 +1,5 @@
+packages:
+  - apps/web
+  - packages/schemas
+  - packages/design-tokens
+  - tests/e2e
