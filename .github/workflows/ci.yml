@@ -83,7 +83,6 @@ jobs:
         run: |
           mkdir -p .ci-bin
           curl -sSfL "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_VERSION}/cerbos_${CERBOS_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C .ci-bin cerbos
-          .ci-bin/cerbos version
       - name: API and package tests with the 80 percent coverage gate
         run: uv run pytest apps/api/tests packages --cov --cov-report=term-missing --cov-report=xml
       - name: Worker tests (seed book through the inline pipeline)
@@ -270,7 +269,14 @@ jobs:
           open("/tmp/work_ark", "w").write(work["ark"])
           PY
           name=$(cat /tmp/work_id)
-          curl -sSf "http://localhost:8080/api/works/${name}/pages" | python3 -c 'import json,sys; d=json.load(sys.stdin); pages = d if isinstance(d, list) else d["items"]; assert len(pages) == 40, len(pages); print("pages:", len(pages))'
+          curl -sSf -o /tmp/pages.json "http://localhost:8080/api/works/${name}/pages"
+          python3 - <<'PY'
+          import json
+          d = json.load(open("/tmp/pages.json"))
+          pages = d if isinstance(d, list) else d["items"]
+          assert len(pages) == 40, len(pages)
+          print("pages:", len(pages))
+          PY
           curl -sSf -o /tmp/ar.html "http://localhost:8080/ar/works/${name}"
           grep -q 'dir="rtl"' /tmp/ar.html
           curl -sSf -o /dev/null -D - "http://localhost:8080/en" | grep -i "content-security-policy" | grep -q "nonce-"

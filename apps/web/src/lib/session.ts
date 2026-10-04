@@ -63,7 +63,7 @@ export function decodeCookie(value: string | undefined): string | null {
 
 export function encrypt(plain: string): string {
   const iv = randomBytes(12);
-  const cipher = createCipheriv("aes-256-gcm", key(), iv);
+  const cipher = createCipheriv("aes-256-gcm", key(), iv, { authTagLength: 16 });
   const body = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
   return Buffer.concat([iv, cipher.getAuthTag(), body]).toString("base64url");
 }
@@ -73,7 +73,7 @@ export function decrypt(payload: string): string {
   const iv = raw.subarray(0, 12);
   const tag = raw.subarray(12, 28);
   const body = raw.subarray(28);
-  const decipher = createDecipheriv("aes-256-gcm", key(), iv);
+  const decipher = createDecipheriv("aes-256-gcm", key(), iv, { authTagLength: 16 });
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(body), decipher.final()]).toString("utf8");
 }
