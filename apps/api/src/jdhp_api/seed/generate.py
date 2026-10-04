@@ -103,7 +103,7 @@ class Renderer:
         return text, {}
 
     def background(self, seq: int) -> Image.Image:
-        rng = random.Random(seq * 7919 + 17)  # noqa: S311 - visual variation only
+        rng = random.Random(seq * 7919 + 17)  # noqa: S311  # nosec B311  # visual variation only
         tone = (
             max(0, min(255, PARCHMENT[0] + rng.randint(-6, 6))),
             max(0, min(255, PARCHMENT[1] + rng.randint(-6, 6))),
@@ -180,7 +180,7 @@ class Renderer:
     def render(self, page: SeedPage) -> tuple[Image.Image, list[TruthLine]]:
         image = self.background(page.seq)
         draw = ImageDraw.Draw(image)
-        rng = random.Random(page.seq * 104729 + 3)  # noqa: S311 - layout jitter only
+        rng = random.Random(page.seq * 104729 + 3)  # noqa: S311  # nosec B311  # layout jitter only
         truth: list[TruthLine] = []
         y = self.margin_top
         if page.label:

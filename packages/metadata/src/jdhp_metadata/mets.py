@@ -8,7 +8,7 @@ Phase 3 through the same builder.
 from __future__ import annotations
 
 import datetime as dt
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405  # build only; parsing uses xml_security
 from dataclasses import dataclass
 
 from jdhp_metadata.xml_security import parse_xml

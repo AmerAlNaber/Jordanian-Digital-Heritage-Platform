@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --package jdhp-worker --extra seed
 
 FROM python:3.12-slim-bookworm AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends libvips42 libopenjp2-7 curl \
+RUN apt-get update && apt-get install -y --no-install-recommends libvips42 libopenjp2-7 libfribidi0 curl \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --uid 10002 --create-home jdhp
 WORKDIR /app

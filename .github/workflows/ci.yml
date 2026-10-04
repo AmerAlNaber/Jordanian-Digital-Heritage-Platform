@@ -1,0 +1,288 @@
+# Continuous integration for the core layer. Mirrors the pipeline section of SPEC.md:
+# lint and type checks, unit and policy tests in parallel, security scans, image builds scanned
+# with Trivy, then the Compose integration job that brings up every service and ingests the seed
+# book through the real pipeline. Every job must pass before a merge (SEC-18, SEC-20).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  CERBOS_VERSION: "0.46.0"
+  GITLEAKS_VERSION: "8.21.2"
+  UV_LOCKED: "1"
+
+jobs:
+  python-lint:
+    name: Python lint and types
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --all-packages
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run lint-imports
+      - run: uv run mypy apps/api/src apps/worker/src packages/ai-adapters/src packages/metadata/src
+      - run: uv run bandit -c pyproject.toml -r apps packages -q
+
+  python-tests:
+    name: API and worker tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["54329:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JDHP_TEST_ADMIN_DATABASE_URL: postgresql://postgres@localhost:54329/postgres
+      JDHP_TEST_REDIS_URL: redis://localhost:6379/0
+      CERBOS_BIN: ${{ github.workspace }}/.ci-bin/cerbos
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install libvips and OpenJPEG for the derivative pipeline
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libvips42 libopenjp2-7
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --all-packages
+      - name: Install the Cerbos binary (the test session starts it locally)
+        run: |
+          mkdir -p .ci-bin
+          curl -sSfL "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_VERSION}/cerbos_${CERBOS_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C .ci-bin cerbos
+          .ci-bin/cerbos version
+      - name: API and package tests with the 80 percent coverage gate
+        run: uv run pytest apps/api/tests packages --cov --cov-report=term-missing --cov-report=xml
+      - name: Worker tests (seed book through the inline pipeline)
+        run: uv run pytest apps/worker/tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-coverage
+          path: coverage.xml
+          if-no-files-found: ignore
+
+  policies:
+    name: Cerbos policy tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the Cerbos binary
+        run: |
+          mkdir -p .ci-bin
+          curl -sSfL "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_VERSION}/cerbos_${CERBOS_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C .ci-bin cerbos
+      - run: .ci-bin/cerbos compile policies
+
+  openapi-sync:
+    name: OpenAPI document in sync
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --all-packages
+      - name: Export the document from the application and compare with packages/schemas
+        run: |
+          uv run --package jdhp-api python -m jdhp_api.openapi_export /tmp/openapi.json
+          diff -u packages/schemas/openapi.json /tmp/openapi.json || {
+            echo "::error::packages/schemas/openapi.json is stale; run make openapi and commit the result"; exit 1; }
+
+  javascript:
+    name: Web lint, types, tests and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @jdhp/design-tokens build
+      - name: Generated TypeScript types match the OpenAPI document
+        run: |
+          pnpm --filter @jdhp/schemas generate
+          git diff --exit-code -- packages/schemas/src/generated || {
+            echo "::error::packages/schemas/src/generated is stale; run make openapi and commit the result"; exit 1; }
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test
+      - run: pnpm --filter @jdhp/web build
+
+  security:
+    name: Security scans
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks scans the whole history
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: uv sync --all-packages
+      - run: pnpm install --frozen-lockfile
+      - name: Semgrep (OWASP ruleset, Python, TypeScript)
+        run: |
+          uvx semgrep scan --config p/owasp-top-ten --config p/python --config p/typescript \
+            --severity ERROR --error --metrics off \
+            --exclude '**/tests/**' --exclude '**/test/**' --exclude '**/*.test.*' --exclude node_modules --exclude .venv
+      - name: Bandit
+        run: uv run bandit -c pyproject.toml -r apps packages -q
+      - name: pip-audit against the locked Python dependencies
+        run: |
+          uv export --all-packages --format requirements-txt --no-emit-workspace --no-hashes -q -o /tmp/requirements.txt
+          uv run pip-audit -r /tmp/requirements.txt --no-deps --progress-spinner off
+      - name: npm audit (high and critical block; ignored advisories are listed in package.json)
+        run: pnpm audit --audit-level high
+      - name: gitleaks
+        run: |
+          mkdir -p .ci-bin
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz -C .ci-bin gitleaks
+          .ci-bin/gitleaks detect --source . --redact --no-banner --exit-code 1
+
+  images:
+    name: Build and scan image (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: [python-lint, javascript]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: api
+            dockerfile: apps/api/Dockerfile
+          - image: worker
+            dockerfile: apps/worker/Dockerfile
+          - image: web
+            dockerfile: apps/web/Dockerfile
+          - image: cantaloupe
+            dockerfile: infra/cantaloupe/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          load: true
+          tags: jdhp/${{ matrix.image }}:ci
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+      - name: Trivy (high and critical, fixed vulnerabilities only)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: jdhp/${{ matrix.image }}:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  integration:
+    name: Compose stack and seed ingest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: [python-tests, policies, openapi-sync, javascript]
+    env:
+      JDHP_SEED_SCALE: "0.5"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Configuration with generated secrets (no value is ever committed)
+        run: infra/compose/make-env.sh
+      - name: Start every service
+        run: docker compose up -d --build --wait --wait-timeout 900
+      - name: Service state
+        if: always()
+        run: docker compose ps
+      - name: Ingest the seed book through the real pipeline with the mock OCR adapter
+        run: docker compose run --rm seed
+      - name: Wait for the batch to reach ingested
+        run: |
+          for i in $(seq 1 120); do
+            state=$(docker compose exec -T postgres psql -U postgres -d jdhp -tAc "select state from intake_batch order by id desc limit 1" | tr -d '[:space:]')
+            echo "intake batch state: ${state:-none}"
+            case "$state" in
+              ingested) exit 0 ;;
+              failed) echo "::error::seed ingest failed"; docker compose logs --no-color worker | tail -200; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "::error::seed ingest did not finish in time"; exit 1
+      - name: The seed book is published and readable through the stack
+        run: |
+          set -eu
+          curl -sSf -o /tmp/works.json "http://localhost:8080/api/works?limit=5"
+          python3 - <<'PY'
+          import json
+          works = json.load(open("/tmp/works.json"))
+          assert works["total"] == 1, works
+          work = works["items"][0]
+          assert work["page_count"] == 40, work["page_count"]
+          print("seed work:", work["public_id"], work["ark"], work["title_ar"])
+          open("/tmp/work_id", "w").write(work["public_id"])
+          open("/tmp/work_ark", "w").write(work["ark"])
+          PY
+          name=$(cat /tmp/work_id)
+          curl -sSf "http://localhost:8080/api/works/${name}/pages" | python3 -c 'import json,sys; d=json.load(sys.stdin); pages = d if isinstance(d, list) else d["items"]; assert len(pages) == 40, len(pages); print("pages:", len(pages))'
+          curl -sSf -o /tmp/ar.html "http://localhost:8080/ar/works/${name}"
+          grep -q 'dir="rtl"' /tmp/ar.html
+          curl -sSf -o /dev/null -D - "http://localhost:8080/en" | grep -i "content-security-policy" | grep -q "nonce-"
+          curl -sS -o /dev/null -w "ark redirect: %{http_code} %{redirect_url}\n" "http://localhost:8080/$(cat /tmp/work_ark)"
+      - name: Collect logs
+        if: failure()
+        run: docker compose logs --no-color > compose.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: compose-logs
+          path: compose.log
+          if-no-files-found: ignore
+      - name: Stop the stack
+        if: always()
+        run: docker compose down -v --remove-orphans

@@ -173,7 +173,7 @@ def upgrade() -> None:
     # Roles exist cluster-wide; create them if the deployment's init script has not.
     for role in (APP_ROLE, WORKER_ROLE):
         op.execute(
-            f"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{role}') THEN "
+            f"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{role}') THEN "  # nosec B608  # role names are constants
             f"CREATE ROLE {role} NOLOGIN NOBYPASSRLS; END IF; END $$;"
         )
     op.execute(f"GRANT USAGE ON SCHEMA public TO {APP_ROLE}, {WORKER_ROLE}")

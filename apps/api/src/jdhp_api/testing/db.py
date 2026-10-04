@@ -20,7 +20,7 @@ ADMIN_URL = os.environ.get(
 )
 APP_ROLE = "jdhp_app"
 WORKER_ROLE = "jdhp_worker"
-TEST_PASSWORD = "jdhp_test_password"  # noqa: S105 - local test cluster only
+TEST_PASSWORD = "jdhp_test_password"  # noqa: S105  # nosec B105  # local test cluster only
 
 
 def admin_conn(dbname: str | None = None) -> psycopg.Connection[Any]:

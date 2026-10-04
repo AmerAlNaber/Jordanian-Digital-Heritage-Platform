@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405  # types only; parsing uses defusedxml
 
 from defusedxml.ElementTree import fromstring as _defused_fromstring
 
