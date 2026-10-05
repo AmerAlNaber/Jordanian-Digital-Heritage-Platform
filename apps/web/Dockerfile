@@ -26,5 +26,5 @@ COPY --from=build --chown=jdhp:jdhp /app/apps/web/.next/static ./apps/web/.next/
 COPY --from=build --chown=jdhp:jdhp /app/apps/web/public ./apps/web/public
 USER jdhp
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://localhost:3000/health >/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:3000/health >/dev/null || exit 1
 CMD ["node", "apps/web/server.js"]

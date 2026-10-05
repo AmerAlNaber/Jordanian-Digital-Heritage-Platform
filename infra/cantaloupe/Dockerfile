@@ -1,5 +1,5 @@
 # Cantaloupe 5 with OpenJPEG for JPEG 2000. Internal service: reachable only from the tile gateway.
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:17-jre-jammy
 
 ARG CANTALOUPE_VERSION=5.0.7
 RUN apt-get update && apt-get upgrade -y --no-install-recommends \

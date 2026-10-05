@@ -22,7 +22,8 @@ ALL_ROLES = STAFF_ROLES | {
 @pytest.fixture(scope="module")
 def realm() -> dict[str, Any]:
     text = REALM_PATH.read_text("utf-8")
-    # Placeholders are rendered by envsubst at container start; substitute harmless values here.
+    # Placeholders are rendered by infra/compose/keycloak/render-realm.py before import;
+    # substitute harmless values here.
     rendered = re.sub(r"\$\{([A-Z_]+)\}", lambda m: f"placeholder-{m.group(1).lower()}", text)
     data = json.loads(rendered)
     assert isinstance(data, dict)

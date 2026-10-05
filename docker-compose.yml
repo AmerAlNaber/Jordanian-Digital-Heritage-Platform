@@ -147,6 +147,8 @@ services:
     image: jdhp-worker:local
     pull_policy: never
     restart: unless-stopped
+    healthcheck:
+      disable: true
     command:
       [
         "celery",
@@ -180,10 +182,34 @@ services:
       worker:
         condition: service_started
 
+  keycloak-init:
+    image: jdhp-api:local
+    pull_policy: never
+    user: "0"
+    entrypoint:
+      [
+        "python",
+        "/opt/jdhp/render-realm.py",
+        "/opt/jdhp/realm-jdhp.template.json",
+        "/import/realm-jdhp.json",
+      ]
+    environment:
+      KC_FRONTEND_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}
+      KC_WEB_CLIENT_SECRET: ${KC_WEB_CLIENT_SECRET}
+      KC_STAFF_CLIENT_SECRET: ${KC_STAFF_CLIENT_SECRET}
+      KC_SSL_REQUIRED: ${KC_SSL_REQUIRED:-external}
+      KC_SMTP_HOST: mailpit
+      KC_SMTP_PORT: "1025"
+      KC_SMTP_FROM: noreply@localhost
+    volumes:
+      - ./infra/keycloak/realm-jdhp.template.json:/opt/jdhp/realm-jdhp.template.json:ro
+      - ./infra/compose/keycloak/render-realm.py:/opt/jdhp/render-realm.py:ro
+      - keycloak-import:/import
+    networks: [data]
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     restart: unless-stopped
-    entrypoint: ["/bin/bash", "/opt/jdhp/entrypoint.sh"]
     command:
       [
         "start",
@@ -208,21 +234,15 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
-      KC_FRONTEND_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}
-      KC_WEB_CLIENT_SECRET: ${KC_WEB_CLIENT_SECRET}
-      KC_STAFF_CLIENT_SECRET: ${KC_STAFF_CLIENT_SECRET}
-      KC_SSL_REQUIRED: ${KC_SSL_REQUIRED:-external}
-      KC_SMTP_HOST: mailpit
-      KC_SMTP_PORT: "1025"
-      KC_SMTP_FROM: noreply@localhost
     volumes:
-      - ./infra/keycloak/realm-jdhp.template.json:/opt/jdhp/realm-jdhp.template.json:ro
-      - ./infra/compose/keycloak/entrypoint.sh:/opt/jdhp/entrypoint.sh:ro
+      - keycloak-import:/opt/keycloak/data/import:ro
       - ./infra/keycloak/theme/jdhp:/opt/keycloak/themes/jdhp:ro
     networks: [app, data]
     depends_on:
       postgres:
         condition: service_healthy
+      keycloak-init:
+        condition: service_completed_successfully
     healthcheck:
       test:
         [
@@ -397,6 +417,7 @@ networks:
 
 volumes:
   caddy-data:
+  keycloak-import:
   postgres-data:
   opensearch-data:
   minio-data:
