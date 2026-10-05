@@ -328,6 +328,20 @@ jobs:
           grep -q 'dir="rtl"' /tmp/ar.html
           curl -sSf -o /dev/null -D - "http://localhost:8080/en" | grep -i "content-security-policy" | grep -q "nonce-"
           curl -sS -o /dev/null -w "ark redirect: %{http_code} %{redirect_url}\n" "http://localhost:8080/$(cat /tmp/work_ark)"
+      - name: Tiles reach the browser only through the authorizing gateway (RDR-1, SEC-10, SEC-14)
+        run: |
+          set -eu
+          name=$(cat /tmp/work_id)
+          # A sample page of a Registered work is public, served as WebP through Cantaloupe with the platform mark.
+          curl -sSf -o /tmp/sample.webp -D /tmp/sample.headers "http://localhost:8080/iiif/3/${name}-p0001/0,0,512,512/512,/0/default.webp"
+          grep -qi "content-type: image/webp" /tmp/sample.headers
+          python3 -c "d=open('/tmp/sample.webp','rb').read(); assert d[:4]==b'RIFF' and d[8:12]==b'WEBP', d[:16]; print('sample tile bytes:', len(d))"
+          curl -sSf "http://localhost:8080/iiif/3/${name}-p0001/info.json" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d['type']=='ImageService3' and d['maxArea']<=1048576, d; print('info.json ok', d['width'], d['height'])"
+          # Outside the sample range nothing is served without a reader session; full/max is never served for a protected work.
+          test "$(curl -sS -o /dev/null -w '%{http_code}' "http://localhost:8080/iiif/3/${name}-p0011/0,0,512,512/512,/0/default.webp")" = "403"
+          test "$(curl -sS -o /dev/null -w '%{http_code}' "http://localhost:8080/iiif/3/${name}-p0001/full/max/0/default.webp")" = "403"
+          # Cantaloupe itself is not reachable from outside the stack.
+          test "$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "http://localhost:8182/iiif/3/" || true)" != "200"
       - name: Collect logs
         if: failure()
         run: docker compose logs --no-color > compose.log 2>&1 || true

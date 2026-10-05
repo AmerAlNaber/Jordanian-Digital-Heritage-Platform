@@ -1,5 +1,6 @@
-# API image. Multi-stage: uv resolves the locked workspace, the runtime stage carries only the
-# virtual environment and the sources. Runs as a non-root user; no build tools at runtime.
+# API image (also the tile gateway). Multi-stage: uv resolves the locked workspace, the runtime
+# stage carries the virtual environment, the sources and libvips for tiles and marks. Runs as a
+# non-root user; no build tools at runtime.
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 WORKDIR /app
@@ -17,7 +18,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.12-slim-bookworm AS runtime
 RUN apt-get update && apt-get upgrade -y --no-install-recommends \
-    && apt-get install -y --no-install-recommends curl \
+    && apt-get install -y --no-install-recommends curl libvips42 libopenjp2-7 \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --uid 10001 --create-home jdhp
 WORKDIR /app

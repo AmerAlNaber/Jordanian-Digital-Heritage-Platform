@@ -26,5 +26,9 @@
   "errors.device_limit.title": "تجاوزت عدد الأجهزة",
   "errors.device_limit.detail": "هذا التصريح مفتوح على الحد الأقصى من الأجهزة. أغلق القارئ على جهاز آخر ثم حاول مرة أخرى.",
   "errors.grant_required.title": "يلزم تصريح قراءة",
-  "errors.grant_required.detail": "قراءة هذا العمل تتطلب تصريحًا ساريًا."
+  "errors.grant_required.detail": "قراءة هذا العمل تتطلب تصريحًا ساريًا.",
+  "errors.tile_request_invalid.title": "طلب صورة غير صالح",
+  "errors.tile_request_invalid.detail": "معاملات الصورة المطلوبة غير مدعومة.",
+  "errors.tile_too_large.title": "حجم الصورة أكبر من المسموح",
+  "errors.tile_too_large.detail": "تُقدَّم الصفحات المحمية كبلاطات صغيرة فقط."
 }

@@ -12,7 +12,7 @@ import enum
 import os
 from collections.abc import Mapping
 from functools import lru_cache
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 from pydantic import (
     AnyHttpUrl,
@@ -145,6 +145,12 @@ class Settings(BaseSettings):
     tile_rate_sustained_per_minute: int = Field(default=600, ge=1)
     tiles_per_page_estimate: int = Field(default=12, ge=1)
     heartbeat_interval_seconds: int = Field(default=60, ge=10, le=60)
+    # Tile gateway (RDR-1, SEC-10): where tiles come from and how large one response may be.
+    image_source: Literal["cantaloupe", "libvips"] = "cantaloupe"
+    cantaloupe_url: AnyHttpUrl = Field(default=AnyHttpUrl("http://cantaloupe:8182"))
+    image_internal_key: SecretStr | None = None
+    tile_size: int = Field(default=512, ge=256, le=1024)
+    tile_max_pixels: int = Field(default=1024 * 1024, ge=256 * 256, le=4096 * 4096)
     grant_token_ttl_seconds: int = Field(default=600, ge=60, le=600)
     anonymous_session_max_seconds: int = Field(default=8 * 3600, ge=600, le=24 * 3600)
     registered_grant_days: int = Field(default=30, ge=1, le=365)
@@ -200,7 +206,9 @@ class Settings(BaseSettings):
 
     def _secret_problems(self) -> list[str]:
         problems: list[str] = []
-        keys = ("token_signing_key", "forensic_master_key", "field_encryption_key", "s3_secret_key")
+        keys = ["token_signing_key", "forensic_master_key", "field_encryption_key", "s3_secret_key"]
+        if self.image_internal_key is not None:
+            keys.append("image_internal_key")
         for name in keys:
             value = getattr(self, name).get_secret_value()
             if value.strip().lower() in INSECURE_SECRET_VALUES:

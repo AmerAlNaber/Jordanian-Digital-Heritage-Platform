@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import uuid
 
@@ -50,8 +51,11 @@ def test_sec_2_grant_token_rejects_tampering_expiry_and_other_keys(settings: Set
         device_hash="d" * 64,
     )
     header, payload, signature = token.split(".")
+    raw = base64.urlsafe_b64decode(signature + "=" * (-len(signature) % 4))
+    flipped = bytes([raw[0] ^ 0x01]) + raw[1:]  # one bit, deterministically
+    tampered = base64.urlsafe_b64encode(flipped).rstrip(b"=").decode()
     with pytest.raises(GrantTokenError):
-        issuer.verify(f"{header}.{payload}.{signature[:-2]}AA")
+        issuer.verify(f"{header}.{payload}.{tampered}")
     with pytest.raises(GrantTokenError):
         issuer.verify("not-a-token")
     past = dt.datetime.now(dt.UTC) - dt.timedelta(seconds=settings.grant_token_ttl_seconds + 60)

@@ -50,7 +50,7 @@ services:
       - ./infra/compose/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
     networks: [edge, app]
-    depends_on: [web, api, keycloak]
+    depends_on: [web, api, keycloak, tiles]
 
   web:
     build: { context: ., dockerfile: apps/web/Dockerfile }
@@ -91,6 +91,44 @@ services:
         condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://api-internal:8010/readyz"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  tiles:
+    image: jdhp-api:local
+    pull_policy: never
+    restart: unless-stopped
+    command:
+      [
+        "uvicorn",
+        "jdhp_api.tiles_app:create_tiles_app",
+        "--factory",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8001",
+        "--proxy-headers",
+        "--forwarded-allow-ips",
+        "*",
+      ]
+    environment:
+      <<: *api-env
+      JDHP_IMAGE_SOURCE: ${JDHP_IMAGE_SOURCE:-cantaloupe}
+      JDHP_CANTALOUPE_URL: http://cantaloupe:8182
+      JDHP_IMAGE_INTERNAL_KEY: ${JDHP_IMAGE_INTERNAL_KEY}
+    networks: [app, data]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      cerbos:
+        condition: service_started
+      cantaloupe:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8001), 3).close()"]
       interval: 15s
       timeout: 5s
       retries: 10

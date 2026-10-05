@@ -26,6 +26,7 @@ dependencies = [
   "python-multipart>=0.0.20",
   "defusedxml>=0.7",
   "celery[redis]>=5.5",
+  "pyvips>=3.0",
   "jdhp-adapters",
   "jdhp-metadata",
 ]

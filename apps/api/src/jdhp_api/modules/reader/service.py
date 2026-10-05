@@ -355,6 +355,44 @@ async def end_session(
     await services.cache.clear_session(reader.public_id)
 
 
+async def suspend_session(
+    services: ReaderServices,
+    *,
+    reader: ReaderSession,
+    reason: str,
+    principal: Principal,
+    facts: RequestFacts,
+) -> None:
+    """Rate limits and anomalies suspend the session and flag it loudly (SEC-12, SEC-26)."""
+    now = utcnow()
+    async with services.database.session(RlsContext.system()) as session:
+        current = await session.get(ReaderSession, reader.id)
+        if current is None:
+            return
+        work = await session.get(Work, current.work_id)
+        if current.state == ReaderSessionState.ACTIVE:
+            current.state = ReaderSessionState.SUSPENDED
+            current.ended_at = now
+            current.suspended_reason = reason
+            await session.flush()
+        await audit.write(
+            session,
+            actor_id=principal.id,
+            actor_type=_actor_type(principal),
+            actor_roles=principal.roles,
+            action="reader.session_suspended",
+            resource_kind="work",
+            resource_id=work.public_id if work else str(current.work_id),
+            outcome=AuditOutcome.DENY,
+            severity=AuditSeverity.HIGH,
+            details={"session": current.public_id, "reason": reason},
+            ip=facts.ip,
+            user_agent=facts.user_agent,
+            request_id=facts.request_id,
+        )
+    await services.cache.clear_session(reader.public_id)
+
+
 async def end_sessions_for_grant(
     services: ReaderServices, *, grant_id: uuid.UUID, reason: str
 ) -> int:

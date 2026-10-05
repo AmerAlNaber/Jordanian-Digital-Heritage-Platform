@@ -16,7 +16,7 @@ The platform answers on <http://localhost:8080>: the web application at `/ar` an
 
 The first start builds the MinIO image from source (ADR-0003), which takes several minutes; later starts reuse the cached image.
 
-1. `docker compose up -d --build` starts Caddy, the web application, the API and its internal admin app, the Celery worker and beat, Keycloak (realm imported from `infra/keycloak`), Cerbos (policies mounted read-only), PostgreSQL with pgvector, OpenSearch with the Arabic analyzer templates, Redis, MinIO with locked buckets, Cantaloupe behind the authorizing delegate, and Mailpit.
+1. `docker compose up -d --build` starts Caddy, the web application, the API and its internal admin app, the Celery worker and beat, Keycloak (realm imported from `infra/keycloak`), Cerbos (policies mounted read-only), PostgreSQL with pgvector, OpenSearch with the Arabic analyzer templates, Redis, MinIO with locked buckets, the tile gateway (`tiles`, the API image serving `/iiif/*` with the marks and rate limits), Cantaloupe behind the authorizing delegate, and Mailpit.
 2. `docker compose run --rm seed` renders the fictional 40-page book, uploads it to the intake bucket, registers the batch and the catalog record as the seed curator, and enqueues the ingest pipeline. The worker validates every master, writes the preservation copy, METS and checksums, generates derivatives, runs the mock OCR, indexes the pages and computes embeddings.
 
 ## Checking health

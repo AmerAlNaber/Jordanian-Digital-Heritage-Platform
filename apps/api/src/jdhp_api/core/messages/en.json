@@ -26,5 +26,9 @@
   "errors.device_limit.title": "Device limit reached",
   "errors.device_limit.detail": "This grant is already open on the maximum number of devices. Close the reader on another device and try again.",
   "errors.grant_required.title": "A grant is required",
-  "errors.grant_required.detail": "Reading this work requires an active grant."
+  "errors.grant_required.detail": "Reading this work requires an active grant.",
+  "errors.tile_request_invalid.title": "Invalid image request",
+  "errors.tile_request_invalid.detail": "The requested image parameters are not supported.",
+  "errors.tile_too_large.title": "Image larger than permitted",
+  "errors.tile_too_large.detail": "Protected pages are served as small tiles only."
 }

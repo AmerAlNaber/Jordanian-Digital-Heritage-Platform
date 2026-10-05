@@ -100,6 +100,19 @@ class GrantRequiredError(ForbiddenError):
     code = "grant_required"
 
 
+class TileRequestError(JdhpError):
+    """A malformed IIIF request, or one that asks for more pixels than a tile may carry."""
+
+    status = http.HTTP_400_BAD_REQUEST
+    code = "tile_request_invalid"
+
+
+class TileTooLargeError(ForbiddenError):
+    """Protected works never leave as anything larger than a capped tile (SEC-10)."""
+
+    code = "tile_too_large"
+
+
 def problem(
     request: Request, *, status: int, code: str, extra: Mapping[str, Any] | None = None
 ) -> JSONResponse:
