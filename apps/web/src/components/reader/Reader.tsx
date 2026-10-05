@@ -84,20 +84,27 @@ export function Reader({
     api.current = value;
   }, []);
 
+  const mounted = useRef(false);
   const open = useCallback(async () => {
     setStatus({ kind: "opening" });
     try {
       const opened = await openSession(work.publicId);
+      if (!mounted.current) {
+        endSession(opened); // resolved after the reader went away: close it at once
+        return;
+      }
       session.current = opened;
       lastBeat.current = Date.now();
       setStatus({ kind: "active", session: opened });
     } catch (error) {
+      if (!mounted.current) return;
       session.current = null;
       setStatus({ kind: "ended", reason: endedReasonFrom(error) });
     }
   }, [work.publicId]);
 
   useEffect(() => {
+    mounted.current = true;
     void open();
     const close = () => {
       if (session.current) endSession(session.current);
@@ -105,6 +112,7 @@ export function Reader({
     };
     window.addEventListener("pagehide", close);
     return () => {
+      mounted.current = false;
       window.removeEventListener("pagehide", close);
       close();
     };

@@ -9,6 +9,16 @@ const config: NextConfig = {
   poweredByHeader: false,
   images: { formats: ["image/webp"], remotePatterns: [] },
   experimental: { optimizePackageImports: ["next-intl"] },
+  async rewrites() {
+    // Development without the Caddy proxy: send the API and tile paths to the local services so the
+    // browser stays same-origin and the Content Security Policy holds. Deployments leave these unset.
+    const api = process.env.JDHP_DEV_API_URL;
+    const tiles = process.env.JDHP_DEV_TILES_URL;
+    const afterFiles = [];
+    if (api) afterFiles.push({ source: "/api/:path*", destination: `${api.replace(/\/$/, "")}/:path*` });
+    if (tiles) afterFiles.push({ source: "/iiif/:path*", destination: `${tiles.replace(/\/$/, "")}/iiif/:path*` });
+    return { beforeFiles: [], afterFiles, fallback: [] };
+  },
   async headers() {
     // Security headers that do not depend on a per-request nonce; the CSP is set in middleware (SEC-16).
     return [

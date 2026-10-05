@@ -9,6 +9,21 @@ export type ViewerApi = { zoomIn: () => void; zoomOut: () => void; fit: () => vo
 
 const TILE_HEADER = "X-Jdhp-Tile";
 
+/** info.json for a page, fetched with the token: protected pages answer nothing without it. */
+async function loadInfo(url: string, token: string): Promise<Record<string, unknown> | null> {
+  try {
+    const response = await fetch(url, {
+      headers: { Accept: "application/json", [TILE_HEADER]: token },
+      credentials: "same-origin",
+      cache: "no-store",
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * The scan on a canvas (RDR-1, RDR-3). Tiles are fetched with the session's tile token in a
  * header, so a tile URL alone fetches nothing; the token is refreshed by the heartbeat and
@@ -72,8 +87,20 @@ export function Viewer({
   useEffect(() => {
     const current = viewer.current;
     if (!current) return;
+    let cancelled = false;
     current.setAjaxHeaders({ [TILE_HEADER]: token.current }, true);
-    current.open(sources.map((s) => ({ tileSource: s.url, x: s.x, y: 0, width: s.width })));
+    void Promise.all(sources.map((s) => loadInfo(s.url, token.current))).then((infos) => {
+      if (cancelled || viewer.current !== current) return;
+      const specs = sources.flatMap((s, i) => {
+        const info = infos[i];
+        return info ? [{ tileSource: info, x: s.x, y: 0, width: s.width }] : [];
+      });
+      if (specs.length > 0) current.open(specs);
+      else current.close();
+    });
+    return () => {
+      cancelled = true;
+    };
     // `key` names the sources; the array identity changes on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
