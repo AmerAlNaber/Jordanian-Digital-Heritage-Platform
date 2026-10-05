@@ -87,6 +87,8 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
+      opensearch-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://api-internal:8010/readyz"]
       interval: 15s
@@ -141,6 +143,11 @@ services:
       redis:
         condition: service_healthy
       minio-init:
+        condition: service_completed_successfully
+      # The index templates must exist before the first page is indexed,
+      # and a service_completed_successfully edge is what lets
+      # `compose up --wait` accept the one-shot init container exiting 0.
+      opensearch-init:
         condition: service_completed_successfully
 
   beat:
