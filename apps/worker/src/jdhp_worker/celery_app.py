@@ -1,7 +1,8 @@
 """The Celery application. Configured from settings at startup, JSON only, acks late.
 
-Start a worker with ``celery -A jdhp_worker.celery_app worker -Q ingest,derivatives,ocr,...``
-and the scheduler with ``celery -A jdhp_worker.celery_app beat``.
+Processes start through :mod:`jdhp_worker.worker`, which configures this application from the
+environment: ``celery -A jdhp_worker.worker worker -Q ingest,derivatives,ocr,...`` and
+``celery -A jdhp_worker.worker beat``. Importing this module alone leaves the app unconfigured.
 """
 
 from __future__ import annotations

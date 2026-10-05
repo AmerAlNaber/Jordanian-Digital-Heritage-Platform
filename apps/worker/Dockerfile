@@ -25,5 +25,5 @@ COPY --from=build --chown=jdhp:jdhp /app/apps /app/apps
 COPY --from=build --chown=jdhp:jdhp /app/packages /app/packages
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 USER jdhp
-HEALTHCHECK --interval=60s --timeout=25s --retries=3 --start-period=90s CMD celery -A jdhp_worker.celery_app inspect ping -t 15 || exit 1
-CMD ["celery", "-A", "jdhp_worker.celery_app", "worker", "--loglevel=INFO", "-Q", "ingest,derivatives,ocr,embeddings,translation,fixity,mail,maintenance,default", "--concurrency=2"]
+HEALTHCHECK --interval=60s --timeout=25s --retries=3 --start-period=90s CMD celery -A jdhp_worker.worker inspect ping -t 15 || exit 1
+CMD ["celery", "-A", "jdhp_worker.worker", "worker", "--loglevel=INFO", "-Q", "ingest,derivatives,ocr,embeddings,translation,fixity,mail,maintenance,default", "--concurrency=2"]

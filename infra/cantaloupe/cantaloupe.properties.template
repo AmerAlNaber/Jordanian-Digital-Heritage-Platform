@@ -25,6 +25,11 @@ endpoint.admin.enabled = false
 endpoint.api.enabled = false
 endpoint.health.dependency_check = false
 
+# No server-side caches: the gateway and the CDN cache tiles. The cache worker must still carry a
+# positive interval; Cantaloupe 5.0.7 exits silently when the key is missing.
+cache.server.worker.enabled = false
+cache.server.worker.interval = 86400
+
 delegate_script.enabled = true
 delegate_script.pathname = /etc/cantaloupe/delegates.rb
 delegate_script.cache.enabled = false

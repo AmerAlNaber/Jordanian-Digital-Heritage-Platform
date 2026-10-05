@@ -62,7 +62,9 @@ class Runtime:
         if self.enqueue is not None:
             self.enqueue(task_name, kwargs)
             return
-        from jdhp_worker.celery_app import app
+        from jdhp_worker.celery_app import app, configure
+
+        configure(self.settings)
 
         app.send_task(task_name, kwargs=kwargs)
 

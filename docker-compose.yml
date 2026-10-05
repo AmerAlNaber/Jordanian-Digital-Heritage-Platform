@@ -148,12 +148,16 @@ services:
     pull_policy: never
     restart: unless-stopped
     healthcheck:
-      disable: true
+      test: ["CMD-SHELL", "ls /tmp/celerybeat-schedule* >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     command:
       [
         "celery",
         "-A",
-        "jdhp_worker.celery_app",
+        "jdhp_worker.worker",
         "beat",
         "--loglevel=INFO",
         "-s",

@@ -119,9 +119,9 @@
       "rootUrl": "${KC_FRONTEND_URL}",
       "baseUrl": "/",
       "redirectUris": ["${KC_FRONTEND_URL}/api/auth/callback"],
-      "postLogoutRedirectUris": ["${KC_FRONTEND_URL}/*"],
       "webOrigins": ["${KC_FRONTEND_URL}"],
       "attributes": {
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
         "use.refresh.tokens": "true",
@@ -146,9 +146,9 @@
       "frontchannelLogout": true,
       "rootUrl": "${KC_FRONTEND_URL}",
       "redirectUris": ["${KC_FRONTEND_URL}/api/auth/callback/staff"],
-      "postLogoutRedirectUris": ["${KC_FRONTEND_URL}/*"],
       "webOrigins": ["${KC_FRONTEND_URL}"],
       "attributes": {
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
         "pkce.code.challenge.method": "S256",
         "client.session.idle.timeout": "3600",
         "client.session.max.lifespan": "3600",
