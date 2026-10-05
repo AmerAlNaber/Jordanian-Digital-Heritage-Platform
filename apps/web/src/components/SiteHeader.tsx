@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
+import { loginHref } from "@/lib/account-actions";
 import { Link } from "@/i18n/routing";
 
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -51,7 +52,12 @@ export async function SiteHeader({
               </form>
             </>
           ) : (
-            <a href={`/api/auth/login?return=/${locale}/account`}>{t("signIn")}</a>
+            <>
+              <a href={loginHref({ returnTo: `/${locale}/account` })}>{t("signIn")}</a>
+              <a href={loginHref({ returnTo: `/${locale}/account`, register: true })}>
+                {t("register")}
+              </a>
+            </>
           )}
           {isStaff ? (
             <span className="label">{roles.filter((r) => STAFF.has(r)).join(", ")}</span>

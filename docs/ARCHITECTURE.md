@@ -136,7 +136,7 @@ Requests enter through the edge. The API makes every access decision with Keyclo
 | Workers | Celery 5, Redis broker | Ingest, derivatives, OCR, embeddings, translation, fixity, mail, maintenance. Import the API package as a library (`ADR-0001 D17`) | Application | `apps/worker` |
 | Celery beat | Celery | Scheduled jobs: fixity, identity-document deletion, grant expiry, audit shipping, nightly bulk export | Application | `apps/worker` |
 | Cantaloupe | Cantaloupe 5 | IIIF Image API 3.0 from JPEG 2000 and pyramidal TIFF in the access bucket. Delegate verifies the gateway's signed header and maps identifiers to bucket keys. No public exposure | Application, internal only | `infra/cantaloupe` |
-| Keycloak | Keycloak 26 | Authentication, MFA, passkeys, account lockout, breached-password check, session management, SAML and OIDC brokering for institutions, group-to-role mapping | Identity | `infra/keycloak` |
+| Keycloak | Keycloak 26 (pinned, built from `infra/keycloak/Dockerfile`) | Authentication, MFA, passkeys, account lockout, breached-password check (`extensions/`, ADR-0009), session management, SAML and OIDC brokering for institutions, group-to-role mapping | Identity | `infra/keycloak` |
 | Cerbos | Cerbos PDP | Attribute-based authorization decisions from versioned YAML policies; policies baked into the image, never mounted writable | Identity | `policies/` |
 | PostgreSQL | 16 with pgvector | Records, page text (internal), vectors, grants, audit log; row-level security; Keycloak's own schema in a separate database | Data | `apps/api/alembic` |
 | OpenSearch | 2.x with ICU plugin | Lexical search over metadata and OCR text with the Arabic analyzer; facets; rebuilt from PostgreSQL and ALTO, not backed up | Data | `infra/opensearch` |

@@ -2,6 +2,7 @@ import type { Me } from "@jdhp/schemas";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { loginHref } from "@/lib/account-actions";
 import { apiFetch } from "@/lib/api";
 import { currentSession } from "@/lib/session";
 import { resolveLocale } from "@/i18n/routing";
@@ -27,12 +28,20 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
       <div className="pt-12">
         <h1 className="text-step-3">{t("title")}</h1>
         <p className="reading mt-6 text-ink-muted">{t("notSignedIn")}</p>
-        <a
-          href={`/api/auth/login?return=/${locale}/account`}
-          className="control control-primary mt-6 inline-flex w-fit"
-        >
-          {nav("signIn")}
-        </a>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a
+            href={loginHref({ returnTo: `/${locale}/account` })}
+            className="control control-primary inline-flex w-fit"
+          >
+            {nav("signIn")}
+          </a>
+          <a
+            href={loginHref({ returnTo: `/${locale}/account`, register: true })}
+            className="control inline-flex w-fit"
+          >
+            {nav("register")}
+          </a>
+        </div>
       </div>
     );
   }
@@ -54,6 +63,39 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         <dt className="label">{t("preferences")}</dt>
         <dd className="m-0 font-mono text-step-n1">{JSON.stringify(me.preferences)}</dd>
       </dl>
+      <section aria-labelledby="account-security" className="mt-12">
+        <h2 id="account-security" className="text-step-2">
+          {t("security")}
+        </h2>
+        <p className="reading mt-3 text-ink-muted">{t("securityIntro")}</p>
+        <ul className="mt-6 flex list-none flex-wrap gap-3 p-0">
+          <li>
+            <a
+              href={loginHref({ returnTo: `/${locale}/account`, action: "totp" })}
+              className="control inline-flex"
+            >
+              {t("setUpAuthenticator")}
+            </a>
+          </li>
+          <li>
+            <a
+              href={loginHref({ returnTo: `/${locale}/account`, action: "passkey" })}
+              className="control inline-flex"
+            >
+              {t("addPasskey")}
+            </a>
+          </li>
+          <li>
+            <a
+              href={loginHref({ returnTo: `/${locale}/account`, action: "password" })}
+              className="control inline-flex"
+            >
+              {t("changePassword")}
+            </a>
+          </li>
+        </ul>
+        <p className="mt-4 text-step-n1 text-ink-muted">{t("securityNote")}</p>
+      </section>
     </div>
   );
 }

@@ -17,7 +17,8 @@
     "skipToContent": "Skip to content",
     "switchLocale": "العربية",
     "menu": "Menu",
-    "search": "Search"
+    "search": "Search",
+    "register": "Create account"
   },
   "home": {
     "statement": "A secure digital library for a protected heritage collection: the original book and its documented sources are always the authority.",
@@ -136,7 +137,13 @@
       "phone": "Email and phone",
       "researcher": "Verified researcher",
       "institutional": "Through the institution"
-    }
+    },
+    "security": "Sign-in and security",
+    "securityIntro": "Your password, one-time codes and passkeys are managed on the sign-in service. Each link takes you there and brings you back here.",
+    "setUpAuthenticator": "Set up an authenticator app",
+    "addPasskey": "Add a passkey",
+    "changePassword": "Change password",
+    "securityNote": "Passkeys are optional for members. Staff accounts always add a one-time code."
   },
   "footer": {
     "about": "About",

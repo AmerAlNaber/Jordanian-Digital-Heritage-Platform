@@ -46,3 +46,6 @@ Thumbs.db
 .vscode/
 *.swp
 .import_linter_cache/
+
+# Maven build output (infra/keycloak/extensions)
+infra/keycloak/extensions/target/

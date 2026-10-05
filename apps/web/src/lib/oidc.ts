@@ -48,9 +48,11 @@ export async function authorizationUrl(
   kind: ClientKind,
   redirectUri: string,
   pkce: Awaited<ReturnType<typeof preparePkce>>,
+  extra: Record<string, string> = {},
 ) {
   const config = await configuration(kind);
   return client.buildAuthorizationUrl(config, {
+    ...extra,
     redirect_uri: redirectUri,
     scope: "openid profile email",
     code_challenge: pkce.challenge,

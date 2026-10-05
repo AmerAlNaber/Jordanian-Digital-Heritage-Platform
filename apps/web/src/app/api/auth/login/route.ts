@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { keycloakAction, uiLocale } from "@/lib/account-actions";
 import { env, isProduction } from "@/lib/env";
 import { authorizationUrl, callbackPath, preparePkce } from "@/lib/oidc";
 import { encrypt } from "@/lib/session";
@@ -18,7 +19,15 @@ export async function GET(request: NextRequest) {
   const returnTo = safeReturnPath(request.nextUrl.searchParams.get("return"));
   const pkce = await preparePkce();
   const redirectUri = `${env("NEXT_PUBLIC_BASE_URL")}${callbackPath(kind)}`;
-  const url = await authorizationUrl(kind, redirectUri, pkce);
+  // Registration opens Keycloak's own form (ACC-1); an allowed `action` starts one of its
+  // credential screens (ACC-2); anything else is ignored rather than forwarded.
+  const extra: Record<string, string> = { ui_locales: uiLocale(returnTo) };
+  if (request.nextUrl.searchParams.get("register") === "1" && kind === "web") {
+    extra.prompt = "create";
+  }
+  const action = keycloakAction(request.nextUrl.searchParams.get("action"));
+  if (action) extra.kc_action = action;
+  const url = await authorizationUrl(kind, redirectUri, pkce, extra);
   const response = NextResponse.redirect(url);
   response.cookies.set(
     PKCE_COOKIE,
