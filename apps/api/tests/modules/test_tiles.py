@@ -468,3 +468,68 @@ async def test_rdr_1_tile_token_is_accepted_as_a_header(
     assert with_header.headers["content-type"] == "image/webp"
     bad = await gateway.get(url, headers={"X-Jdhp-Tile": token[:-4] + "AAAA"})
     assert bad.status_code == 401
+
+
+async def test_sec_10_cantaloupe_source_signs_requests_and_reports_failures(
+    settings: Settings,
+) -> None:
+    """The internal header is an HMAC over time and path; any upstream failure is a 502."""
+    import hashlib
+    import hmac
+
+    from pydantic import SecretStr
+
+    from jdhp_api.core.errors import ImageSourceError
+    from jdhp_api.modules.reader.images import (
+        INTERNAL_AUTH_HEADER,
+        CantaloupeSource,
+        ImageInfo,
+        Region,
+        TileRequest,
+    )
+
+    key = "internal-key-" + "x" * 40
+    signed = settings.model_copy(update={"image_internal_key": SecretStr(key)})
+    seen: list[httpx.Request] = []
+    png = bytes(_page_image(1).crop(0, 0, 64, 64).pngsave_buffer())
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        if request.url.path.endswith("/info.json"):
+            return httpx.Response(200, json={"width": 945, "height": 1418})
+        if "broken" in str(request.url):
+            return httpx.Response(500, text="boom")
+        return httpx.Response(200, content=png, headers={"content-type": "image/png"})
+
+    source = CantaloupeSource(
+        signed, client=httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    )
+    s3_key = "work/do/jp2/0001.jp2"
+    assert await source.info(s3_key) == ImageInfo(width=945, height=1418)
+    request = TileRequest(
+        region=Region(0, 0, 64, 64),
+        out_width=64,
+        out_height=64,
+        rotation=0,
+        quality="default",
+        format="webp",
+        requested_max=False,
+    )
+    image = await source.tile(s3_key, request)
+    assert (image.width, image.height) == (64, 64)
+    tile_call = seen[-1]
+    assert tile_call.url.raw_path.startswith(b"/iiif/3/work%2Fdo%2Fjp2%2F0001.jp2/")
+    timestamp, signature = tile_call.headers[INTERNAL_AUTH_HEADER].split(".", 1)
+    expected = hmac.new(
+        key.encode(), f"{timestamp}|{tile_call.url.raw_path.decode()}".encode(), hashlib.sha256
+    ).hexdigest()
+    assert signature == expected
+    with pytest.raises(ImageSourceError):
+        await source.tile("work/do/jp2/broken.jp2", request)
+
+    def refuse(_request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("refused")
+
+    dead = CantaloupeSource(signed, client=httpx.AsyncClient(transport=httpx.MockTransport(refuse)))
+    with pytest.raises(ImageSourceError):
+        await dead.info(s3_key)

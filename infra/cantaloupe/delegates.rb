@@ -15,11 +15,17 @@ class CustomDelegate
   KEY_PATTERN = %r{\A[0-9a-f-]{36}/[0-9a-f-]{36}/(jp2/\d{4}\.jp2|ptif/\d{4}\.tif)\z}.freeze
   MAX_SKEW_SECONDS = 30
 
+  # The gateway's signature is checked before the source is touched, so an unsigned request
+  # costs nothing and reveals nothing (SEC-10, SEC-24).
   def pre_authorize(_options = {})
-    true
+    signed_by_gateway?
   end
 
   def authorize(_options = {})
+    signed_by_gateway?
+  end
+
+  def signed_by_gateway?
     identifier = context['identifier'].to_s
     return false unless KEY_PATTERN.match?(identifier)
 
@@ -38,15 +44,28 @@ class CustomDelegate
     secure_compare(expected, signature)
   end
 
+  # Cantaloupe 5.0.7 builds the S3 client for a script lookup from this hash alone and does not
+  # fall back to the S3Source.* properties, so the endpoint and credentials travel with it.
   def s3source_object_info(_options = {})
     identifier = context['identifier'].to_s
     return nil unless KEY_PATTERN.match?(identifier)
-
-    { 'bucket' => ENV.fetch('JDHP_BUCKET_ACCESS'), 'key' => identifier }
+    {
+      'bucket' => ENV.fetch('JDHP_BUCKET_ACCESS'),
+      'key' => identifier,
+      'endpoint' => ENV.fetch('JDHP_S3_ENDPOINT_URL'),
+      'region' => ENV.fetch('JDHP_S3_REGION', 'us-east-1'),
+      'access_key_id' => ENV.fetch('JDHP_S3_ACCESS_KEY'),
+      'secret_access_key' => ENV.fetch('JDHP_S3_SECRET_KEY')
+    }
   end
 
   def extra_iiif3_information_response_keys(_options = {})
     {}
+  end
+
+  # Cantaloupe asks for embedded metadata on every image request; derivatives carry none (SEC-14).
+  def metadata(_options = {})
+    nil
   end
 
   def overlay(_options = {})

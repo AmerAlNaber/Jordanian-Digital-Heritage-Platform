@@ -36,5 +36,7 @@
   "errors.print_pages_invalid.title": "Pages cannot be printed",
   "errors.print_pages_invalid.detail": "One or more requested pages are outside the work or outside what this grant covers.",
   "errors.print_not_ready.title": "The print is not ready",
-  "errors.print_not_ready.detail": "The PDF is still being prepared, or it has already been downloaded."
+  "errors.print_not_ready.detail": "The PDF is still being prepared, or it has already been downloaded.",
+  "errors.image_source_unavailable.title": "The image server did not answer",
+  "errors.image_source_unavailable.detail": "The page image could not be produced right now. Try again in a moment."
 }

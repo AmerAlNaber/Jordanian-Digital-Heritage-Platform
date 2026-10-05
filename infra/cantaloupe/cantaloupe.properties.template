@@ -19,7 +19,9 @@ endpoint.iiif.2.enabled = false
 endpoint.iiif.3.enabled = true
 endpoint.iiif.min_size = 64
 endpoint.iiif.min_tile_size = 256
-endpoint.iiif.restrict_to_sizes = true
+# The gateway is the only client and already confines every request to the sizes and area its own
+# info.json advertises (SEC-10); Cantaloupe's size list would refuse the gateway's region tiles.
+endpoint.iiif.restrict_to_sizes = false
 endpoint.iiif.content_disposition = inline
 endpoint.admin.enabled = false
 endpoint.api.enabled = false

@@ -113,6 +113,13 @@ class TileTooLargeError(ForbiddenError):
     code = "tile_too_large"
 
 
+class ImageSourceError(JdhpError):
+    """The image server behind the gateway failed or could not be reached."""
+
+    status = http.HTTP_502_BAD_GATEWAY
+    code = "image_source_unavailable"
+
+
 class PrintQuotaError(ForbiddenError):
     """More pages than the grant's print quota has left (RDR-4)."""
 

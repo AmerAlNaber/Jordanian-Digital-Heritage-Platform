@@ -21,13 +21,15 @@ import httpx
 import pyvips
 
 from jdhp_api.core.config import Settings
-from jdhp_api.core.errors import TileRequestError, TileTooLargeError
+from jdhp_api.core.errors import ImageSourceError, TileRequestError, TileTooLargeError
+from jdhp_api.core.observability import get_logger
 from jdhp_api.core.storage import ObjectStore
 
 QUALITIES = frozenset({"default", "color", "gray"})
 FORMATS = {"webp": "image/webp", "jpg": "image/jpeg", "png": "image/png"}
 ROTATIONS = frozenset({0, 90, 180, 270})
 INTERNAL_AUTH_HEADER = "X-Jdhp-Image-Auth"
+log = get_logger(__name__)
 _PX = re.compile(r"^(\d+),(\d+),(\d+),(\d+)$")
 _PCT = re.compile(r"^pct:(\d+(?:\.\d+)?),(\d+(?:\.\d+)?),(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)$")
 _SIZE_WH = re.compile(r"^(\d*),(\d*)$")
@@ -289,8 +291,16 @@ class CantaloupeSource:
         return urllib.parse.quote(key, safe="")
 
     async def _get(self, path: str) -> httpx.Response:
-        response = await self._client.get(f"{self._base}{path}", headers=self._signed_headers(path))
-        response.raise_for_status()
+        try:
+            response = await self._client.get(
+                f"{self._base}{path}", headers=self._signed_headers(path)
+            )
+        except httpx.HTTPError as exc:
+            log.error("image_source_unreachable", path=path, error=str(exc))
+            raise ImageSourceError from exc
+        if response.status_code >= 400:
+            log.error("image_source_error", path=path, status=response.status_code)
+            raise ImageSourceError(extra={"upstream_status": response.status_code})
         return response
 
     async def info(self, key: str) -> ImageInfo:
