@@ -14,6 +14,7 @@ from jdhp_api.modules.catalog.models import Work
 from jdhp_api.modules.catalog.service import in_sample_range
 from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.models import Page
+from jdhp_worker.pipeline.failures import record_failure
 from jdhp_worker.pipeline.finalize import maybe_finalize
 from jdhp_worker.pipeline.watermark import platform_mark
 from jdhp_worker.runtime import Runtime
@@ -44,7 +45,6 @@ def webp_resized(master: bytes, width: int, *, mark: bool) -> bytes:
 
 
 async def generate_for_page(rt: Runtime, page_id: uuid.UUID) -> dict[str, object]:
-    settings = rt.settings
     async with rt.database.session(RlsContext.system()) as session:
         page = await session.get(Page, page_id)
         if page is None or page.master_key is None:
@@ -59,6 +59,31 @@ async def generate_for_page(rt: Runtime, page_id: uuid.UUID) -> dict[str, object
             page.master_key,
         )
         sample = in_sample_range(work, seq)
+    try:
+        return await _generate(rt, page_id, seq, work_id, do_id, master_key, sample)
+    except Exception as exc:
+        await record_failure(
+            rt,
+            digital_object_id=do_id,
+            stage="derivatives",
+            exc=exc,
+            agent=AGENT,
+            event_type=PremisEventType.DERIVATIVE_GENERATION,
+            page_id=page_id,
+        )
+        raise
+
+
+async def _generate(
+    rt: Runtime,
+    page_id: uuid.UUID,
+    seq: int,
+    work_id: uuid.UUID,
+    do_id: uuid.UUID,
+    master_key: str,
+    sample: bool,
+) -> dict[str, object]:
+    settings = rt.settings
     master = rt.ingest_store.get(settings.bucket_preservation, master_key)
     fmt = settings.access_derivative_format
     derivative = access_derivative(master, fmt)

@@ -14,12 +14,14 @@ from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.models import IntakeBatch, Page
 from jdhp_api.modules.search.indexer import PageDocument
 from jdhp_metadata.alto import offsets_map, to_alto_xml
+from jdhp_worker.pipeline.failures import record_failure
 from jdhp_worker.pipeline.finalize import maybe_finalize
 from jdhp_worker.runtime import Runtime
 
+AGENT = "jdhp-worker ocr"
+
 
 async def recognize_page(rt: Runtime, page_id: uuid.UUID) -> dict[str, object]:
-    settings = rt.settings
     async with rt.database.session(RlsContext.system()) as session:
         page = await session.get(Page, page_id)
         if page is None or page.master_key is None:
@@ -47,6 +49,46 @@ async def recognize_page(rt: Runtime, page_id: uuid.UUID) -> dict[str, object]:
             work.frozen,
         )
         label = page.label
+    try:
+        return await _recognize(
+            rt,
+            page_id=page_id,
+            seq=seq,
+            work_id=work_id,
+            do_id=do_id,
+            master_key=master_key,
+            staging_prefix=staging_prefix,
+            language=language,
+            label=label,
+            work_public_id=work_public_id,
+            access_class=access_class,
+            publish_state=publish_state,
+            frozen=frozen,
+        )
+    except Exception as exc:
+        await record_failure(
+            rt, digital_object_id=do_id, stage="ocr", exc=exc, agent=AGENT, page_id=page_id
+        )
+        raise
+
+
+async def _recognize(
+    rt: Runtime,
+    *,
+    page_id: uuid.UUID,
+    seq: int,
+    work_id: uuid.UUID,
+    do_id: uuid.UUID,
+    master_key: str,
+    staging_prefix: str | None,
+    language: str,
+    label: str | None,
+    work_public_id: str,
+    access_class: str,
+    publish_state: str,
+    frozen: bool,
+) -> dict[str, object]:
+    settings = rt.settings
     master = rt.ingest_store.get(settings.bucket_preservation, master_key)
     provider = rt.ocr_for(staging_prefix)
     result = await provider.recognize(master, page_ref=f"{seq:04d}.tif", language_hints=[language])

@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Added
 
+- `docs/decisions/ADR-0004-phase-0-closure.md`: the owner's decisions at the close of Phase 0 (ARK test number until handover, typefaces confirmed, image server decision folded into the tile gateway work, accepted advisories kept under review, pipeline failures recorded on the batch).
 - `docs/decisions/ADR-0001-stack.md`: accepted record of the specified stack and the open decisions D1 to D17 (all defaults, repository name with `jdhp` as the technical short name, workers reuse the API package in-process).
 - `docs/ARCHITECTURE.md`: architecture of the core layer derived from `SPEC.md`.
 - `docs/THREAT_MODEL.md`: threat model derived from `SPEC.md`, covering SEC-1 to SEC-31, REV-1, RDR-1 and CAT-4 with the test that proves each control.
@@ -24,6 +25,7 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Fixed
 
+- Worker: a derivative, OCR, embedding or packaging failure now marks the intake batch `failed` with the page, stage and reason, and writes a PREMIS fail event, instead of leaving the batch in `validating` with no trace (ADM-1, ADR-0004).
 - Worker: public sample derivatives failed inside the Celery prefork pool. Pillow's text layout returned a corrupt glyph run in forked worker processes once libvips was loaded, every sample page errored and the seed batch never reached `ingested`. The platform mark is now rendered by libvips, the library that writes the derivative, and a regression test renders it in a forked child (SEC-14).
 - Worker: a digital object is marked `ingested` and committed before its work document is indexed, so a search-index failure no longer rolls the state back (CAT-4).
 - Compose: the API and worker depend on the OpenSearch template init container completing, which is the order the pipeline needs and what lets `docker compose up --wait` accept the one-shot container exiting (SRC-1).

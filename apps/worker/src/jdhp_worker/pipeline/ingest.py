@@ -15,6 +15,7 @@ from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.models import DigitalObject, IntakeBatch, Page
 from jdhp_metadata.checksums import ChecksumEntry, format_manifest
 from jdhp_metadata.mets import MetsFile, MetsPackage, build_mets
+from jdhp_worker.pipeline.failures import record_failure
 from jdhp_worker.pipeline.validation import MasterValidationError, validate_master
 from jdhp_worker.runtime import Runtime
 
@@ -96,6 +97,28 @@ async def package_batch(rt: Runtime, batch_id: uuid.UUID) -> dict[str, object]:
         )
         checksums.append(ChecksumEntry(info.sha256, f"master/{page.seq:04d}.tif"))
 
+    try:
+        await _package(rt, work_id, do_id, mets_files, checksums, pages_count=len(pages))
+    except Exception as exc:
+        await record_failure(rt, digital_object_id=do_id, stage="packaging", exc=exc, agent=AGENT)
+        raise
+    for page in pages:
+        rt.send("jdhp.derivatives.generate", page_id=str(page.id))
+        rt.send("jdhp.ocr.recognize", page_id=str(page.id))
+    return {"batch": str(batch_id), "status": "packaged", "pages": len(pages)}
+
+
+async def _package(
+    rt: Runtime,
+    work_id: uuid.UUID,
+    do_id: uuid.UUID,
+    mets_files: list[MetsFile],
+    checksums: list[ChecksumEntry],
+    *,
+    pages_count: int,
+) -> None:
+    """Write METS and the checksum manifest, then mark the object as processing."""
+    settings = rt.settings
     async with rt.database.session(RlsContext.system()) as session:
         work_row = await session.get(Work, work_id)
         title = work_row.title_ar if work_row else None
@@ -127,9 +150,5 @@ async def package_batch(rt: Runtime, batch_id: uuid.UUID) -> dict[str, object]:
             event_type=PremisEventType.INGEST,
             outcome="success",
             agent=AGENT,
-            detail={"pages": len(pages), "mets": mets_key},
+            detail={"pages": pages_count, "mets": mets_key},
         )
-    for page in pages:
-        rt.send("jdhp.derivatives.generate", page_id=str(page.id))
-        rt.send("jdhp.ocr.recognize", page_id=str(page.id))
-    return {"batch": str(batch_id), "status": "packaged", "pages": len(pages)}

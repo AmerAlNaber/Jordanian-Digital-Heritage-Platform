@@ -1,6 +1,7 @@
 # Design
 
-Status: Phase 0 decisions, recorded as `SPEC.md` ("Visual identity and UX direction") requires. The
+Status: Phase 0 decisions, recorded as `SPEC.md` ("Visual identity and UX direction") requires and
+confirmed by the owner at the close of Phase 0 (ADR-0004). The
 tokens live in `packages/design-tokens/tokens.json` and are built to CSS variables and a Tailwind
 preset; this document explains the choices. Later phases add component patterns and screen notes.
 

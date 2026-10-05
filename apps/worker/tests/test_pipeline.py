@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+import pytest
 from sqlalchemy import Row, func, select
 from sqlalchemy.sql import Executable
 
@@ -190,3 +191,95 @@ def test_fixity_mismatch_opens_incident_and_freezes_object(
     incidents = [r[0] for r in _fetch(admin_database, select(Incident))]
     assert len(incidents) == 1
     assert incidents[0].detail["mismatches"][0]["seq"] == 2
+
+
+class _FailingStore:
+    """Delegates to a real store but refuses writes whose key matches, like a failing disk."""
+
+    def __init__(self, inner: Any, *, fails_when: Any) -> None:
+        self._inner = inner
+        self._fails_when = fails_when
+
+    def put(self, bucket: str, key: str, data: bytes, **kwargs: Any) -> Any:
+        if self._fails_when(key):
+            msg = f"disk full writing {key}"
+            raise RuntimeError(msg)
+        return self._inner.put(bucket, key, data, **kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._inner, name)
+
+
+class _BrokenOcr:
+    info = None
+
+    async def recognize(self, image: bytes, *, page_ref: str, language_hints: Any = ()) -> Any:
+        msg = f"provider unavailable for {page_ref}"
+        raise ConnectionError(msg)
+
+
+def _failure_events(admin_database: Database) -> list[PremisEvent]:
+    return [
+        r[0]
+        for r in _fetch(admin_database, select(PremisEvent).where(PremisEvent.outcome == "fail"))
+    ]
+
+
+def test_adm_1_derivative_failure_is_recorded_on_the_batch(
+    runtime: Runtime, app_database: Database, admin_database: Database, seed_output: Path
+) -> None:
+    manifest = seed_module.upload_seed(runtime, seed_output)
+    manifest["pages"] = manifest["pages"][:2]  # type: ignore[index]
+    batch_id = _register(runtime, app_database, manifest)
+    runtime.store = _FailingStore(runtime.store, fails_when=lambda key: "/jp2/" in key)  # type: ignore[assignment]
+    with pytest.raises(RuntimeError, match="disk full"):
+        run_inline(runtime, "jdhp.ingest.package", batch_id=batch_id)
+    (batch,) = [r[0] for r in _fetch(admin_database, select(IntakeBatch))]
+    assert batch.state == IntakeState.FAILED
+    assert batch.error_detail is not None
+    assert batch.error_detail.startswith("page 1 derivatives: RuntimeError: disk full")
+    assert batch.completed_at is not None
+    (event,) = _failure_events(admin_database)
+    assert event.event_type == PremisEventType.DERIVATIVE_GENERATION
+    assert event.detail["stage"] == "derivatives"
+    assert event.page_id is not None
+
+
+def test_adm_1_ocr_failure_is_recorded_on_the_batch(
+    runtime: Runtime, app_database: Database, admin_database: Database, seed_output: Path
+) -> None:
+    manifest = seed_module.upload_seed(runtime, seed_output)
+    manifest["pages"] = manifest["pages"][:1]  # type: ignore[index]
+    batch_id = _register(runtime, app_database, manifest)
+    runtime.ocr = _BrokenOcr()  # type: ignore[assignment]
+    with pytest.raises(ConnectionError, match="provider unavailable"):
+        run_inline(runtime, "jdhp.ingest.package", batch_id=batch_id)
+    (batch,) = [r[0] for r in _fetch(admin_database, select(IntakeBatch))]
+    assert batch.state == IntakeState.FAILED
+    assert batch.error_detail == "page 1 ocr: ConnectionError: provider unavailable for 0001.tif"
+    (event,) = _failure_events(admin_database)
+    assert event.event_type == PremisEventType.INGEST
+    assert event.detail == {
+        "stage": "ocr",
+        "reason": "ConnectionError: provider unavailable for 0001.tif",
+    }
+
+
+def test_adm_1_packaging_failure_is_recorded_on_the_batch(
+    runtime: Runtime, app_database: Database, admin_database: Database, seed_output: Path
+) -> None:
+    manifest = seed_module.upload_seed(runtime, seed_output)
+    manifest["pages"] = manifest["pages"][:1]  # type: ignore[index]
+    batch_id = _register(runtime, app_database, manifest)
+    runtime.ingest_store = _FailingStore(  # type: ignore[assignment]
+        runtime.ingest_store, fails_when=lambda key: key.endswith("mets.xml")
+    )
+    with pytest.raises(RuntimeError, match="disk full"):
+        run_inline(runtime, "jdhp.ingest.package", batch_id=batch_id)
+    (batch,) = [r[0] for r in _fetch(admin_database, select(IntakeBatch))]
+    assert batch.state == IntakeState.FAILED
+    assert batch.error_detail is not None
+    assert batch.error_detail.startswith("packaging: RuntimeError: disk full")
+    (event,) = _failure_events(admin_database)
+    assert event.page_id is None
+    assert event.detail["stage"] == "packaging"
