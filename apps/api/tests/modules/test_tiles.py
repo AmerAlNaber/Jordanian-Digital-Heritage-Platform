@@ -23,6 +23,7 @@ from jdhp_api.core.orm import AccessClass, ReaderSessionState
 from jdhp_api.core.storage import ObjectStore
 from jdhp_api.modules.audit.models import AuditEvent
 from jdhp_api.modules.ingest.models import Page
+from jdhp_api.modules.reader import forensic
 from jdhp_api.modules.reader.images import LibvipsSource
 from jdhp_api.modules.reader.models import ReaderSession
 from jdhp_api.tiles_app import create_tiles_app
@@ -303,6 +304,15 @@ async def test_sec_11_every_protected_tile_is_watermarked(
         ).content
     )
     assert (served.cast("int") - theirs.cast("int")).abs().max() > 10
+    # The forensic mark names the session: detected with its key, not with another's (SEC-11).
+    async with admin_database.session(RlsContext.system()) as session:
+        rows = {r.public_id: r for r in (await session.scalars(select(ReaderSession))).all()}
+    forensic_keys = tiles[0].state.reader.forensic
+    mine = forensic_keys.session_key(rows[opened["public_id"]].id)
+    theirs_key = forensic_keys.session_key(rows[other["public_id"]].id)
+    assert forensic.detect(served, mine).present
+    assert not forensic.detect(served, theirs_key).present
+    assert forensic.detect(theirs, theirs_key).present
     # Samples carry the platform mark too (SEC-14).
     sample = _decode((await gateway.get(_tile_url(work.public_id, 1, region=region))).content)
     assert (

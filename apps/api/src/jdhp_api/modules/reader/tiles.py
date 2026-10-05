@@ -42,6 +42,7 @@ from jdhp_api.modules.catalog import service as catalog_service
 from jdhp_api.modules.catalog.models import Work
 from jdhp_api.modules.identity.models import User
 from jdhp_api.modules.ingest.models import Page
+from jdhp_api.modules.reader import forensic
 from jdhp_api.modules.reader import service as reader_service
 from jdhp_api.modules.reader.images import (
     ImageInfo,
@@ -314,9 +315,10 @@ async def image_tile(
             session_public_id=context.reader.public_id,
             work_public_id=context.work.public_id,
         )
+        services: ReaderServices = request.app.state.reader
+        image = forensic.embed(image, services.forensic.session_key(context.reader.id))
     else:
         image = platform_mark(image)
-    # The forensic mark (ADR-0006) is applied here once the library is chosen.
     body = encode(image, tile_request.format)
     return Response(
         content=body,

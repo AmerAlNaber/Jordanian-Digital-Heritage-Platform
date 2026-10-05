@@ -29,6 +29,7 @@ dependencies = [
   "pyvips>=3.0",
   "jdhp-adapters",
   "jdhp-metadata",
+  "numpy>=2.1",
 ]
 
 [project.optional-dependencies]
