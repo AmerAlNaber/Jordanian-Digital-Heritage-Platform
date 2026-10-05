@@ -5,3 +5,8 @@ A thin task layer over the API's services (ADR-0001 D17): every database write g
 """
 
 __version__ = "0.1.0"
+
+# Every worker process writes through the API's services, so the whole schema must be registered
+# on the metadata before the first flush: a module that imports one model alone cannot resolve
+# the foreign keys to tables it never imported (ADR-0001 D17).
+from jdhp_api import models as _models  # noqa: F401
