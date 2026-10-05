@@ -21,6 +21,6 @@ Option 2 changes a named component of the specification, which needs the owner's
 ## Consequences
 
 - The first `compose up` compiles two Go programs, which takes several minutes; later starts reuse the cached image.
-- The platform owns the image's security updates: the release tags are bumped like any other pinned dependency, and Trivy blocks on fixed high and critical findings in the Go binaries and the base image.
+- The platform owns the image's security updates: the release tags are bumped like any other pinned dependency, and Trivy blocks on fixed high and critical findings in the Go binaries and the base image. Because upstream stopped releasing, the Dockerfile raises the Go modules Trivy names to their fixed versions before compiling; each raise is verified by building both programs, and the list is revisited whenever the scan reports a new fixed finding.
 - Production deployments on k3s may use the institution's S3-compatible service instead; the bucket layout, object lock and the two credentials stay the same.
 - If MinIO's source releases stop as well, option 2 becomes a decision for the owner, recorded in a new ADR.
