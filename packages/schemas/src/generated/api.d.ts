@@ -349,6 +349,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search
+         * @description Unified search over works and page text. Page hits carry regions on the scan for
+         *     pages the caller may see, and never the text itself (SRCH-1 to SRCH-4, CAT-4).
+         */
+        get: operations["search_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/vocabulary/{scheme}": {
         parameters: {
             query?: never;
@@ -668,6 +689,13 @@ export interface components {
             /** Work Public Id */
             work_public_id: string;
         };
+        /** FacetBucket */
+        FacetBucket: {
+            /** Count */
+            count: number;
+            /** Value */
+            value: string;
+        };
         /** GrantOut */
         GrantOut: {
             /** Active */
@@ -828,6 +856,26 @@ export interface components {
          * @enum {string}
          */
         Origin: "human" | "ai";
+        /** PageHit */
+        PageHit: {
+            /** Ark */
+            ark: string;
+            /** Label */
+            label: string | null;
+            /** Regions */
+            regions: components["schemas"]["Region"][];
+            /**
+             * Scan Visible
+             * @description Whether the caller may see this page's scan; regions are only given then
+             */
+            scan_visible: boolean;
+            /** Score */
+            score: number;
+            /** Seq */
+            seq: number;
+            /** Thumbnail Available */
+            thumbnail_available: boolean;
+        };
         /** PageSummary */
         PageSummary: {
             /** Ark */
@@ -999,6 +1047,20 @@ export interface components {
              */
             tile_token_expires_at: string;
         };
+        /**
+         * Region
+         * @description A matched word box in page pixel coordinates (from ALTO).
+         */
+        Region: {
+            /** H */
+            h: number;
+            /** W */
+            w: number;
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
         /** RejectRequest */
         RejectRequest: {
             /** Reason */
@@ -1049,6 +1111,32 @@ export interface components {
             state: components["schemas"]["ReviewStatus"];
             /** Work Public Id */
             work_public_id: string;
+        };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Expanded Terms */
+            expanded_terms: string[];
+            /** Facets */
+            facets: {
+                [key: string]: components["schemas"]["FacetBucket"][];
+            };
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Query */
+            query: string;
+            /**
+             * Scope
+             * @enum {string}
+             */
+            scope: "catalog" | "collection" | "work";
+            /** Total Page Hits */
+            total_page_hits: number;
+            /** Total Works */
+            total_works: number;
+            /** Works */
+            works: components["schemas"]["WorkHit"][];
         };
         /** SessionOpen */
         SessionOpen: {
@@ -1223,6 +1311,16 @@ export interface components {
             title_translit: string | null;
             /** Uniform Title */
             uniform_title: string | null;
+        };
+        /** WorkHit */
+        WorkHit: {
+            /** Page Hits Total */
+            page_hits_total: number;
+            /** Pages */
+            pages: components["schemas"]["PageHit"][];
+            /** Score */
+            score: number;
+            work: components["schemas"]["WorkSummary"];
         };
         /** WorkSummary */
         WorkSummary: {
@@ -1869,6 +1967,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewTaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_search_get: {
+        parameters: {
+            query: {
+                access_class?: components["schemas"]["AccessClass"][];
+                /** @description Search within this collection's works */
+                collection?: string | null;
+                language?: string[];
+                limit?: number;
+                offset?: number;
+                pages_per_work?: number;
+                period?: string[];
+                place?: string[];
+                /** @description The query, in any script */
+                q: string;
+                subject?: string[];
+                /** @description Search within one work; takes precedence */
+                work?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
                 };
             };
             /** @description Validation Error */

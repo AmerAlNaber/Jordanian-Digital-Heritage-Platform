@@ -8,7 +8,15 @@ from sqlalchemy import func, select
 
 from jdhp_api.core.db import RlsContext
 from jdhp_api.core.orm import DigitalObjectState, IntakeState
-from jdhp_api.modules.catalog.models import Agent, VocabularyTerm, Work, WorkAgent, WorkTerm
+from jdhp_api.modules.catalog.models import (
+    Agent,
+    Collection,
+    CollectionWork,
+    VocabularyTerm,
+    Work,
+    WorkAgent,
+    WorkTerm,
+)
 from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.models import DigitalObject, IntakeBatch, Page
 from jdhp_api.modules.search.indexer import WorkDocument
@@ -76,6 +84,13 @@ async def work_document(session: object, work: Work) -> WorkDocument:
     by_facet: dict[str, list[str]] = {}
     for label, facet in terms:
         by_facet.setdefault(str(facet), []).append(label)
+    collections = (
+        await session.scalars(
+            select(Collection.public_id)
+            .join(CollectionWork, CollectionWork.collection_id == Collection.id)
+            .where(CollectionWork.work_id == work.id)
+        )
+    ).all()
     return WorkDocument(
         work_id=work.id,
         public_id=work.public_id,
@@ -88,6 +103,7 @@ async def work_document(session: object, work: Work) -> WorkDocument:
         subjects=by_facet.get("subject", []),
         places=by_facet.get("place", []),
         periods=by_facet.get("period", []),
+        collections=list(collections),
         language=work.language,
         date_earliest=work.date_earliest.isoformat() if work.date_earliest else None,
         date_latest=work.date_latest.isoformat() if work.date_latest else None,

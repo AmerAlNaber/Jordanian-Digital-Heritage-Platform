@@ -48,6 +48,7 @@ class WorkDocument:
     subjects: list[str]
     places: list[str]
     periods: list[str]
+    collections: list[str]
     language: str
     date_earliest: str | None
     date_latest: str | None

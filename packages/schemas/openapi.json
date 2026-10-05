@@ -1282,6 +1282,197 @@
           }
         }
       }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Search",
+        "description": "Unified search over works and page text. Page hits carry regions on the scan for\npages the caller may see, and never the text itself (SRCH-1 to SRCH-4, CAT-4).",
+        "operationId": "search_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "The query, in any script",
+              "title": "Q"
+            },
+            "description": "The query, in any script"
+          },
+          {
+            "name": "collection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]{1,32}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search within this collection's works",
+              "title": "Collection"
+            },
+            "description": "Search within this collection's works"
+          },
+          {
+            "name": "work",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]{1,32}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search within one work; takes precedence",
+              "title": "Work"
+            },
+            "description": "Search within one work; takes precedence"
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "default": [],
+              "title": "Subject"
+            }
+          },
+          {
+            "name": "place",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "default": [],
+              "title": "Place"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "default": [],
+              "title": "Period"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "default": [],
+              "title": "Language"
+            }
+          },
+          {
+            "name": "access_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AccessClass"
+              },
+              "maxItems": 20,
+              "default": [],
+              "title": "Access Class"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 199,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "pages_per_work",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10,
+              "minimum": 0,
+              "default": 3,
+              "title": "Pages Per Work"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2054,6 +2245,24 @@
         ],
         "title": "ContentObjectOut"
       },
+      "FacetBucket": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "count"
+        ],
+        "title": "FacetBucket"
+      },
       "GrantOut": {
         "properties": {
           "public_id": {
@@ -2585,6 +2794,60 @@
         ],
         "title": "Origin"
       },
+      "PageHit": {
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "title": "Seq"
+          },
+          "ark": {
+            "type": "string",
+            "title": "Ark"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "scan_visible": {
+            "type": "boolean",
+            "title": "Scan Visible",
+            "description": "Whether the caller may see this page's scan; regions are only given then"
+          },
+          "thumbnail_available": {
+            "type": "boolean",
+            "title": "Thumbnail Available"
+          },
+          "regions": {
+            "items": {
+              "$ref": "#/components/schemas/Region"
+            },
+            "type": "array",
+            "title": "Regions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seq",
+          "ark",
+          "label",
+          "score",
+          "scan_visible",
+          "thumbnail_available",
+          "regions"
+        ],
+        "title": "PageHit"
+      },
       "PageSummary": {
         "properties": {
           "seq": {
@@ -3066,6 +3329,35 @@
         ],
         "title": "ReaderTokens"
       },
+      "Region": {
+        "properties": {
+          "x": {
+            "type": "integer",
+            "title": "X"
+          },
+          "y": {
+            "type": "integer",
+            "title": "Y"
+          },
+          "w": {
+            "type": "integer",
+            "title": "W"
+          },
+          "h": {
+            "type": "integer",
+            "title": "H"
+          }
+        },
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "w",
+          "h"
+        ],
+        "title": "Region",
+        "description": "A matched word box in page pixel coordinates (from ALTO)."
+      },
       "RejectRequest": {
         "properties": {
           "reason": {
@@ -3235,6 +3527,76 @@
           "ocr_text"
         ],
         "title": "ReviewTaskOut"
+      },
+      "SearchResponse": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "catalog",
+              "collection",
+              "work"
+            ],
+            "title": "Scope"
+          },
+          "expanded_terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expanded Terms"
+          },
+          "total_works": {
+            "type": "integer",
+            "title": "Total Works"
+          },
+          "total_page_hits": {
+            "type": "integer",
+            "title": "Total Page Hits"
+          },
+          "works": {
+            "items": {
+              "$ref": "#/components/schemas/WorkHit"
+            },
+            "type": "array",
+            "title": "Works"
+          },
+          "facets": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/FacetBucket"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Facets"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query",
+          "scope",
+          "expanded_terms",
+          "total_works",
+          "total_page_hits",
+          "works",
+          "facets",
+          "limit",
+          "offset"
+        ],
+        "title": "SearchResponse"
       },
       "SessionOpen": {
         "properties": {
@@ -3882,6 +4244,36 @@
           "can_request_access"
         ],
         "title": "WorkDetail"
+      },
+      "WorkHit": {
+        "properties": {
+          "work": {
+            "$ref": "#/components/schemas/WorkSummary"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "pages": {
+            "items": {
+              "$ref": "#/components/schemas/PageHit"
+            },
+            "type": "array",
+            "title": "Pages"
+          },
+          "page_hits_total": {
+            "type": "integer",
+            "title": "Page Hits Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "work",
+          "score",
+          "pages",
+          "page_hits_total"
+        ],
+        "title": "WorkHit"
       },
       "WorkSummary": {
         "properties": {

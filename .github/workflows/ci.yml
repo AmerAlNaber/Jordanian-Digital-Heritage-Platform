@@ -342,6 +342,51 @@ jobs:
           test "$(curl -sS -o /dev/null -w '%{http_code}' "http://localhost:8080/iiif/3/${name}-p0001/full/max/0/default.webp")" = "403"
           # Cantaloupe itself is not reachable from outside the stack.
           test "$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "http://localhost:8182/iiif/3/" || true)" != "200"
+      - name: Search finds the seed book by its page text and answers with regions, never text (SRCH-1, SRCH-3, SRCH-4, CAT-4)
+        run: |
+          set -eu
+          # "الكرم" without diacritics; the pages carry it as "الكَرْم".
+          curl -sSf -o /tmp/search.json "http://localhost:8080/api/search?q=%D8%A7%D9%84%D9%83%D8%B1%D9%85&pages_per_work=10"
+          python3 - <<'PY'
+          import json, re
+          raw = open("/tmp/search.json", encoding="utf-8").read()
+          body = json.loads(raw)
+          assert body["total_works"] == 1, body["total_works"]
+          work = body["works"][0]
+          assert work["work"]["public_id"] == open("/tmp/work_id").read().strip(), work["work"]
+          seqs = sorted(p["seq"] for p in work["pages"])
+          print("page hits:", seqs, "of", work["page_hits_total"], "expanded:", body["expanded_terms"])
+          assert work["page_hits_total"] >= 5, work["page_hits_total"]
+          visible = [p for p in work["pages"] if p["scan_visible"]]
+          hidden = [p for p in work["pages"] if not p["scan_visible"]]
+          # Anonymous: sample pages (1-10 of a Registered work) come with regions, the rest without.
+          assert visible and all(p["seq"] <= 10 and p["regions"] for p in visible), visible
+          assert hidden and all(p["seq"] > 10 and p["regions"] == [] for p in hidden), hidden
+          def keys(value):
+              found = set()
+              if isinstance(value, dict):
+                  for key, item in value.items():
+                      found.add(key); found |= keys(item)
+              elif isinstance(value, list):
+                  for item in value:
+                      found |= keys(item)
+              return found
+          assert not keys(body) & {"text", "ocr_text", "snippet", "highlight", "excerpt"}, keys(body)
+          # Not one line of the ground truth of a hit page appears in the response (CAT-4).
+          book = json.load(open("apps/api/src/jdhp_api/seed/book/book.json", encoding="utf-8"))
+          checked = 0
+          for page in book["pages"]:
+              if page["seq"] not in seqs:
+                  continue
+              for block in page["blocks"]:
+                  for line in block.get("lines", []):
+                      if isinstance(line, str) and len(line.split()) >= 4:
+                          assert line not in raw, line
+                          checked += 1
+          assert checked > 0
+          assert not re.search(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", raw)
+          print(f"search ok: {len(visible)} visible pages with regions, {len(hidden)} hidden, {checked} ground-truth lines absent")
+          PY
       - name: Collect logs
         if: failure()
         run: docker compose logs --no-color > compose.log 2>&1 || true

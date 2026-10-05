@@ -36,6 +36,7 @@
         "subjects": {"type": "keyword"},
         "places": {"type": "keyword"},
         "periods": {"type": "keyword"},
+        "collections": {"type": "keyword"},
         "language": {"type": "keyword"},
         "date_earliest": {"type": "date", "format": "yyyy-MM-dd", "ignore_malformed": true},
         "date_latest": {"type": "date", "format": "yyyy-MM-dd", "ignore_malformed": true},

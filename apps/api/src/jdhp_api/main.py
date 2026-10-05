@@ -22,6 +22,7 @@ from jdhp_api.core.db import Database
 from jdhp_api.core.errors import install_error_handlers
 from jdhp_api.core.middleware import RequestContextMiddleware
 from jdhp_api.core.observability import configure_logging
+from jdhp_api.core.storage import ObjectStore, app_store
 from jdhp_api.core.tokens import ForensicKeys, GrantTokenIssuer, TileTokenSigner
 from jdhp_api.modules.access.router import router as access_router
 from jdhp_api.modules.audit.router import router as audit_router
@@ -34,6 +35,8 @@ from jdhp_api.modules.reader.cache import ReaderCache
 from jdhp_api.modules.reader.router import router as reader_router
 from jdhp_api.modules.reader.service import ReaderServices
 from jdhp_api.modules.review.router import router as review_router
+from jdhp_api.modules.search.backend import OpenSearchBackend, SearchBackend
+from jdhp_api.modules.search.router import router as search_router
 
 API_TITLE = "Jordanian Digital Heritage Platform API"
 
@@ -45,6 +48,8 @@ def create_app(
     policy_client: PolicyClient | None = None,
     token_verifier: TokenVerifier | None = None,
     user_sync: UserSync | None = None,
+    search_backend: SearchBackend | None = None,
+    store: ObjectStore | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(level=settings.log_level, json_output=settings.log_json)
@@ -60,6 +65,8 @@ def create_app(
         app.state.user_sync = user_sync or DatabaseUserSync(app.state.database)
         redis_client = redis_asyncio.Redis.from_url(str(settings.redis_url))
         app.state.redis = redis_client
+        app.state.search_backend = search_backend or OpenSearchBackend(settings)
+        app.state.store = store or app_store(settings)
         app.state.reader = ReaderServices(
             database=app.state.database,
             settings=settings,
@@ -112,6 +119,7 @@ def _include_routers(app: FastAPI) -> None:
         audit_router,
         access_router,
         reader_router,
+        search_router,
     ):
         app.include_router(router)
 
