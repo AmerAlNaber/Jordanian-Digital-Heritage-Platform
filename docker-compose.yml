@@ -54,6 +54,7 @@ services:
 
   web:
     build: { context: ., dockerfile: apps/web/Dockerfile }
+    image: jdhp-web:local
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -74,6 +75,7 @@ services:
 
   api:
     build: { context: ., dockerfile: apps/api/Dockerfile }
+    image: jdhp-api:local
     restart: unless-stopped
     environment:
       <<: *api-env
@@ -92,7 +94,8 @@ services:
       retries: 10
 
   api-internal:
-    build: { context: ., dockerfile: apps/api/Dockerfile }
+    image: jdhp-api:local
+    pull_policy: never
     restart: unless-stopped
     command:
       [
@@ -112,7 +115,8 @@ services:
         condition: service_completed_successfully
 
   migrate:
-    build: { context: ., dockerfile: apps/api/Dockerfile }
+    image: jdhp-api:local
+    pull_policy: never
     command: ["sh", "-c", "cd /app/apps/api && alembic upgrade head"]
     environment:
       <<: *api-env
@@ -123,6 +127,7 @@ services:
 
   worker:
     build: { context: ., dockerfile: apps/worker/Dockerfile }
+    image: jdhp-worker:local
     restart: unless-stopped
     environment:
       <<: *api-env
@@ -139,7 +144,8 @@ services:
         condition: service_completed_successfully
 
   beat:
-    build: { context: ., dockerfile: apps/worker/Dockerfile }
+    image: jdhp-worker:local
+    pull_policy: never
     restart: unless-stopped
     command:
       [
@@ -159,7 +165,8 @@ services:
         condition: service_healthy
 
   seed:
-    build: { context: ., dockerfile: apps/worker/Dockerfile }
+    image: jdhp-worker:local
+    pull_policy: never
     profiles: ["seed"]
     command: ["python", "-m", "jdhp_worker.seed", "--scale", "${JDHP_SEED_SCALE:-1.0}"]
     environment:
@@ -343,8 +350,8 @@ services:
       retries: 30
 
   minio-init:
-    build: ./infra/compose/minio
     image: jdhp-minio:local
+    pull_policy: never
     entrypoint: ["sh", "/opt/jdhp/init.sh"]
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
@@ -362,6 +369,7 @@ services:
 
   cantaloupe:
     build: ./infra/cantaloupe
+    image: jdhp-cantaloupe:local
     restart: unless-stopped
     environment:
       JDHP_S3_ENDPOINT_URL: http://minio:9000

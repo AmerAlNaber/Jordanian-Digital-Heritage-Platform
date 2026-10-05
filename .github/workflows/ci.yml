@@ -250,7 +250,17 @@ jobs:
       JDHP_SEED_SCALE: "0.5"
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - name: Free runner disk for the image builds and the stack
+        # The hosted runner ships toolchains this job never uses; the stack's images, the Go module
+        # cache of the MinIO build and the pulled services need the space. The default Docker
+        # builder is used on purpose: a separate buildx container would hold a second copy of
+        # every image.
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL \
+            /usr/local/share/boost /usr/share/swift /usr/local/.ghcup "$AGENT_TOOLSDIRECTORY"
+          sudo docker image prune -af >/dev/null 2>&1 || true
+          df -h / | tail -1
       - name: Configuration with generated secrets (no value is ever committed)
         run: infra/compose/make-env.sh
       - name: Start every service
