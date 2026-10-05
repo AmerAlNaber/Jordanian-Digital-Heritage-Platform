@@ -32,6 +32,17 @@
 		}
 	}
 
+	# The web application's own routes under /api: sign-in (ADR-0002) and the reader's
+	# backend-for-frontend calls, which add the member's token server-side.
+	handle /api/auth/* {
+		header Cache-Control "private, no-store"
+		reverse_proxy web:3000
+	}
+	handle /api/bff/* {
+		header Cache-Control "private, no-store"
+		reverse_proxy web:3000
+	}
+
 	# API. Private and uncacheable unless the handler says otherwise.
 	handle_path /api/* {
 		header Cache-Control "private, no-store" defer

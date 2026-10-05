@@ -88,6 +88,22 @@
   .hairline-bottom {
     border-block-end: var(--hairline);
   }
+  .hairline-start {
+    border-inline-start: var(--hairline);
+  }
+  /* The reader: the only elevated surface is its floating toolbar (docs/DESIGN.md). */
+  .reader-toolbar {
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
+  }
+  .reader-highlight {
+    outline: 2px solid var(--color-accent);
+    background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .reader-canvas .openseadragon-canvas:focus {
+    outline: 2px solid var(--color-focus);
+  }
   .label {
     font-family: var(--font-interface);
     font-size: var(--text-n1);

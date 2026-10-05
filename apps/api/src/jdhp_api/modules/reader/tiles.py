@@ -56,6 +56,7 @@ from jdhp_api.modules.reader.service import ReaderServices, RequestFacts
 from jdhp_api.modules.reader.watermark import platform_mark, session_mark
 
 TILE_TOKEN_QUERY = "t"  # noqa: S105  # nosec B105  # a query parameter name, not a secret
+TILE_TOKEN_HEADER = "X-Jdhp-Tile"  # noqa: S105  # nosec B105  # the header the viewer sends it in
 PUBLIC_TILE_CACHE = "public, max-age=300"
 PRIVATE_TILE_CACHE = "private, no-store"
 USER_TAG_LENGTH = 8
@@ -112,7 +113,7 @@ async def load_page_for_tile(
         raise InvalidIdentifierError
     name, seq = parsed
     services: ReaderServices = request.app.state.reader
-    token = request.query_params.get(TILE_TOKEN_QUERY)
+    token = request.query_params.get(TILE_TOKEN_QUERY) or request.headers.get(TILE_TOKEN_HEADER)
     async with services.database.session(RlsContext.system()) as system:
         work = await catalog_service.get_work_by_name(system, name)
         if work is None:

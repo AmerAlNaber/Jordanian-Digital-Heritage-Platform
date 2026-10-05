@@ -16,7 +16,8 @@
     "staffSignIn": "Staff sign-in",
     "skipToContent": "Skip to content",
     "switchLocale": "العربية",
-    "menu": "Menu"
+    "menu": "Menu",
+    "search": "Search"
   },
   "home": {
     "statement": "A secure digital library for a protected heritage collection: the original book and its documented sources are always the authority.",
@@ -57,7 +58,7 @@
     "noAccess": "Approval required",
     "samplePages": "{count, plural, =0 {No sample pages} one {One sample page} other {# sample pages}}",
     "allPagesSample": "Every page is open to preview",
-    "readerSoon": "The secure reader arrives in Phase 1; this page shows the record only."
+    "requestSoon": "Access requests open in Phase 2."
   },
   "work": {
     "author": "{count, plural, one {Author} other {Authors}}",
@@ -103,7 +104,8 @@
     "material": "Material types",
     "theme": "Themes",
     "empty": "No terms in this list yet.",
-    "works": "{count, plural, =0 {No works} one {One work} other {# works}}"
+    "works": "{count, plural, =0 {No works} one {One work} other {# works}}",
+    "browse": "Works about {term}"
   },
   "account": {
     "title": "Account",
@@ -153,5 +155,113 @@
   "meta": {
     "description": "A secure digital library for Jordanian heritage: catalog, search and protected reading of heritage books.",
     "catalog": "Catalog — Jordanian Digital Heritage Platform"
+  },
+  "search": {
+    "title": "Search",
+    "query": "Search the catalog and the texts",
+    "submit": "Search",
+    "results": "{count, plural, =0 {No works} one {One work} other {# works}}",
+    "pageHits": "{count, plural, =0 {No page matches} one {One page match} other {# page matches}}",
+    "pagesMatched": "{count, plural, =0 {no pages} one {one page} other {# pages}}",
+    "expanded": "Also searched for: {terms}",
+    "empty": "Nothing matches this search.",
+    "browseTitle": "Browse",
+    "filters": "Narrow the results",
+    "clear": "Clear filters",
+    "facets": {
+      "subjects": "Subjects",
+      "places": "Places",
+      "periods": "Periods",
+      "language": "Language",
+      "access_class": "Access class"
+    },
+    "languages": {
+      "ara": "Arabic",
+      "eng": "English",
+      "ota": "Ottoman Turkish",
+      "fra": "French"
+    },
+    "openPage": "Open at page {label}",
+    "regions": "{count, plural, =0 {no highlights} one {one highlight on the scan} other {# highlights on the scan}}",
+    "scanHidden": "Sign in or hold a grant to open this page",
+    "matchesIn": "Matches inside the book",
+    "record": "Record",
+    "read": "Read"
+  },
+  "reader": {
+    "title": "Reading",
+    "opening": "Opening the reader…",
+    "toolbar": "Reader controls",
+    "page": "Page {label}",
+    "pageOf": "{current} of {total}",
+    "goTo": "Go to page",
+    "previous": "Previous page",
+    "next": "Next page",
+    "first": "First page",
+    "last": "Last page",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "fit": "Fit the page",
+    "rotate": "Rotate",
+    "twoPage": "Two-page view",
+    "singlePage": "Single page",
+    "contents": "Contents",
+    "search": "Search in this book",
+    "searchPlaceholder": "A word or phrase",
+    "searching": "Searching…",
+    "matches": "{count, plural, =0 {No matches} one {One page matches} other {# pages match}}",
+    "noMatches": "No page matches.",
+    "cite": "Cite",
+    "print": "Print",
+    "close": "Close",
+    "panelClose": "Close panel",
+    "backToRecord": "Back to the record",
+    "keyboard": "Keyboard: PageUp and PageDown turn pages, Home and End jump to the ends, plus and minus zoom.",
+    "markNotice": "Every page carries your identifier and the time. The book stays on the server; nothing can be saved.",
+    "endedTitle": "The reading session has ended",
+    "reopen": "Open again",
+    "ended": {
+      "expired": "The session reached its time limit.",
+      "idle": "The session closed after thirty minutes without activity.",
+      "revoked": "Your access to this work was withdrawn.",
+      "frozen": "This work is temporarily unavailable.",
+      "suspended": "The session was suspended because of unusual activity.",
+      "device_limit": "This grant is already open on the maximum number of devices.",
+      "grant_required": "Reading this work requires an active grant.",
+      "unauthorized": "Sign in again to continue reading.",
+      "generic": "The reader could not continue. Try again."
+    },
+    "signInToRead": "Sign in to read this book",
+    "noAccess": "You do not have access to read this book.",
+    "sectionUntitled": "Page {label}",
+    "allPages": "All pages",
+    "sections": "Sections",
+    "sample": "Sample",
+    "highlights": "{count, plural, =0 {No highlights on this page} one {One highlight on this page} other {# highlights on this page}}",
+    "viewerLabel": "Scanned pages of {title}"
+  },
+  "print": {
+    "title": "Print pages",
+    "intro": "A low-resolution PDF with a visible mark and your identifier on every page.",
+    "quota": "{count, plural, =0 {No pages left in your print quota} one {One page left in your print quota} other {# pages left in your print quota}}",
+    "currentPage": "This page only",
+    "range": "A range of pages",
+    "from": "From page",
+    "to": "To page",
+    "submit": "Prepare the PDF",
+    "preparing": "Preparing the PDF…",
+    "ready": "Your PDF is ready.",
+    "download": "Download the PDF",
+    "downloadNote": "The link works once and expires in fifteen minutes.",
+    "errors": {
+      "print_quota_exceeded": "Not enough print quota is left for these pages.",
+      "print_pages_invalid": "These pages are outside what your grant covers.",
+      "print_not_ready": "The PDF is not ready yet.",
+      "failed": "The PDF could not be prepared. Try again later.",
+      "forbidden": "Printing is not available for this book.",
+      "generic": "The print request could not be sent."
+    },
+    "cancel": "Cancel",
+    "pagesSelected": "{count, plural, =0 {No pages} one {One page} other {# pages}}"
   }
 }

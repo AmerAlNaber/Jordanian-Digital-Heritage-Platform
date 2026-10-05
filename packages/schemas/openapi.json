@@ -1400,15 +1400,15 @@
           {
             "name": "q",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
-              "minLength": 1,
               "maxLength": 200,
-              "description": "The query, in any script",
+              "description": "The query, in any script; empty lists what the filters select",
+              "default": "",
               "title": "Q"
             },
-            "description": "The query, in any script"
+            "description": "The query, in any script; empty lists what the filters select"
           },
           {
             "name": "collection",

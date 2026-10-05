@@ -276,7 +276,8 @@ async def search(
 ) -> SearchResponse:
     work_ids = await scope_work_ids(session, principal, request)
     filters = filters_for(principal, request, work_ids)
-    expansions = await expand_query(session, request.q)
+    browsing = not request.q.strip()  # no query: list what the filters select (CAT-2)
+    expansions = [] if browsing else await expand_query(session, request.q)
     queries = [request.q, *expansions]
 
     if work_ids == ():
@@ -295,9 +296,13 @@ async def search(
     works_results = [
         await backend.search_works(query, filters, limit=WORKS_FETCH) for query in queries
     ]
-    pages_results = [
-        await backend.search_pages(query, page_filters, limit=PAGES_FETCH) for query in queries
-    ]
+    pages_results = (
+        []
+        if browsing
+        else [
+            await backend.search_pages(query, page_filters, limit=PAGES_FETCH) for query in queries
+        ]
+    )
 
     page_scores = rrf(*[[hit.page_id for hit in result.hits] for result in pages_results])
     page_hits: dict[str, PageHitRaw] = {}

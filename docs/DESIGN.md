@@ -92,3 +92,12 @@ Every secondary content frame opens with a label in the interface face at step -
 Phase 1 adds notes per key screen (home, catalog and search, book page, reader, request and
 approval, review portal, admin) with layout decisions. Until then the principles above and the
 spec's table of key screens are the brief.
+
+## Reader notes (Phase 1)
+
+- The scan fills the stage; the chrome is one hairline strip above (back to the record, the title, the mark notice) and one floating toolbar below. The toolbar is the only elevated surface in the product and carries the one soft shadow the system allows.
+- Navigation words, not glyphs: "Previous page" and "Next page" read correctly in both directions, and the lower page number sits on the right for Arabic books in the two-page view, with the first page alone as a cover.
+- Side panels (contents, search in the book, print, cite) open beside the stage, never over it; the scan stays visible while the reader works.
+- Search matches are drawn as accent boxes on the scan at 22 percent and never as text. The reader has no text layer to select or copy (RDR-3, CAT-4).
+- Every protected page carries the reader's mark; the strip says so in one quiet sentence so no one is surprised by it.
+- The ended state replaces the scan entirely with the reason and two actions (open again, back to the record). Nothing of the page remains on screen (RDR-5).

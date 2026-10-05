@@ -444,3 +444,27 @@ async def test_sec_10_no_route_serves_originals(
     paths = [r.path for r in api_routes(app)] + [r.path for r in api_routes(gateway_app)]
     assert not any("preservation" in p or "master" in p or "download" in p for p in paths)
     assert all(p.startswith("/iiif/3/") for p in (r.path for r in api_routes(gateway_app)))
+
+
+async def test_rdr_1_tile_token_is_accepted_as_a_header(
+    tiles: tuple[FastAPI, httpx.AsyncClient],
+    client: httpx.AsyncClient,
+    admin_database: Database,
+    access_store: ObjectStore,
+    settings: Settings,
+    auth: Headers,
+) -> None:
+    """The viewer sends the token as a header on every tile request (RDR-1)."""
+    _app, gateway = tiles
+    async with admin_database.session(RlsContext.system()) as session:
+        work = await make_work(session, pages=12)
+    await _seed_derivatives(admin_database, access_store, settings, work.id)
+    opened = await _open(client, work.public_id, auth("maha", ["member"]))
+    token = opened["tokens"]["tile_token"]
+    url = _tile_url(work.public_id, 11, size="256,", region="0,0,256,256")
+    assert (await gateway.get(url)).status_code == 403
+    with_header = await gateway.get(url, headers={"X-Jdhp-Tile": token})
+    assert with_header.status_code == 200, with_header.text
+    assert with_header.headers["content-type"] == "image/webp"
+    bad = await gateway.get(url, headers={"X-Jdhp-Tile": token[:-4] + "AAAA"})
+    assert bad.status_code == 401

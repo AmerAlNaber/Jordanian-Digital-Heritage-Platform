@@ -14,6 +14,13 @@ export type TermSummary = Schemas["TermSummary"];
 export type ContentObjectOut = Schemas["ContentObjectOut"];
 export type Me = Schemas["Me"];
 export type Resolution = Schemas["Resolution"];
+export type SearchResponse = Schemas["SearchResponse"];
+export type WorkHit = Schemas["WorkHit"];
+export type PageHit = Schemas["PageHit"];
+export type Region = Schemas["Region"];
+export type ReaderSessionOut = Schemas["ReaderSessionOut"];
+export type PrintJobOut = Schemas["PrintJobOut"];
+export type PrintLinkOut = Schemas["PrintLinkOut"];
 export type Problem = {
   type: string;
   title: string;

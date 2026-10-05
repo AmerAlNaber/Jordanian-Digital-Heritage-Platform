@@ -32,6 +32,7 @@ export async function SiteHeader({
           aria-label={t("menu")}
           className="font-interface flex flex-wrap items-center gap-x-6 gap-y-2 text-step-n1"
         >
+          <Link href="/search">{t("search")}</Link>
           <Link href="/catalog">{t("catalog")}</Link>
           <Link href="/collections">{t("collections")}</Link>
           <Link href="/subjects/place">{t("places")}</Link>

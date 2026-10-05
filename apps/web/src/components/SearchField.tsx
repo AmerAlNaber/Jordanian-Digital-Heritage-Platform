@@ -7,6 +7,7 @@ export function SearchField({
   submit,
   defaultValue = "",
   compact = false,
+  target = "/search",
 }: {
   locale: string;
   label: string;
@@ -14,8 +15,9 @@ export function SearchField({
   submit: string;
   defaultValue?: string;
   compact?: boolean;
+  target?: "/search" | "/catalog";
 }) {
-  const action = getPathname({ href: "/catalog", locale: locale as "ar" | "en" });
+  const action = getPathname({ href: target, locale: locale as "ar" | "en" });
   return (
     <form
       role="search"

@@ -2203,7 +2203,7 @@ export interface operations {
     };
     search_search_get: {
         parameters: {
-            query: {
+            query?: {
                 access_class?: components["schemas"]["AccessClass"][];
                 /** @description Search within this collection's works */
                 collection?: string | null;
@@ -2213,8 +2213,8 @@ export interface operations {
                 pages_per_work?: number;
                 period?: string[];
                 place?: string[];
-                /** @description The query, in any script */
-                q: string;
+                /** @description The query, in any script; empty lists what the filters select */
+                q?: string;
                 subject?: string[];
                 /** @description Search within one work; takes precedence */
                 work?: string | null;

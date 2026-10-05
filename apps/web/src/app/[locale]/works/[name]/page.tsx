@@ -13,6 +13,7 @@ import { Link, resolveLocale } from "@/i18n/routing";
 import { ApiError, apiFetch } from "@/lib/api";
 import { formatHeritageDate } from "@/lib/format";
 import { currentSession } from "@/lib/session";
+import { publiclyViewable, thumbnailUrl } from "@/lib/tiles";
 
 type Params = Promise<{ locale: string; name: string }>;
 
@@ -101,7 +102,18 @@ export default async function WorkPage({ params }: { params: Params }) {
           dir={work.script === "Arab" ? "rtl" : "ltr"}
           lang={work.language === "ara" ? "ar" : "en"}
         >
-          {pages[0]?.thumbnail_available ? (
+          {pages[0]?.thumbnail_available && publiclyViewable(1, work.sample_page_limit) ? (
+            // The first page through the authorizing gateway, with the platform mark (SEC-14).
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={thumbnailUrl(work.public_id, 1, 900)}
+              alt={t("scanLabel")}
+              className="max-h-full w-auto object-contain"
+              width={pages[0].width_px ? Math.round((pages[0].width_px * 900) / (pages[0].height_px ?? 1)) : undefined}
+              height={900}
+              draggable={false}
+            />
+          ) : pages[0]?.thumbnail_available ? (
             <p className="label">{t("scanLabel")}</p>
           ) : (
             <p className="reading text-center text-ink-faint">{t("noThumbnail")}</p>
@@ -166,7 +178,6 @@ export default async function WorkPage({ params }: { params: Params }) {
                 ? ta("allPagesSample")
                 : ta("samplePages", { count: Math.min(work.sample_page_limit, work.page_count) })}
             </p>
-            <p className="label text-ink-faint">{ta("readerSoon")}</p>
           </div>
         </header>
       </div>
@@ -237,7 +248,14 @@ export default async function WorkPage({ params }: { params: Params }) {
           <h2 id="pages" className="label">
             {t("pagesTitle")}
           </h2>
-          <PageGrid pages={pages} locale={locale} sampleLabel={t("sample")} />
+          <PageGrid
+            pages={pages}
+            locale={locale}
+            sampleLabel={t("sample")}
+            work={work.public_id}
+            samplePageLimit={work.sample_page_limit}
+            canRead={work.can_read}
+          />
         </section>
       ) : null}
 

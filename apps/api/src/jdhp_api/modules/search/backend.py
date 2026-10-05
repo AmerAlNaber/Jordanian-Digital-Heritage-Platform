@@ -162,24 +162,25 @@ def _filter_clauses(filters: Filters, *, pages: bool) -> list[dict[str, Any]]:
 
 
 def works_query(query: str, filters: Filters, *, limit: int) -> dict[str, Any]:
+    must: dict[str, Any] = (
+        {
+            "multi_match": {
+                "query": query,
+                "fields": WORK_FIELDS,
+                "type": "best_fields",
+                "operator": "or",
+                "minimum_should_match": "75%",
+            }
+        }
+        if query.strip()
+        else {"match_all": {}}
+    )
     return {
         "size": limit,
         "_source": ["public_id"],
-        "query": {
-            "bool": {
-                "must": {
-                    "multi_match": {
-                        "query": query,
-                        "fields": WORK_FIELDS,
-                        "type": "best_fields",
-                        "operator": "or",
-                        "minimum_should_match": "75%",
-                    }
-                },
-                "filter": _filter_clauses(filters, pages=False),
-            }
-        },
+        "query": {"bool": {"must": must, "filter": _filter_clauses(filters, pages=False)}},
         "aggs": {name: {"terms": {"field": name, "size": 50}} for name in FACET_FIELDS},
+        **({} if query.strip() else {"sort": [{"title_ar.raw": "asc"}]}),
     }
 
 
@@ -359,6 +360,9 @@ class InMemoryBackend:
         scored: list[WorkHitRaw] = []
         candidates = [d for d in self._works() if self._passes(d, filters)]
         for doc in candidates:
+            if not terms:
+                scored.append(WorkHitRaw(public_id=doc.public_id, score=1.0))
+                continue
             weights = {
                 5: [doc.title_ar, doc.title_en or "", doc.title_translit or ""],
                 3: [*doc.agents, *doc.subjects, *doc.places],
@@ -370,7 +374,11 @@ class InMemoryBackend:
                 score += weight * len(terms & field_tokens)
             if score > 0:
                 scored.append(WorkHitRaw(public_id=doc.public_id, score=score))
-        scored.sort(key=lambda h: (-h.score, h.public_id))
+        if terms:
+            scored.sort(key=lambda h: (-h.score, h.public_id))
+        else:
+            titles = {d.public_id: d.title_ar for d in candidates}
+            scored.sort(key=lambda h: (titles[h.public_id], h.public_id))
         matched = {h.public_id for h in scored}
         facets: dict[str, list[tuple[str, int]]] = {}
         for name in FACET_FIELDS:

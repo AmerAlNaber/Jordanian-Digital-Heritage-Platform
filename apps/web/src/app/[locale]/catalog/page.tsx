@@ -59,6 +59,7 @@ export default async function CatalogPage({
           submit={t("query")}
           defaultValue={search.q ?? ""}
           compact
+          target="/catalog"
         />
       </header>
       <div className="mt-10 grid gap-10 lg:grid-cols-[14rem_1fr]">

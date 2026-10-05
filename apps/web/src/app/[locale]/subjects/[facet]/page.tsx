@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { Link, resolveLocale } from "@/i18n/routing";
 import { apiList } from "@/lib/api";
 import { formatNumber } from "@/lib/format";
-import { resolveLocale } from "@/i18n/routing";
 
 const SCHEMES: Record<string, string> = {
   place: "gazetteer_jo",
@@ -48,9 +48,21 @@ export default async function SubjectsPage({ params }: { params: Params }) {
               key={`${term.scheme}:${term.code}`}
               className="hairline-bottom flex items-baseline justify-between gap-4 py-4"
             >
-              <span className="text-step-1">
-                {locale === "ar" ? term.label_ar : (term.label_en ?? term.label_ar)}
-              </span>
+              {facet === "subject" || facet === "place" || facet === "period" ? (
+                <Link
+                  href={{ pathname: "/search", query: { [facet]: term.code } }}
+                  className="text-step-1 no-underline hover:underline"
+                  aria-label={t("browse", {
+                    term: locale === "ar" ? term.label_ar : (term.label_en ?? term.label_ar),
+                  })}
+                >
+                  {locale === "ar" ? term.label_ar : (term.label_en ?? term.label_ar)}
+                </Link>
+              ) : (
+                <span className="text-step-1">
+                  {locale === "ar" ? term.label_ar : (term.label_en ?? term.label_ar)}
+                </span>
+              )}
               <span className="label font-mono" aria-label={t("works", { count: term.work_count })}>
                 {formatNumber(term.work_count, locale)}
               </span>

@@ -46,7 +46,13 @@ async def search(
     settings: Annotated[Settings, Depends(current_settings)],
     backend: Annotated[SearchBackend, Depends(get_search_backend)],
     store: Annotated[ObjectStore, Depends(get_store)],
-    q: Annotated[str, Query(min_length=1, max_length=200, description="The query, in any script")],
+    q: Annotated[
+        str,
+        Query(
+            max_length=200,
+            description="The query, in any script; empty lists what the filters select",
+        ),
+    ] = "",
     collection: Annotated[
         str | None,
         Query(pattern=NAME_PATTERN, description="Search within this collection's works"),

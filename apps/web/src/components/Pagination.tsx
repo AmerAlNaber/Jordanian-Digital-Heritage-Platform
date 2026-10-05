@@ -9,20 +9,21 @@ export async function Pagination({
   pageSize,
   total,
   query,
+  pathname = "/catalog",
 }: {
   locale: string;
   page: number;
   pageSize: number;
   total: number;
-  query: Record<string, string | undefined>;
+  query: Record<string, string | string[] | undefined>;
+  pathname?: "/catalog" | "/search";
 }) {
   const t = await getTranslations("catalog");
   const last = Math.max(1, Math.ceil(total / pageSize));
   if (last <= 1) return null;
-  const clean = Object.fromEntries(Object.entries(query).filter(([, v]) => v)) as Record<
-    string,
-    string
-  >;
+  const clean = Object.fromEntries(
+    Object.entries(query).filter(([, v]) => (Array.isArray(v) ? v.length > 0 : Boolean(v))),
+  ) as Record<string, string | string[]>;
   return (
     <nav
       aria-label={t("results", { count: total })}
@@ -30,7 +31,7 @@ export async function Pagination({
     >
       {page > 1 ? (
         <Link
-          href={{ pathname: "/catalog", query: { ...clean, page: String(page - 1) } }}
+          href={{ pathname, query: { ...clean, page: String(page - 1) } }}
           rel="prev"
         >
           {t("previous")}
@@ -43,7 +44,7 @@ export async function Pagination({
       </span>
       {page < last ? (
         <Link
-          href={{ pathname: "/catalog", query: { ...clean, page: String(page + 1) } }}
+          href={{ pathname, query: { ...clean, page: String(page + 1) } }}
           rel="next"
         >
           {t("next")}

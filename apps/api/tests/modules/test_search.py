@@ -241,10 +241,25 @@ async def test_no_match_is_an_empty_result_not_an_error(
     assert body["works"] == []
 
 
-async def test_query_is_required_and_bounded(client: httpx.AsyncClient) -> None:
-    assert (await client.get("/search")).status_code == 422
+async def test_query_is_bounded(client: httpx.AsyncClient) -> None:
     assert (await client.get("/search", params={"q": "x" * 201})).status_code == 422
     assert (await client.get("/search", params={"q": "x", "limit": 51})).status_code == 422
+
+
+async def test_cat_2_no_query_lists_what_the_facets_select(
+    client: httpx.AsyncClient, book: Work
+) -> None:
+    """Subject pages browse by facet alone: works come back by title, no page hits."""
+    everything = (await client.get("/search")).json()
+    assert everything["total_works"] == 1
+    assert everything["works"][0]["work"]["public_id"] == book.public_id
+    assert everything["works"][0]["pages"] == []
+    assert everything["total_page_hits"] == 0
+    assert everything["expanded_terms"] == []
+    by_place = (await client.get("/search", params={"place": "wadi-al-karm"})).json()
+    assert by_place["total_works"] == 1
+    none = (await client.get("/search", params={"place": "nowhere"})).json()
+    assert none["total_works"] == 0
 
 
 # --- CAT-4: the response never carries text -----------------------------------------------------
@@ -646,6 +661,9 @@ def test_opensearch_queries_always_carry_the_visibility_filters() -> None:
     assert "highlight" not in pages
     staff = Filters(published_only=False, exclude_embargoed=False, exclude_frozen=False)
     assert works_query("x", staff, limit=1)["query"]["bool"]["filter"] == []
+    browsing = works_query("", public, limit=10)
+    assert browsing["query"]["bool"]["must"] == {"match_all": {}}
+    assert browsing["sort"] == [{"title_ar.raw": "asc"}]
 
 
 async def test_route_coverage_includes_search(app: FastAPI) -> None:
