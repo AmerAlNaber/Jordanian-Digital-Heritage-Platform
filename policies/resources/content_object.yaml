@@ -1,0 +1,40 @@
+# Secondary content. AI objects are invisible outside the review portal until approved (REV-1).
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: content_object
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///content_object.json
+  rules:
+    - actions: [list]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+
+    - actions: [create]
+      effect: EFFECT_ALLOW
+      roles: [curator, reviewer, platform_admin]
+
+    # Reviewers and curators see pending objects in the portal.
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      roles: [reviewer, curator, platform_admin]
+
+    # Everyone else sees only approved objects of visible works, or human objects.
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.origin == "human" || R.attr.review_status == "approved"
+              - expr: R.attr.work_publish_state == "published"
+              - expr: R.attr.work_access_class != "embargoed"
+
+    - actions: [edit]
+      effect: EFFECT_ALLOW
+      roles: [reviewer, curator]

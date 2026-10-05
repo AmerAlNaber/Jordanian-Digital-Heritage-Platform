@@ -1,0 +1,157 @@
+# Who can see and read a work, per the access class table in SPEC.md.
+# Nothing is readable without a grant except Open works; nothing unpublished is visible to
+# anyone but staff; Embargoed works are invisible to the public even as metadata (CAT-5).
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: work
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///work.json
+  rules:
+    # Listing and creating are kind-level actions on the "*" resource.
+    - actions: [list, search]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+
+    - actions: [create, edit]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]
+
+    # View: public landing page and metadata.
+    - actions: [view, cite]
+      effect: EFFECT_ALLOW
+      derivedRoles: [staff]
+
+    - actions: [view, cite]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class != "embargoed"
+              - expr: R.attr.frozen != true
+
+    # Read: open the reader.
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class == "open"
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class == "registered"
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [grant_holder]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class in ["paid", "restricted"]
+
+    # Staff may read embargoed and unpublished works only through break-glass (SEC-8).
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [break_glass_admin]
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      roles: [curator, reviewer, rights_officer]
+      condition:
+        match:
+          expr: R.attr.access_class != "embargoed" && R.attr.frozen != true
+
+    # Print follows read, except Restricted and Embargoed where it is disabled by default.
+    - actions: [print]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: R.attr.access_class in ["restricted", "embargoed"]
+
+    - actions: [print]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class == "open"
+
+    - actions: [print]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class == "registered"
+
+    - actions: [print]
+      effect: EFFECT_ALLOW
+      derivedRoles: [grant_holder]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class == "paid"
+
+    - actions: [request_access]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class == "restricted"
+
+    - actions: [bookmark]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+      condition:
+        match:
+          expr: R.attr.publish_state == "published" && R.attr.access_class != "embargoed"
+
+    # Publishing, access class and pricing changes are proposals that need a second approver
+    # (SEC-9, ADM-3); the approve action is on the approval resource.
+    - actions: [propose_publish, withdraw]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]
+
+    - actions: [propose_access_class, propose_pricing]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer, platform_admin]
+
+    - actions: [view_rights_basis, view_grants]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer, platform_admin]
+
+    - actions: [revoke_all_grants]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer]

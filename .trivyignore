@@ -1,0 +1,7 @@
+# Vulnerabilities accepted after review. Each entry names the component, why it is not reachable,
+# and when to look again. CI fails on any high or critical finding not listed here (SEC-18).
+
+# picomatch 4.0.3 is a copy compiled into Next.js (next/dist/compiled/picomatch) and used for
+# build-time file matching; no request-controlled pattern reaches it at runtime. Next.js 15.5.24
+# is the latest 15.5 release. Re-check on every Next.js upgrade.
+CVE-2026-33671

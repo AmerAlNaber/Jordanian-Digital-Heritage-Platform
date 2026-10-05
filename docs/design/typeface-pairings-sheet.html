@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Amiri"; src: url("../../apps/web/public/fonts/amiri/Amiri-Regular.ttf"); }
+@font-face { font-family: "Amiri"; font-weight: bold; src: url("../../apps/web/public/fonts/amiri/Amiri-Bold.ttf"); }
+@font-face { font-family: "Reem Kufi"; src: url("../../apps/web/public/fonts/reemkufi/ReemKufi[wght].ttf"); font-weight: 400 700; }
+@font-face { font-family: "Crimson Pro"; src: url("../../apps/web/public/fonts/crimsonpro/CrimsonPro[wght].ttf"); font-weight: 200 900; }
+@font-face { font-family: "IBM Plex Sans Arabic"; src: url("../../apps/web/public/fonts/ibmplexsansarabic/IBMPlexSansArabic-Regular.ttf"); }
+@font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 500; src: url("../../apps/web/public/fonts/ibmplexsansarabic/IBMPlexSansArabic-Medium.ttf"); }
+@font-face { font-family: "Scheherazade New"; src: url("../../apps/web/public/fonts/scheherazadenew/ScheherazadeNew-Regular.ttf"); }
+@font-face { font-family: "Scheherazade New"; font-weight: bold; src: url("../../apps/web/public/fonts/scheherazadenew/ScheherazadeNew-Bold.ttf"); }
+@font-face { font-family: "Aref Ruqaa"; src: url("../../apps/web/public/fonts/arefruqaa/ArefRuqaa-Regular.ttf"); }
+@font-face { font-family: "EB Garamond"; src: url("../../apps/web/public/fonts/ebgaramond/EBGaramond[wght].ttf"); font-weight: 400 800; }
+@font-face { font-family: "Vazirmatn"; src: url("../../apps/web/public/fonts/vazirmatn/Vazirmatn[wght].ttf"); font-weight: 100 900; }
+@font-face { font-family: "Noto Naskh Arabic"; src: url("../../apps/web/public/fonts/notonaskharabic/NotoNaskhArabic[wght].ttf"); font-weight: 400 700; }
+@font-face { font-family: "Noto Kufi Arabic"; src: url("../../apps/web/public/fonts/notokufiarabic/NotoKufiArabic[wght].ttf"); font-weight: 100 900; }
+@font-face { font-family: "Noto Serif"; src: url("../../apps/web/public/fonts/notoserif/NotoSerif[wdth,wght].ttf"); font-weight: 100 900; }
+@font-face { font-family: "Noto Sans Arabic"; src: url("../../apps/web/public/fonts/notosansarabic/NotoSansArabic[wdth,wght].ttf"); font-weight: 100 900; }
+@font-face { font-family: "Noto Sans"; src: url("../../apps/web/public/fonts/notosans/NotoSans[wdth,wght].ttf"); font-weight: 100 900; }
+body { margin: 0; background: oklch(97% 0.012 75); color: oklch(24% 0.02 60); padding: 32px; width: 1360px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.card { border-top: 1px solid oklch(72% 0.014 75); padding-top: 16px; }
+.name { font: 500 13px/1.4 "IBM Plex Sans Arabic", sans-serif; color: oklch(45% 0.018 60); letter-spacing: 0.02em; margin-bottom: 20px; }
+.display { font-size: 38px; line-height: 1.25; margin: 0 0 12px; font-weight: 500; }
+.title { font-size: 26px; line-height: 1.5; margin: 0 0 8px; }
+.meta { font-size: 15px; line-height: 1.6; color: oklch(45% 0.018 60); margin: 0 0 20px; }
+.meta span { display: inline-block; margin-inline-start: 10px; }
+.reading { font-size: 20px; line-height: 1.85; margin: 0 0 18px; text-align: justify; }
+.latin { direction: ltr; text-align: left; font-size: 19px; line-height: 1.6; margin: 0 0 16px; }
+.mixed { font-size: 17px; line-height: 1.8; margin: 0; color: oklch(24% 0.02 60); }
+.ui { font-size: 14px; line-height: 1.5; margin: 18px 0 0; display: flex; gap: 10px; }
+.ui span { border: 1px solid oklch(72% 0.014 75); padding: 6px 12px; border-radius: 2px; }
+.a .display { font-family: "Reem Kufi"; } .a .title, .a .reading, .a .mixed { font-family: "Amiri"; } .a .latin { font-family: "Crimson Pro"; } .a .meta, .a .ui { font-family: "IBM Plex Sans Arabic"; }
+.b .display { font-family: "Aref Ruqaa"; } .b .title, .b .reading, .b .mixed { font-family: "Scheherazade New"; } .b .latin { font-family: "EB Garamond"; } .b .meta, .b .ui { font-family: "Vazirmatn"; }
+.c .display { font-family: "Noto Kufi Arabic"; } .c .title, .c .reading, .c .mixed { font-family: "Noto Naskh Arabic"; } .c .latin { font-family: "Noto Serif"; } .c .meta, .c .ui { font-family: "Noto Sans Arabic", "Noto Sans"; }
+.b .reading, .b .title { font-size: 22px; }
+</style>
+</head>
+<body>
+<div class="grid">
+<div class="card a">
+  <div class="name">A · Amiri + Reem Kufi + Crimson Pro + IBM Plex Sans Arabic</div>
+  <h1 class="display">أخبار بلدة سُمَيْرة</h1>
+  <h2 class="title">أخبار بلدة سُمَيْرة وما حولها من الوادي والجبل</h2>
+  <p class="meta"><span>يعقوب بن سالم الطحّان</span><span>١٣٤١ هـ / ١٩٢٣ م</span><span>٤٠ صفحة</span><span>مسجَّل</span></p>
+  <p class="reading">الحمد لله الذي جعل في البلاد عمرانًا وفي العمران أخبارًا تُروى. أما بعد، فإني نشأت في بلدة سُمَيْرة وتعلّمت في كُتّابها، ثم صرت معلّمًا فيه أربعين سنة أسمع من الشيوخ ما يروون عن أوائلهم وعن العين والوادي والجبل، فخشيت أن يذهب ذلك بذهابهم.</p>
+  <p class="latin">Chronicle of the Town of Sumayra and the Wadi and Hills Around It. Yaʿqūb ibn Sālim al-Ṭaḥḥān, 1923.</p>
+  <p class="mixed">المؤلف: يعقوب بن سالم الطحّان (Yaʿqūb ibn Sālim al-Ṭaḥḥān)، مطبعة الوادي، ١٩٢٣. المعرّف: ark:/99999/w8kq7x3m2v9n</p>
+  <p class="ui"><span>اطلب الوصول</span><span>اقرأ الكتاب</span><span>انسخ الاستشهاد</span></p>
+</div>
+<div class="card b">
+  <div class="name">B · Scheherazade New + Aref Ruqaa + EB Garamond + Vazirmatn</div>
+  <h1 class="display">أخبار بلدة سُمَيْرة</h1>
+  <h2 class="title">أخبار بلدة سُمَيْرة وما حولها من الوادي والجبل</h2>
+  <p class="meta"><span>يعقوب بن سالم الطحّان</span><span>١٣٤١ هـ / ١٩٢٣ م</span><span>٤٠ صفحة</span><span>مسجَّل</span></p>
+  <p class="reading">الحمد لله الذي جعل في البلاد عمرانًا وفي العمران أخبارًا تُروى. أما بعد، فإني نشأت في بلدة سُمَيْرة وتعلّمت في كُتّابها، ثم صرت معلّمًا فيه أربعين سنة أسمع من الشيوخ ما يروون عن أوائلهم وعن العين والوادي والجبل، فخشيت أن يذهب ذلك بذهابهم.</p>
+  <p class="latin">Chronicle of the Town of Sumayra and the Wadi and Hills Around It. Yaʿqūb ibn Sālim al-Ṭaḥḥān, 1923.</p>
+  <p class="mixed">المؤلف: يعقوب بن سالم الطحّان (Yaʿqūb ibn Sālim al-Ṭaḥḥān)، مطبعة الوادي، ١٩٢٣. المعرّف: ark:/99999/w8kq7x3m2v9n</p>
+  <p class="ui"><span>اطلب الوصول</span><span>اقرأ الكتاب</span><span>انسخ الاستشهاد</span></p>
+</div>
+<div class="card c">
+  <div class="name">C · Noto Naskh Arabic + Noto Kufi Arabic + Noto Serif + Noto Sans Arabic</div>
+  <h1 class="display">أخبار بلدة سُمَيْرة</h1>
+  <h2 class="title">أخبار بلدة سُمَيْرة وما حولها من الوادي والجبل</h2>
+  <p class="meta"><span>يعقوب بن سالم الطحّان</span><span>١٣٤١ هـ / ١٩٢٣ م</span><span>٤٠ صفحة</span><span>مسجَّل</span></p>
+  <p class="reading">الحمد لله الذي جعل في البلاد عمرانًا وفي العمران أخبارًا تُروى. أما بعد، فإني نشأت في بلدة سُمَيْرة وتعلّمت في كُتّابها، ثم صرت معلّمًا فيه أربعين سنة أسمع من الشيوخ ما يروون عن أوائلهم وعن العين والوادي والجبل، فخشيت أن يذهب ذلك بذهابهم.</p>
+  <p class="latin">Chronicle of the Town of Sumayra and the Wadi and Hills Around It. Yaʿqūb ibn Sālim al-Ṭaḥḥān, 1923.</p>
+  <p class="mixed">المؤلف: يعقوب بن سالم الطحّان (Yaʿqūb ibn Sālim al-Ṭaḥḥān)، مطبعة الوادي، ١٩٢٣. المعرّف: ark:/99999/w8kq7x3m2v9n</p>
+  <p class="ui"><span>اطلب الوصول</span><span>اقرأ الكتاب</span><span>انسخ الاستشهاد</span></p>
+</div>
+</div>
+</body>
+</html>

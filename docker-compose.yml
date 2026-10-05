@@ -1,0 +1,434 @@
+# The full local stack with seed data: `make up` (or `docker compose up -d --build && docker compose run --rm seed`).
+# Three networks: only Caddy publishes a port. Data services are reachable from the app network only.
+# Every variable comes from .env (see .env.example). Deployments add infra/compose/compose.pilot.yaml
+# and mount secrets as files (SEC-19).
+name: jdhp
+
+x-api-env: &api-env
+  JDHP_ENV: ${JDHP_ENV:-local}
+  JDHP_LOG_JSON: "true"
+  JDHP_PUBLIC_BASE_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}
+  JDHP_API_BASE_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}/api
+  JDHP_DATABASE_URL: postgresql+asyncpg://jdhp_app:${JDHP_DB_APP_PASSWORD}@postgres:5432/jdhp
+  JDHP_MIGRATION_DATABASE_URL: postgresql+asyncpg://jdhp_migrate:${JDHP_DB_MIGRATE_PASSWORD}@postgres:5432/jdhp
+  JDHP_WORKER_DATABASE_URL: postgresql+asyncpg://jdhp_worker:${JDHP_DB_WORKER_PASSWORD}@postgres:5432/jdhp
+  JDHP_REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  JDHP_OPENSEARCH_URL: http://opensearch:9200
+  JDHP_CERBOS_URL: http://cerbos:3592
+  JDHP_OIDC_ISSUER: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}/auth/realms/jdhp
+  JDHP_OIDC_JWKS_URL: http://keycloak:8080/auth/realms/jdhp/protocol/openid-connect/certs
+  JDHP_OIDC_AUDIENCE: jdhp-api
+  JDHP_S3_ENDPOINT_URL: http://minio:9000
+  JDHP_S3_REGION: us-east-1
+  JDHP_S3_ACCESS_KEY: ${JDHP_S3_ACCESS_KEY}
+  JDHP_S3_SECRET_KEY: ${JDHP_S3_SECRET_KEY}
+  JDHP_BUCKET_PRESERVATION: ${JDHP_BUCKET_PRESERVATION:-jdhp-preservation}
+  JDHP_BUCKET_ACCESS: ${JDHP_BUCKET_ACCESS:-jdhp-access}
+  JDHP_BUCKET_UPLOADS: ${JDHP_BUCKET_UPLOADS:-jdhp-uploads}
+  JDHP_BUCKET_EXPORTS: ${JDHP_BUCKET_EXPORTS:-jdhp-exports}
+  JDHP_BUCKET_AUDIT_ARCHIVE: ${JDHP_BUCKET_AUDIT_ARCHIVE:-jdhp-audit-archive}
+  JDHP_TOKEN_SIGNING_KEY: ${JDHP_TOKEN_SIGNING_KEY}
+  JDHP_FORENSIC_MASTER_KEY: ${JDHP_FORENSIC_MASTER_KEY}
+  JDHP_FIELD_ENCRYPTION_KEY: ${JDHP_FIELD_ENCRYPTION_KEY}
+  JDHP_ARK_NAAN: ${JDHP_ARK_NAAN:-99999}
+  JDHP_OCR_PROVIDER: ${JDHP_OCR_PROVIDER:-mock}
+  JDHP_LLM_PROVIDER: ${JDHP_LLM_PROVIDER:-mock}
+  JDHP_EMBEDDING_PROVIDER: ${JDHP_EMBEDDING_PROVIDER:-mock}
+  JDHP_PAYMENT_PROVIDER: ${JDHP_PAYMENT_PROVIDER:-mock}
+  JDHP_EMAIL_PROVIDER: ${JDHP_EMAIL_PROVIDER:-mock}
+  JDHP_SMS_PROVIDER: ${JDHP_SMS_PROVIDER:-mock}
+
+services:
+  caddy:
+    image: caddy:2.9-alpine
+    restart: unless-stopped
+    ports:
+      - "${JDHP_HTTP_PORT:-8080}:8080"
+    environment:
+      JDHP_PUBLIC_HOST: ${JDHP_PUBLIC_HOST:-:8080}
+    volumes:
+      - ./infra/compose/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    networks: [edge, app]
+    depends_on: [web, api, keycloak]
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    image: jdhp-web:local
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_BASE_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}
+      API_INTERNAL_URL: http://api:8000
+      OIDC_ISSUER: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}/auth/realms/jdhp
+      OIDC_INTERNAL_ISSUER: http://keycloak:8080/auth/realms/jdhp
+      OIDC_WEB_CLIENT_ID: jdhp-web
+      OIDC_WEB_CLIENT_SECRET: ${KC_WEB_CLIENT_SECRET}
+      OIDC_STAFF_CLIENT_ID: jdhp-staff
+      OIDC_STAFF_CLIENT_SECRET: ${KC_STAFF_CLIENT_SECRET}
+      SESSION_SECRET: ${WEB_SESSION_SECRET}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+    networks: [app, data]
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    image: jdhp-api:local
+    restart: unless-stopped
+    environment:
+      <<: *api-env
+    networks: [app, data]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      cerbos:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      opensearch-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://api-internal:8010/readyz"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  api-internal:
+    image: jdhp-api:local
+    pull_policy: never
+    restart: unless-stopped
+    command:
+      [
+        "uvicorn",
+        "jdhp_api.internal_app:create_internal_app",
+        "--factory",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8010",
+      ]
+    environment:
+      <<: *api-env
+    networks: [app, data]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    image: jdhp-api:local
+    pull_policy: never
+    command: ["sh", "-c", "cd /app/apps/api && alembic upgrade head"]
+    environment:
+      <<: *api-env
+    networks: [data]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build: { context: ., dockerfile: apps/worker/Dockerfile }
+    image: jdhp-worker:local
+    restart: unless-stopped
+    environment:
+      <<: *api-env
+      JDHP_S3_INGEST_ACCESS_KEY: ${JDHP_S3_INGEST_ACCESS_KEY}
+      JDHP_S3_INGEST_SECRET_KEY: ${JDHP_S3_INGEST_SECRET_KEY}
+      JDHP_ACCESS_DERIVATIVE_FORMAT: ${JDHP_ACCESS_DERIVATIVE_FORMAT:-jp2}
+    networks: [app, data]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      # The index templates must exist before the first page is indexed,
+      # and a service_completed_successfully edge is what lets
+      # `compose up --wait` accept the one-shot init container exiting 0.
+      opensearch-init:
+        condition: service_completed_successfully
+
+  beat:
+    image: jdhp-worker:local
+    pull_policy: never
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ls /tmp/celerybeat-schedule* >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    command:
+      [
+        "celery",
+        "-A",
+        "jdhp_worker.worker",
+        "beat",
+        "--loglevel=INFO",
+        "-s",
+        "/tmp/celerybeat-schedule",
+      ]
+    environment:
+      <<: *api-env
+    networks: [app, data]
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  seed:
+    image: jdhp-worker:local
+    pull_policy: never
+    profiles: ["seed"]
+    command: ["python", "-m", "jdhp_worker.seed", "--scale", "${JDHP_SEED_SCALE:-1.0}"]
+    environment:
+      <<: *api-env
+      JDHP_S3_INGEST_ACCESS_KEY: ${JDHP_S3_INGEST_ACCESS_KEY}
+      JDHP_S3_INGEST_SECRET_KEY: ${JDHP_S3_INGEST_SECRET_KEY}
+    networks: [app, data]
+    depends_on:
+      api:
+        condition: service_healthy
+      worker:
+        condition: service_started
+
+  keycloak-init:
+    image: jdhp-api:local
+    pull_policy: never
+    user: "0"
+    entrypoint:
+      [
+        "python",
+        "/opt/jdhp/render-realm.py",
+        "/opt/jdhp/realm-jdhp.template.json",
+        "/import/realm-jdhp.json",
+      ]
+    environment:
+      KC_FRONTEND_URL: ${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}
+      KC_WEB_CLIENT_SECRET: ${KC_WEB_CLIENT_SECRET}
+      KC_STAFF_CLIENT_SECRET: ${KC_STAFF_CLIENT_SECRET}
+      KC_SSL_REQUIRED: ${KC_SSL_REQUIRED:-external}
+      KC_SMTP_HOST: mailpit
+      KC_SMTP_PORT: "1025"
+      KC_SMTP_FROM: noreply@localhost
+    volumes:
+      - ./infra/keycloak/realm-jdhp.template.json:/opt/jdhp/realm-jdhp.template.json:ro
+      - ./infra/compose/keycloak/render-realm.py:/opt/jdhp/render-realm.py:ro
+      - keycloak-import:/import
+    networks: [data]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    restart: unless-stopped
+    command:
+      [
+        "start",
+        "--import-realm",
+        "--http-relative-path",
+        "/auth",
+        "--proxy-headers",
+        "xforwarded",
+        "--hostname",
+        "${JDHP_PUBLIC_BASE_URL:-http://localhost:8080}/auth",
+        "--hostname-backchannel-dynamic",
+        "true",
+        "--health-enabled",
+        "true",
+        "--http-enabled",
+        "true",
+      ]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - keycloak-import:/opt/keycloak/data/import:ro
+      - ./infra/keycloak/theme/jdhp:/opt/keycloak/themes/jdhp:ro
+    networks: [app, data]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e 'GET /auth/health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  cerbos:
+    image: ghcr.io/cerbos/cerbos:0.46.0
+    restart: unless-stopped
+    command: ["server", "--config=/policies/.cerbos.yaml"]
+    volumes:
+      - ./policies:/policies:ro
+    networks: [app]
+    healthcheck:
+      test: ["CMD", "/cerbos", "healthcheck", "--config=/policies/.cerbos.yaml"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JDHP_DB_APP_PASSWORD: ${JDHP_DB_APP_PASSWORD}
+      JDHP_DB_WORKER_PASSWORD: ${JDHP_DB_WORKER_PASSWORD}
+      JDHP_DB_MIGRATE_PASSWORD: ${JDHP_DB_MIGRATE_PASSWORD}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/compose/postgres/init-roles.sh:/docker-entrypoint-initdb.d/10-init-roles.sh:ro
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d jdhp"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  opensearch:
+    build: ./infra/opensearch
+    image: jdhp-opensearch:local
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      cluster.name: jdhp
+      bootstrap.memory_lock: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g"
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    networks: [data]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'curl -fsS http://localhost:9200/_cluster/health | grep -qE ''"status":"(green|yellow)"''',
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  opensearch-init:
+    image: curlimages/curl:8.11.1
+    entrypoint: ["sh", "/opt/jdhp/apply-templates.sh"]
+    environment:
+      OPENSEARCH_URL: http://opensearch:9200
+    volumes:
+      - ./infra/opensearch:/opt/jdhp:ro
+    networks: [data]
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command:
+      [
+        "redis-server",
+        "--requirepass",
+        "${REDIS_PASSWORD}",
+        "--maxmemory",
+        "512mb",
+        "--maxmemory-policy",
+        "allkeys-lru",
+        "--save",
+        "",
+        "--appendonly",
+        "no",
+      ]
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  minio:
+    build: ./infra/compose/minio
+    image: jdhp-minio:local
+    restart: unless-stopped
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  minio-init:
+    image: jdhp-minio:local
+    pull_policy: never
+    entrypoint: ["sh", "/opt/jdhp/init.sh"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      JDHP_S3_ACCESS_KEY: ${JDHP_S3_ACCESS_KEY}
+      JDHP_S3_SECRET_KEY: ${JDHP_S3_SECRET_KEY}
+      JDHP_S3_INGEST_ACCESS_KEY: ${JDHP_S3_INGEST_ACCESS_KEY}
+      JDHP_S3_INGEST_SECRET_KEY: ${JDHP_S3_INGEST_SECRET_KEY}
+    volumes:
+      - ./infra/compose/minio/init.sh:/opt/jdhp/init.sh:ro
+    networks: [data]
+    depends_on:
+      minio:
+        condition: service_healthy
+
+  cantaloupe:
+    build: ./infra/cantaloupe
+    image: jdhp-cantaloupe:local
+    restart: unless-stopped
+    environment:
+      JDHP_S3_ENDPOINT_URL: http://minio:9000
+      JDHP_S3_REGION: us-east-1
+      JDHP_S3_ACCESS_KEY: ${JDHP_S3_ACCESS_KEY}
+      JDHP_S3_SECRET_KEY: ${JDHP_S3_SECRET_KEY}
+      JDHP_BUCKET_ACCESS: ${JDHP_BUCKET_ACCESS:-jdhp-access}
+      JDHP_IMAGE_INTERNAL_KEY: ${JDHP_IMAGE_INTERNAL_KEY}
+      CANTALOUPE_HEAP: 1g
+    networks: [app, data]
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+
+  mailpit:
+    image: axllent/mailpit:v1.24
+    restart: unless-stopped
+    networks: [app]
+
+networks:
+  edge:
+  app:
+  data:
+    internal: true
+
+volumes:
+  caddy-data:
+  keycloak-import:
+  postgres-data:
+  opensearch-data:
+  minio-data:

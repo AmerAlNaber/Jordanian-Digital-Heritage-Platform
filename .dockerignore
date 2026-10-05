@@ -1,0 +1,32 @@
+# Build context for every image (context is the repository root). Nothing generated or local
+# enters an image; dependencies are resolved inside the build from the lockfiles.
+.git
+.github
+.venv
+**/node_modules
+**/.next
+**/dist
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+.import_linter_cache
+**/coverage
+**/htmlcov
+**/.coverage
+coverage.xml
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+secrets
+.data
+docs
+tests/e2e/test-results
+tests/e2e/playwright-report
+tests/load/results
+*.log
+.DS_Store
+.idea
+.vscode

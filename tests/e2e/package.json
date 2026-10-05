@@ -1,0 +1,11 @@
+{
+  "name": "@jdhp/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright end-to-end tests in both languages and both themes, with axe accessibility checks (Phase 1).",
+  "scripts": {
+    "test": "echo 'e2e suite starts in Phase 1 (register, find, read, print, audit)'",
+    "lint": "echo 'no lint yet'",
+    "typecheck": "echo 'no typecheck yet'"
+  }
+}

@@ -1,0 +1,31 @@
+# Local overrides: dev users, published ports for data services, hot reload. Never used in deployments.
+services:
+  api:
+    command: ["uvicorn", "jdhp_api.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ../../apps/api/src:/app/apps/api/src:ro
+      - ../../packages:/app/packages:ro
+  postgres:
+    ports: ["54320:5432"]
+  redis:
+    ports: ["63790:6379"]
+  minio:
+    ports: ["9000:9000", "9001:9001"]
+  opensearch:
+    ports: ["9200:9200"]
+  mailpit:
+    ports: ["8025:8025"]
+  keycloak-local-users:
+    image: quay.io/keycloak/keycloak:26.0
+    profiles: ["local-users"]
+    entrypoint: ["/bin/bash", "/opt/jdhp/local-users.sh"]
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DEV_USER_PASSWORD: ${KC_DEV_USER_PASSWORD}
+    volumes:
+      - ./keycloak/local-users.sh:/opt/jdhp/local-users.sh:ro
+    network_mode: "service:keycloak"
+    depends_on:
+      keycloak:
+        condition: service_healthy

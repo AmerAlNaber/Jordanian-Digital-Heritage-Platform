@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Content object attributes",
+  "type": "object",
+  "properties": {
+    "origin": {
+      "type": "string",
+      "enum": [
+        "human",
+        "ai"
+      ]
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_review",
+        "approved",
+        "rejected"
+      ]
+    },
+    "provenance_type": {
+      "type": "string"
+    },
+    "work_access_class": {
+      "type": "string"
+    },
+    "work_publish_state": {
+      "type": "string"
+    }
+  },
+  "description": "Kind-level checks (list, create) carry no attributes, so nothing is required; provided attributes are type-checked."
+}

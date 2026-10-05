@@ -1,0 +1,8 @@
+/* Placeholder until the design tokens are final (docs/DESIGN.md). Logical properties only (INT-2). */
+:root {
+  --jdhp-bg: oklch(97% 0.012 80);
+  --jdhp-ink: oklch(22% 0.02 60);
+  --jdhp-accent: oklch(45% 0.09 200);
+}
+body { background: var(--jdhp-bg); color: var(--jdhp-ink); }
+html[dir="rtl"] .pf-v5-c-login__main { text-align: start; }

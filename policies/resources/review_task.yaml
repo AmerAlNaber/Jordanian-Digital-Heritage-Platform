@@ -1,0 +1,22 @@
+# The review portal: the only path from pending to approved (REV-1, ADM-8).
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: review_task
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///owned.json
+  rules:
+    - actions: [list, view, assign]
+      effect: EFFECT_ALLOW
+      roles: [reviewer, platform_admin]
+
+    - actions: [approve, reject, edit]
+      effect: EFFECT_ALLOW
+      roles: [reviewer]
+      condition:
+        match:
+          expr: P.attr.mfa == true

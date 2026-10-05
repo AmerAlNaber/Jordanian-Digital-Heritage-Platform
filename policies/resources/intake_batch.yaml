@@ -1,0 +1,15 @@
+# Digitization intake (ADM-1): curators submit, staff observe.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: intake_batch
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///empty.json
+  rules:
+    - actions: [create, list, view]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]

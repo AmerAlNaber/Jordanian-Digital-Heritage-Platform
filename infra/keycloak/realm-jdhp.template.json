@@ -1,0 +1,267 @@
+{
+  "realm": "jdhp",
+  "displayName": "Jordanian Digital Heritage Platform",
+  "displayNameHtml": "<span dir=\"rtl\">منصة التراث الأردني الرقمي</span>",
+  "enabled": true,
+  "sslRequired": "${KC_SSL_REQUIRED}",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["ar", "en"],
+  "defaultLocale": "ar",
+  "loginTheme": "jdhp",
+  "accountTheme": "keycloak.v3",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "rememberMe": false,
+  "editUsernameAllowed": false,
+
+  "accessTokenLifespan": 600,
+  "accessTokenLifespanForImplicitFlow": 600,
+  "ssoSessionIdleTimeout": 28800,
+  "ssoSessionMaxLifespan": 28800,
+  "ssoSessionIdleTimeoutRememberMe": 0,
+  "ssoSessionMaxLifespanRememberMe": 0,
+  "offlineSessionIdleTimeout": 0,
+  "offlineSessionMaxLifespanEnabled": false,
+  "clientSessionIdleTimeout": 28800,
+  "clientSessionMaxLifespan": 28800,
+  "accessCodeLifespan": 60,
+  "accessCodeLifespanUserAction": 300,
+  "accessCodeLifespanLogin": 1800,
+  "actionTokenGeneratedByAdminLifespan": 43200,
+  "actionTokenGeneratedByUserLifespan": 300,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxTemporaryLockouts": 0,
+  "failureFactor": 10,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "minimumQuickLoginWaitSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "maxDeltaTimeSeconds": 43200,
+
+  "passwordPolicy": "length(12) and maxLength(128) and notUsername and notEmail and passwordHistory(5)",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA256",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyCodeReusable": false,
+  "webAuthnPolicyRpEntityName": "Jordanian Digital Heritage Platform",
+  "webAuthnPolicySignatureAlgorithms": ["ES256", "RS256"],
+  "webAuthnPolicyRpId": "",
+  "webAuthnPolicyAttestationConveyancePreference": "direct",
+  "webAuthnPolicyAuthenticatorAttachment": "cross-platform",
+  "webAuthnPolicyRequireResidentKey": "not specified",
+  "webAuthnPolicyUserVerificationRequirement": "required",
+  "webAuthnPolicyCreateTimeout": 120,
+  "webAuthnPolicyAvoidSameAuthenticatorRegister": true,
+  "webAuthnPolicyAcceptableAaguids": [],
+
+  "eventsEnabled": true,
+  "eventsExpiration": 2592000,
+  "eventsListeners": ["jboss-logging"],
+  "enabledEventTypes": ["LOGIN", "LOGIN_ERROR", "LOGOUT", "REGISTER", "UPDATE_PASSWORD", "UPDATE_TOTP", "REMOVE_TOTP", "RESET_PASSWORD", "CODE_TO_TOKEN", "REFRESH_TOKEN", "REFRESH_TOKEN_ERROR", "CLIENT_LOGIN", "UPDATE_PROFILE", "DELETE_ACCOUNT"],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
+
+  "attributes": {
+    "acr.loa.map": "{\"1\":1,\"2\":2}",
+    "frontendUrl": "${KC_FRONTEND_URL}",
+    "cibaBackchannelTokenDeliveryMode": "poll"
+  },
+
+  "roles": {
+    "realm": [
+      {"name": "member", "description": "Registered individual"},
+      {"name": "verified_researcher", "description": "Academic, journalist or author verified by staff"},
+      {"name": "institutional_user", "description": "Member of a partner institution"},
+      {"name": "institution_admin", "description": "Partner institution's librarian"},
+      {"name": "curator", "description": "Library cataloguing staff"},
+      {"name": "reviewer", "description": "Subject expert working the review portal"},
+      {"name": "rights_officer", "description": "Library legal or management"},
+      {"name": "platform_admin", "description": "Technical operator"},
+      {"name": "staff", "description": "Composite: every staff role, used by the MFA condition (SEC-3)", "composite": true,
+       "composites": {"realm": ["curator", "reviewer", "rights_officer", "platform_admin"]}}
+    ]
+  },
+  "defaultRole": {"name": "default-roles-jdhp", "composite": true, "composites": {"realm": ["member", "offline_access", "uma_authorization"]}},
+
+  "clients": [
+    {
+      "clientId": "jdhp-api",
+      "name": "Platform API (audience)",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false
+    },
+    {
+      "clientId": "jdhp-web",
+      "name": "Web application (members)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "${KC_WEB_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "rootUrl": "${KC_FRONTEND_URL}",
+      "baseUrl": "/",
+      "redirectUris": ["${KC_FRONTEND_URL}/api/auth/callback"],
+      "webOrigins": ["${KC_FRONTEND_URL}"],
+      "attributes": {
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
+        "use.refresh.tokens": "true",
+        "client_credentials.use_refresh_token": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.session.required": "true"
+      },
+      "defaultClientScopes": ["openid", "profile", "email", "roles", "jdhp-audience"],
+      "optionalClientScopes": ["phone"]
+    },
+    {
+      "clientId": "jdhp-staff",
+      "name": "Web application (staff portals, one-hour sessions)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "${KC_STAFF_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "rootUrl": "${KC_FRONTEND_URL}",
+      "redirectUris": ["${KC_FRONTEND_URL}/api/auth/callback/staff"],
+      "webOrigins": ["${KC_FRONTEND_URL}"],
+      "attributes": {
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
+        "pkce.code.challenge.method": "S256",
+        "client.session.idle.timeout": "3600",
+        "client.session.max.lifespan": "3600",
+        "post.logout.redirect.uris": "${KC_FRONTEND_URL}/*",
+        "use.refresh.tokens": "true",
+        "backchannel.logout.session.required": "true"
+      },
+      "defaultClientScopes": ["openid", "profile", "email", "roles", "jdhp-audience"],
+      "optionalClientScopes": []
+    }
+  ],
+
+  "clientScopes": [
+    {
+      "name": "jdhp-audience",
+      "description": "Adds the API as token audience and the verification claims the API reads",
+      "protocol": "openid-connect",
+      "attributes": {"include.in.token.scope": "false", "display.on.consent.screen": "false"},
+      "protocolMappers": [
+        {"name": "api audience", "protocol": "openid-connect", "protocolMapper": "oidc-audience-mapper", "consentRequired": false,
+         "config": {"included.client.audience": "jdhp-api", "id.token.claim": "false", "access.token.claim": "true"}},
+        {"name": "phone number verified", "protocol": "openid-connect", "protocolMapper": "oidc-usermodel-attribute-mapper", "consentRequired": false,
+         "config": {"user.attribute": "phoneNumberVerified", "claim.name": "phone_number_verified", "jsonType.label": "boolean", "id.token.claim": "true", "access.token.claim": "true", "userinfo.token.claim": "true"}},
+        {"name": "authentication methods", "protocol": "openid-connect", "protocolMapper": "oidc-amr-mapper", "consentRequired": false,
+         "config": {"id.token.claim": "true", "access.token.claim": "true"}},
+        {"name": "acr", "protocol": "openid-connect", "protocolMapper": "oidc-acr-mapper", "consentRequired": false,
+         "config": {"id.token.claim": "true", "access.token.claim": "true"}}
+      ]
+    }
+  ],
+
+  "requiredActions": [
+    {"alias": "CONFIGURE_TOTP", "name": "Configure OTP", "providerId": "CONFIGURE_TOTP", "enabled": true, "defaultAction": false, "priority": 10},
+    {"alias": "webauthn-register", "name": "Webauthn Register", "providerId": "webauthn-register", "enabled": true, "defaultAction": false, "priority": 20},
+    {"alias": "VERIFY_EMAIL", "name": "Verify Email", "providerId": "VERIFY_EMAIL", "enabled": true, "defaultAction": true, "priority": 30},
+    {"alias": "UPDATE_PASSWORD", "name": "Update Password", "providerId": "UPDATE_PASSWORD", "enabled": true, "defaultAction": false, "priority": 40},
+    {"alias": "UPDATE_PROFILE", "name": "Update Profile", "providerId": "UPDATE_PROFILE", "enabled": true, "defaultAction": false, "priority": 50},
+    {"alias": "delete_account", "name": "Delete Account", "providerId": "delete_account", "enabled": true, "defaultAction": false, "priority": 60}
+  ],
+
+  "browserFlow": "jdhp browser",
+  "authenticationFlows": [
+    {
+      "alias": "jdhp browser",
+      "description": "Cookie, identity provider redirect, then forms with mandatory MFA for staff (SEC-3)",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {"authenticator": "auth-cookie", "requirement": "ALTERNATIVE", "priority": 10, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"authenticator": "identity-provider-redirector", "requirement": "ALTERNATIVE", "priority": 20, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"flowAlias": "jdhp forms", "requirement": "ALTERNATIVE", "priority": 30, "autheticatorFlow": true, "userSetupAllowed": false}
+      ]
+    },
+    {
+      "alias": "jdhp forms",
+      "description": "Username and password, then conditional second factors",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {"authenticator": "auth-username-password-form", "requirement": "REQUIRED", "priority": 10, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"flowAlias": "jdhp staff otp", "requirement": "CONDITIONAL", "priority": 20, "autheticatorFlow": true, "userSetupAllowed": false},
+        {"flowAlias": "jdhp admin webauthn", "requirement": "CONDITIONAL", "priority": 30, "autheticatorFlow": true, "userSetupAllowed": false},
+        {"flowAlias": "jdhp member otp", "requirement": "CONDITIONAL", "priority": 40, "autheticatorFlow": true, "userSetupAllowed": false}
+      ]
+    },
+    {
+      "alias": "jdhp staff otp",
+      "description": "Every staff role must present a second factor (SEC-3)",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {"authenticator": "conditional-user-role", "authenticatorConfig": "jdhp staff role", "requirement": "REQUIRED", "priority": 10, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"authenticator": "auth-otp-form", "requirement": "REQUIRED", "priority": 20, "autheticatorFlow": false, "userSetupAllowed": false}
+      ]
+    },
+    {
+      "alias": "jdhp admin webauthn",
+      "description": "Platform admins must present a hardware key (SEC-3)",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {"authenticator": "conditional-user-role", "authenticatorConfig": "jdhp admin role", "requirement": "REQUIRED", "priority": 10, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"authenticator": "webauthn-authenticator", "requirement": "REQUIRED", "priority": 20, "autheticatorFlow": false, "userSetupAllowed": false}
+      ]
+    },
+    {
+      "alias": "jdhp member otp",
+      "description": "Members who enrolled a second factor must use it",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {"authenticator": "conditional-user-configured", "requirement": "REQUIRED", "priority": 10, "autheticatorFlow": false, "userSetupAllowed": false},
+        {"authenticator": "auth-otp-form", "requirement": "REQUIRED", "priority": 20, "autheticatorFlow": false, "userSetupAllowed": false}
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {"alias": "jdhp staff role", "config": {"condition.user.role": "staff", "negate": "false"}},
+    {"alias": "jdhp admin role", "config": {"condition.user.role": "platform_admin", "negate": "false"}}
+  ],
+
+  "smtpServer": {
+    "host": "${KC_SMTP_HOST}",
+    "port": "${KC_SMTP_PORT}",
+    "from": "${KC_SMTP_FROM}",
+    "fromDisplayName": "Jordanian Digital Heritage Platform",
+    "auth": "false",
+    "ssl": "false",
+    "starttls": "false"
+  }
+}

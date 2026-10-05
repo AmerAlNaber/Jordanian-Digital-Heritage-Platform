@@ -1,0 +1,93 @@
+# Tile and page metadata access. Checked on every tile request (RDR-1, SEC-10).
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: page
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///page.json
+  rules:
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      derivedRoles: [staff]
+
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.access_class != "embargoed"
+              - expr: R.attr.frozen != true
+
+    # Sample pages are readable by anyone the work is visible to.
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class != "embargoed"
+              - expr: R.attr.in_sample_range == true
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class == "open"
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class == "registered"
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [grant_holder]
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.publish_state == "published"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class in ["paid", "restricted"]
+              - expr: R.attr.in_grant_range == true
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      derivedRoles: [break_glass_admin]
+
+    - actions: [read]
+      effect: EFFECT_ALLOW
+      roles: [curator, reviewer, rights_officer]
+      condition:
+        match:
+          expr: R.attr.access_class != "embargoed" && R.attr.frozen != true
+
+    - actions: [edit]
+      effect: EFFECT_ALLOW
+      roles: [curator, platform_admin]
+
+    # OCR text is internal; only the review portal (Reviewer) and curators correcting OCR see it.
+    - actions: [view_ocr_text]
+      effect: EFFECT_ALLOW
+      roles: [reviewer, curator]
