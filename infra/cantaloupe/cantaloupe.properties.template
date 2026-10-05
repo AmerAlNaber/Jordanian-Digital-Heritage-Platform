@@ -23,6 +23,7 @@ endpoint.iiif.restrict_to_sizes = true
 endpoint.iiif.content_disposition = inline
 endpoint.admin.enabled = false
 endpoint.api.enabled = false
+endpoint.health.enabled = true
 endpoint.health.dependency_check = false
 
 # No server-side caches: the gateway and the CDN cache tiles. The cache worker must still carry a
