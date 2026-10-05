@@ -73,7 +73,12 @@ export async function SearchFacets({
       ))}
       {hasFilters(query) ? (
         <p className="mt-2">
-          <Link href={{ pathname: "/search", query: toParams({ ...query, facets: emptyFacets(), page: 1 }) }}>
+          <Link
+            href={{
+              pathname: "/search",
+              query: toParams({ ...query, facets: emptyFacets(), page: 1 }),
+            }}
+          >
             {t("clear")}
           </Link>
         </p>

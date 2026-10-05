@@ -15,8 +15,13 @@ const config: NextConfig = {
     const api = process.env.JDHP_DEV_API_URL;
     const tiles = process.env.JDHP_DEV_TILES_URL;
     const afterFiles = [];
-    if (api) afterFiles.push({ source: "/api/:path*", destination: `${api.replace(/\/$/, "")}/:path*` });
-    if (tiles) afterFiles.push({ source: "/iiif/:path*", destination: `${tiles.replace(/\/$/, "")}/iiif/:path*` });
+    if (api)
+      afterFiles.push({ source: "/api/:path*", destination: `${api.replace(/\/$/, "")}/:path*` });
+    if (tiles)
+      afterFiles.push({
+        source: "/iiif/:path*",
+        destination: `${tiles.replace(/\/$/, "")}/iiif/:path*`,
+      });
     return { beforeFiles: [], afterFiles, fallback: [] };
   },
   async headers() {

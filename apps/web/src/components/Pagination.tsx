@@ -30,10 +30,7 @@ export async function Pagination({
       className="font-interface mt-8 flex items-center justify-between text-step-n1"
     >
       {page > 1 ? (
-        <Link
-          href={{ pathname, query: { ...clean, page: String(page - 1) } }}
-          rel="prev"
-        >
+        <Link href={{ pathname, query: { ...clean, page: String(page - 1) } }} rel="prev">
           {t("previous")}
         </Link>
       ) : (
@@ -43,10 +40,7 @@ export async function Pagination({
         {formatNumber(page, locale)} / {formatNumber(last, locale)}
       </span>
       {page < last ? (
-        <Link
-          href={{ pathname, query: { ...clean, page: String(page + 1) } }}
-          rel="next"
-        >
+        <Link href={{ pathname, query: { ...clean, page: String(page + 1) } }} rel="next">
           {t("next")}
         </Link>
       ) : (

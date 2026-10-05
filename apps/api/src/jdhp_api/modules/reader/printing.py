@@ -20,6 +20,7 @@ import hashlib
 import secrets
 import uuid
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -45,19 +46,13 @@ from jdhp_api.modules.access.service import grant_covers_page
 from jdhp_api.modules.catalog.models import Work
 from jdhp_api.modules.identity.models import User
 from jdhp_api.modules.ingest.models import Page
-from jdhp_api.modules.reader import forensic
-from jdhp_api.modules.reader.images import (
-    ImageInfo,
-    ImageSource,
-    LibvipsSource,
-    Region,
-    TileRequest,
-)
 from jdhp_api.modules.reader.models import PrintJob, ReaderSession
 from jdhp_api.modules.reader.pdf import PdfImage, build_pdf
 from jdhp_api.modules.reader.schemas import PrintJobOut, PrintLinkOut
 from jdhp_api.modules.reader.service import ReaderServices, RequestFacts, ending_reason, utcnow
-from jdhp_api.modules.reader.watermark import print_mark
+
+if TYPE_CHECKING:
+    from jdhp_api.modules.reader.images import ImageSource
 
 RENDER_TASK = "jdhp.print.render"
 QUOTA_STATES = (PrintJobState.QUEUED, PrintJobState.READY, PrintJobState.DOWNLOADED)
@@ -234,6 +229,12 @@ class _RenderFacts:
 async def _render_pdf(
     source: ImageSource, settings: Settings, facts: _RenderFacts, at: dt.datetime
 ) -> bytes:
+    # libvips-backed modules are imported here, where the worker renders, so importing the API
+    # application (the OpenAPI export, the routes) never loads libvips.
+    from jdhp_api.modules.reader import forensic
+    from jdhp_api.modules.reader.images import ImageInfo, Region, TileRequest
+    from jdhp_api.modules.reader.watermark import print_mark
+
     images: list[PdfImage] = []
     for seq, key, width, height in facts.pages:
         info = ImageInfo(width, height) if width and height else await source.info(key)
@@ -284,6 +285,8 @@ async def render_print(
 ) -> dict[str, object]:
     """Render one queued job to the exports bucket. Any failure marks the job failed, which
     releases its pages to the quota, and re-raises so the worker logs it."""
+    from jdhp_api.modules.reader.images import LibvipsSource
+
     now = now or utcnow()
     source = source or LibvipsSource(store, settings.bucket_access)
     async with database.session(RlsContext.system()) as session:

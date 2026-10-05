@@ -82,9 +82,13 @@ describe("SRCH-4: highlights are boxes on the scan", () => {
 
 describe("RDR-5: the reason a session ended", () => {
   it("uses the API's reason, then its code, then the status", () => {
-    expect(endedReasonFrom(new ReaderError(401, { code: "reader_session_ended", reason: "idle" }))).toBe("idle");
+    expect(
+      endedReasonFrom(new ReaderError(401, { code: "reader_session_ended", reason: "idle" })),
+    ).toBe("idle");
     expect(endedReasonFrom(new ReaderError(403, { code: "device_limit" }))).toBe("device_limit");
-    expect(endedReasonFrom(new ReaderError(403, { code: "grant_required" }))).toBe("grant_required");
+    expect(endedReasonFrom(new ReaderError(403, { code: "grant_required" }))).toBe(
+      "grant_required",
+    );
     expect(endedReasonFrom(new ReaderError(401, { code: "unauthorized" }))).toBe("unauthorized");
     expect(endedReasonFrom(new ReaderError(500, {}))).toBe("generic");
     expect(endedReasonFrom(new Error("network"))).toBe("generic");

@@ -21,7 +21,12 @@ export function CitePanel({ locale, text, ark }: { locale: string; text: string;
         {text}
       </blockquote>
       <p className="label font-mono break-all">{ark}</p>
-      <button type="button" onClick={() => void copy()} className="control min-h-10 w-fit" aria-live="polite">
+      <button
+        type="button"
+        onClick={() => void copy()}
+        className="control min-h-10 w-fit"
+        aria-live="polite"
+      >
         {copied ? t("copied") : t("copyCitation")}
       </button>
     </div>

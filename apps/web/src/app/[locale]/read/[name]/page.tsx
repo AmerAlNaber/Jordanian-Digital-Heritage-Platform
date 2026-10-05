@@ -69,7 +69,10 @@ export default async function ReadPage({
               {t("signInToRead")}
             </a>
           )}
-          <Link href={`/works/${work.public_id}`} className="control inline-flex items-center no-underline">
+          <Link
+            href={`/works/${work.public_id}`}
+            className="control inline-flex items-center no-underline"
+          >
             {t("backToRecord")}
           </Link>
         </div>

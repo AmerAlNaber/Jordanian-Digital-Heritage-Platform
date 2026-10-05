@@ -128,7 +128,13 @@ services:
       cantaloupe:
         condition: service_started
     healthcheck:
-      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8001), 3).close()"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import socket; socket.create_connection(('127.0.0.1', 8001), 3).close()",
+        ]
       interval: 15s
       timeout: 5s
       retries: 10

@@ -34,11 +34,11 @@ def upgrade() -> None:
     postgresql.ENUM(*PRINT_STATES, name="print_job_state").create(op.get_bind(), checkfirst=True)
     connection = op.get_bind()
     op.add_column("print_job", sa.Column("public_id", sa.String(length=32), nullable=True))
-    rows = connection.execute(sa.text("SELECT id FROM print_job WHERE public_id IS NULL")).fetchall()
+    jobs = sa.table("print_job", sa.column("id", sa.Uuid()), sa.column("public_id", sa.String()))
+    rows = connection.execute(sa.select(jobs.c.id).where(jobs.c.public_id.is_(None))).all()
     for (row_id,) in rows:
         connection.execute(
-            sa.text("UPDATE print_job SET public_id = :name WHERE id = :id"),
-            {"name": mint_name("p8"), "id": row_id},
+            sa.update(jobs).where(jobs.c.id == row_id).values(public_id=mint_name("p8"))
         )
     op.alter_column("print_job", "public_id", nullable=False)
     op.create_index(op.f("ix_print_job_public_id"), "print_job", ["public_id"], unique=True)

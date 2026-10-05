@@ -23,7 +23,10 @@ export function EndedNotice({
   const t = useTranslations("reader");
   const needsSignIn = reason === "unauthorized" || (reason === "grant_required" && !signedIn);
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center" role="alert">
+    <div
+      className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center"
+      role="alert"
+    >
       <h2 className="text-step-2">{t("endedTitle")}</h2>
       <p className="reading text-ink-muted">{t(`ended.${reason}`)}</p>
       <div className="flex flex-wrap justify-center gap-3">

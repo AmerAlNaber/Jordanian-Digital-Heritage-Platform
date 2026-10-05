@@ -240,7 +240,9 @@ export function Reader({
       <div className="relative flex min-h-0 flex-1">
         <div className="relative min-h-0 flex-1 bg-surface" aria-busy={status.kind === "opening"}>
           {status.kind === "opening" ? (
-            <p className="label absolute inset-0 flex items-center justify-center">{t("opening")}</p>
+            <p className="label absolute inset-0 flex items-center justify-center">
+              {t("opening")}
+            </p>
           ) : null}
           {active ? (
             <Viewer
@@ -276,12 +278,21 @@ export function Reader({
             }
           >
             <div className="mb-3 flex justify-end">
-              <button type="button" className="control min-h-10 text-step-n1" onClick={() => setPanel(null)}>
+              <button
+                type="button"
+                className="control min-h-10 text-step-n1"
+                onClick={() => setPanel(null)}
+              >
                 {t("panelClose")}
               </button>
             </div>
             {panel === "contents" ? (
-              <ContentsPanel locale={locale} pages={pages} currentSeqs={currentSeqs} onSelect={goTo} />
+              <ContentsPanel
+                locale={locale}
+                pages={pages}
+                currentSeqs={currentSeqs}
+                onSelect={goTo}
+              />
             ) : null}
             {panel === "search" ? (
               <SearchPanel
@@ -293,9 +304,15 @@ export function Reader({
               />
             ) : null}
             {panel === "print" && status.kind === "active" ? (
-              <PrintPanel session={status.session} currentSeq={current.seq} pageCount={pages.length} />
+              <PrintPanel
+                session={status.session}
+                currentSeq={current.seq}
+                pageCount={pages.length}
+              />
             ) : null}
-            {panel === "cite" ? <CitePanel locale={locale} text={work.citation} ark={work.ark} /> : null}
+            {panel === "cite" ? (
+              <CitePanel locale={locale} text={work.citation} ark={work.ark} />
+            ) : null}
           </aside>
         ) : null}
       </div>

@@ -109,7 +109,11 @@ export default async function WorkPage({ params }: { params: Params }) {
               src={thumbnailUrl(work.public_id, 1, 900)}
               alt={t("scanLabel")}
               className="max-h-full w-auto object-contain"
-              width={pages[0].width_px ? Math.round((pages[0].width_px * 900) / (pages[0].height_px ?? 1)) : undefined}
+              width={
+                pages[0].width_px
+                  ? Math.round((pages[0].width_px * 900) / (pages[0].height_px ?? 1))
+                  : undefined
+              }
               height={900}
               draggable={false}
             />

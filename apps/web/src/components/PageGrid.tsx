@@ -38,7 +38,11 @@ export function PageGrid({
                 src={thumbnailUrl(work, page.seq, 240)}
                 alt=""
                 loading="lazy"
-                width={page.width_px ? Math.round((page.width_px * 240) / (page.height_px ?? 1)) : undefined}
+                width={
+                  page.width_px
+                    ? Math.round((page.width_px * 240) / (page.height_px ?? 1))
+                    : undefined
+                }
                 height={240}
                 className="h-full w-full object-contain"
                 draggable={false}
@@ -59,13 +63,18 @@ export function PageGrid({
                 {tile}
               </Link>
             ) : (
-              <span aria-label={t("pageLabel", { label: page.label ?? String(page.seq) })} className="block w-full">
+              <span
+                aria-label={t("pageLabel", { label: page.label ?? String(page.seq) })}
+                className="block w-full"
+              >
                 {tile}
               </span>
             )}
             <span className="label text-step-n2">
               {label}
-              {page.in_sample_range ? <span className="text-label-human"> · {sampleLabel}</span> : null}
+              {page.in_sample_range ? (
+                <span className="text-label-human"> · {sampleLabel}</span>
+              ) : null}
             </span>
           </li>
         );

@@ -120,10 +120,22 @@ export function Toolbar({
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-1">
-        <button type="button" className={BUTTON} onClick={onZoomOut} disabled={disabled} aria-label={t("zoomOut")}>
+        <button
+          type="button"
+          className={BUTTON}
+          onClick={onZoomOut}
+          disabled={disabled}
+          aria-label={t("zoomOut")}
+        >
           −
         </button>
-        <button type="button" className={BUTTON} onClick={onZoomIn} disabled={disabled} aria-label={t("zoomIn")}>
+        <button
+          type="button"
+          className={BUTTON}
+          onClick={onZoomIn}
+          disabled={disabled}
+          aria-label={t("zoomIn")}
+        >
           +
         </button>
         <button type="button" className={BUTTON} onClick={onFit} disabled={disabled}>

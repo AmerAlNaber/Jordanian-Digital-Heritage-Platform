@@ -33,13 +33,11 @@ def upgrade() -> None:
     connection = op.get_bind()
     for table, shoulder in NAMED_TABLES:
         op.add_column(table, sa.Column("public_id", sa.String(length=32), nullable=True))
-        rows = connection.execute(
-            sa.text(f'SELECT id FROM "{table}" WHERE public_id IS NULL')  # noqa: S608  # nosec B608  # constant table names
-        ).fetchall()
+        named = sa.table(table, sa.column("id", sa.Uuid()), sa.column("public_id", sa.String()))
+        rows = connection.execute(sa.select(named.c.id).where(named.c.public_id.is_(None))).all()
         for (row_id,) in rows:
             connection.execute(
-                sa.text(f'UPDATE "{table}" SET public_id = :name WHERE id = :id'),  # noqa: S608  # nosec B608
-                {"name": mint_name(shoulder), "id": row_id},
+                sa.update(named).where(named.c.id == row_id).values(public_id=mint_name(shoulder))
             )
         op.alter_column(table, "public_id", nullable=False)
         op.create_index(op.f(f"ix_{table}_public_id"), table, ["public_id"], unique=True)

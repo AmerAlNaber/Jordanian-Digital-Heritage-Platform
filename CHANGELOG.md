@@ -32,6 +32,7 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Fixed
 
+- CI: the OpenAPI export job imports the API application without libvips, so the print service loads its libvips-backed modules only when a render runs; the tile check no longer pipes `curl` into an interpreter; migrations 0003 and 0004 backfill public names with SQLAlchemy core instead of SQL strings (Semgrep); Prettier formatting restored on the web sources and the Compose file.
 - Web: the reader fetches each page's `info.json` itself with the tile token, so protected pages open; a session that resolves after the reader unmounted is closed at once; the development server's Content Security Policy allows `eval` for hot reloading (production never does); `JDHP_DEV_API_URL` and `JDHP_DEV_TILES_URL` proxy the API and tiles through the development server so the browser stays same-origin without Caddy (SEC-16).
 - Tests: the tile rate-limit tests freeze the limiter's clock (now injectable) so the burst window cannot straddle a second boundary under load (SEC-12).
 - Seed: the book is rendered in a fresh interpreter. Pillow's text layout is corrupted in any process where libvips has been loaded, and the API application now loads libvips at import for the print renderer, which broke the seed in the test session and would break the Compose seed command (ADM-1).
