@@ -261,7 +261,8 @@ services:
       retries: 20
 
   opensearch:
-    image: opensearchproject/opensearch:2.19.0
+    build: ./infra/opensearch
+    image: jdhp-opensearch:local
     restart: unless-stopped
     environment:
       discovery.type: single-node
@@ -270,12 +271,6 @@ services:
       OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g"
       DISABLE_SECURITY_PLUGIN: "true"
       DISABLE_INSTALL_DEMO_CONFIG: "true"
-    command:
-      [
-        "sh",
-        "-c",
-        "bin/opensearch-plugin list | grep -q analysis-icu || bin/opensearch-plugin install --batch analysis-icu; exec opensearch",
-      ]
     ulimits:
       memlock: { soft: -1, hard: -1 }
     volumes:
