@@ -29,8 +29,8 @@ migrate: ## Apply database migrations
 
 test: test-api test-worker test-policies test-web ## Run every test suite
 
-test-api: ## API tests with the 80 percent coverage gate
-	uv run pytest apps/api/tests packages --cov --cov-report=term-missing --cov-report=xml
+test-api: ## API, worker and package tests with the 80 percent coverage gate on apps/api
+	uv run pytest apps/api/tests apps/worker/tests packages --cov --cov-report=term-missing --cov-report=xml
 
 test-worker: ## Worker tests
 	uv run pytest apps/worker/tests

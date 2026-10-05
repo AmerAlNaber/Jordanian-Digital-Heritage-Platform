@@ -83,10 +83,10 @@ jobs:
         run: |
           mkdir -p .ci-bin
           curl -sSfL "https://github.com/cerbos/cerbos/releases/download/v${CERBOS_VERSION}/cerbos_${CERBOS_VERSION}_Linux_x86_64.tar.gz" | tar -xz -C .ci-bin cerbos
-      - name: API and package tests with the 80 percent coverage gate
-        run: uv run pytest apps/api/tests packages --cov --cov-report=term-missing --cov-report=xml
-      - name: Worker tests (seed book through the inline pipeline)
-        run: uv run pytest apps/worker/tests
+      - name: API, worker and package tests with the 80 percent coverage gate on apps/api
+        # The worker suite drives the seed book through the API's services, so it counts toward
+        # the API's line coverage like every other caller of that code.
+        run: uv run pytest apps/api/tests apps/worker/tests packages --cov --cov-report=term-missing --cov-report=xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
