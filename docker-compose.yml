@@ -331,7 +331,8 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    build: ./infra/compose/minio
+    image: jdhp-minio:local
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
@@ -341,13 +342,14 @@ services:
       - minio-data:/data
     networks: [data]
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
       interval: 10s
       timeout: 5s
-      retries: 20
+      retries: 30
 
   minio-init:
-    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    build: ./infra/compose/minio
+    image: jdhp-minio:local
     entrypoint: ["sh", "/opt/jdhp/init.sh"]
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}

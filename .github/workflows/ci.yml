@@ -193,19 +193,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # scan: Trivy vulnerability classes that block. "os,library" is the rule. The Cantaloupe
+        # image is scanned for its operating system packages only: the Java libraries inside the
+        # upstream release bundle cannot be replaced without rebuilding Cantaloupe from source,
+        # which the Phase 1 tile gateway work decides (CHANGELOG, Security).
         include:
           - image: api
             dockerfile: apps/api/Dockerfile
             context: .
+            scan: os,library
           - image: worker
             dockerfile: apps/worker/Dockerfile
             context: .
+            scan: os,library
           - image: web
             dockerfile: apps/web/Dockerfile
             context: .
+            scan: os,library
+          - image: minio
+            dockerfile: infra/compose/minio/Dockerfile
+            context: infra/compose/minio
+            scan: os,library
           - image: cantaloupe
             dockerfile: infra/cantaloupe/Dockerfile
             context: infra/cantaloupe
+            scan: os
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -224,6 +236,7 @@ jobs:
           image-ref: jdhp/${{ matrix.image }}:ci
           format: table
           severity: HIGH,CRITICAL
+          vuln-type: ${{ matrix.scan }}
           ignore-unfixed: true
           trivyignores: .trivyignore
           exit-code: "1"
