@@ -196,18 +196,22 @@ jobs:
         include:
           - image: api
             dockerfile: apps/api/Dockerfile
+            context: .
           - image: worker
             dockerfile: apps/worker/Dockerfile
+            context: .
           - image: web
             dockerfile: apps/web/Dockerfile
+            context: .
           - image: cantaloupe
             dockerfile: infra/cantaloupe/Dockerfile
+            context: infra/cantaloupe
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: false
           load: true
@@ -221,6 +225,7 @@ jobs:
           format: table
           severity: HIGH,CRITICAL
           ignore-unfixed: true
+          trivyignores: .trivyignore
           exit-code: "1"
 
   integration:

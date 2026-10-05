@@ -12,6 +12,9 @@ dependencies = [
   "jdhp-metadata",
 ]
 
+[project.optional-dependencies]
+seed = ["jdhp-api[seed]"]
+
 [dependency-groups]
 dev = ["pytest>=8.4", "pytest-asyncio>=1.1", "moto[s3]>=5.1"]
 

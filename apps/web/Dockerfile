@@ -15,7 +15,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter @jdhp/schemas generate && pnpm --filter @jdhp/web build
 
 FROM node:22-alpine AS runtime
-RUN addgroup -S jdhp && adduser -S -G jdhp -u 10003 jdhp
+RUN apk upgrade --no-cache \
+    && rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+       /opt/yarn* /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+    && addgroup -S jdhp && adduser -S -G jdhp -u 10003 jdhp
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 COPY --from=build --chown=jdhp:jdhp /app/apps/web/.next/standalone ./

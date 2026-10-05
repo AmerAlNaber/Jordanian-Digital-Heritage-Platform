@@ -2,7 +2,8 @@
 FROM eclipse-temurin:21-jre-jammy
 
 ARG CANTALOUPE_VERSION=5.0.6
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
       libopenjp2-tools gettext-base unzip curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL -o /tmp/cantaloupe.zip \

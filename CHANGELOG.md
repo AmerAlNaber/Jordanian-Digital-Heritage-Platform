@@ -25,3 +25,4 @@ All notable changes to this project are documented in this file. The format foll
 ### Security
 
 - Next.js pinned to 15.5.24 and transitive `postcss` and `sharp` raised through `pnpm.overrides` so `pnpm audit` passes at the high level (SEC-18). One advisory without a patched release, GHSA-vfj7-8cjw-p6xm in the development-only `braces` dependency of the Next.js ESLint plugin, is listed in `pnpm.auditConfig.ignoreGhsas` until a fix ships.
+- Images apply the base distribution's security updates at build time, the web runtime image carries only Node.js (npm, corepack and yarn are removed with their bundled dependencies), and Trivy blocks any high or critical finding not accepted in `.trivyignore` with a written reason (SEC-18).

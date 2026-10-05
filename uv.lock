@@ -1063,6 +1063,11 @@ dependencies = [
     { name = "pyvips" },
 ]
 
+[package.optional-dependencies]
+seed = [
+    { name = "jdhp-api", extra = ["seed"] },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "moto", extra = ["s3"] },
@@ -1075,10 +1080,12 @@ requires-dist = [
     { name = "celery", extras = ["redis"], specifier = ">=5.5" },
     { name = "jdhp-adapters", editable = "packages/ai-adapters" },
     { name = "jdhp-api", editable = "apps/api" },
+    { name = "jdhp-api", extras = ["seed"], marker = "extra == 'seed'", editable = "apps/api" },
     { name = "jdhp-metadata", editable = "packages/metadata" },
     { name = "pillow", specifier = ">=11" },
     { name = "pyvips", specifier = ">=3.0" },
 ]
+provides-extras = ["seed"]
 
 [package.metadata.requires-dev]
 dev = [
