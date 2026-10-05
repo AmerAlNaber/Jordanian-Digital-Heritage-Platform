@@ -5,3 +5,8 @@
 # build-time file matching; no request-controlled pattern reaches it at runtime. Next.js 15.5.24
 # is the latest 15.5 release. Re-check on every Next.js upgrade.
 CVE-2026-33671
+
+# Keycloak 26.7.5 bundles mssql-jdbc as 13.2.1.jre11, which is the fixed release for this advisory;
+# Trivy reads the version as 13.2.1 and ranks it below "13.2.1.jre11". The driver is unused as well:
+# the realm runs on PostgreSQL (ADR-0009). Re-check when the Keycloak pin moves.
+CVE-2025-59250

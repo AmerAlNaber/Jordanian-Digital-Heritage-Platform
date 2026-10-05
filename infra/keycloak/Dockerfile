@@ -16,4 +16,6 @@ ENV KC_DB=postgres \
     KC_HTTP_RELATIVE_PATH=/auth \
     KC_HEALTH_ENABLED=true
 RUN /opt/keycloak/bin/kc.sh build
+# The upstream image already runs as the keycloak user (1000); stated so the scanners can see it.
+USER 1000
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
