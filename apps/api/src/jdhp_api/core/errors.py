@@ -113,6 +113,25 @@ class TileTooLargeError(ForbiddenError):
     code = "tile_too_large"
 
 
+class PrintQuotaError(ForbiddenError):
+    """More pages than the grant's print quota has left (RDR-4)."""
+
+    code = "print_quota_exceeded"
+
+
+class PrintPagesError(JdhpError):
+    """Pages outside the work or outside what the grant covers."""
+
+    status = http.HTTP_400_BAD_REQUEST
+    code = "print_pages_invalid"
+
+
+class PrintNotReadyError(ConflictError):
+    """A download link asked for before the PDF exists, or after it was delivered (SEC-15)."""
+
+    code = "print_not_ready"
+
+
 def problem(
     request: Request, *, status: int, code: str, extra: Mapping[str, Any] | None = None
 ) -> JSONResponse:

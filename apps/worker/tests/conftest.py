@@ -14,7 +14,7 @@ from jdhp_adapters.mock.ocr import MockOcr
 from jdhp_api.core.db import Database
 from jdhp_api.core.storage import ObjectStore
 from jdhp_api.modules.search.indexer import RecordingIndexer
-from jdhp_api.seed.generate import generate
+from jdhp_api.seed.generate import generate_isolated
 from jdhp_api.testing import db as testing_db
 from jdhp_worker.runtime import Runtime, ground_truth_from_store
 from jdhp_worker.settings import WorkerSettings
@@ -124,5 +124,5 @@ def runtime(
 @pytest.fixture(scope="session")
 def seed_output(tmp_path_factory: pytest.TempPathFactory) -> Path:
     out = tmp_path_factory.mktemp("seed")
-    generate(out, scale=SEED_SCALE)
+    generate_isolated(out, scale=SEED_SCALE)
     return out

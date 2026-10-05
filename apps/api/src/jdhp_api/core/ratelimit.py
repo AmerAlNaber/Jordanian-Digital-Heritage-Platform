@@ -12,6 +12,7 @@ from __future__ import annotations
 import dataclasses
 import time
 from collections import defaultdict
+from collections.abc import Callable
 
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
@@ -28,11 +29,17 @@ class Limits:
 
 class RateLimiter:
     def __init__(
-        self, redis: Redis | None, limits: Limits, *, prefix: str = "jdhp:rl:tiles"
+        self,
+        redis: Redis | None,
+        limits: Limits,
+        *,
+        prefix: str = "jdhp:rl:tiles",
+        clock: Callable[[], float] = time.time,
     ) -> None:
         self._redis = redis
         self._limits = limits
         self._prefix = prefix
+        self._clock = clock
         self._memory: dict[str, list[float]] = defaultdict(list)
         self.degraded = False
 
@@ -46,7 +53,7 @@ class RateLimiter:
 
     async def hit(self, scope: str, subject: str, now: float | None = None) -> bool:
         """Count one request. Returns False when either window is over its limit."""
-        now = now if now is not None else time.time()
+        now = now if now is not None else self._clock()
         burst_key, sustained_key = self._keys(scope, subject, now)
         if self._redis is not None:
             try:

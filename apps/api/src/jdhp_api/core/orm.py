@@ -265,6 +265,13 @@ class ReaderSessionState(enum.StrEnum):
     SUSPENDED = "suspended"
 
 
+class PrintJobState(enum.StrEnum):
+    QUEUED = "queued"
+    READY = "ready"
+    DOWNLOADED = "downloaded"
+    FAILED = "failed"
+
+
 class ApprovalKind(enum.StrEnum):
     PUBLISH = "publish"
     ACCESS_CLASS_CHANGE = "access_class_change"

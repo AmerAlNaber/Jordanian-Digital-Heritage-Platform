@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import os
 import re
+import time
 from collections.abc import AsyncIterator, Callable
 from typing import Any
 
@@ -337,6 +338,9 @@ async def test_sec_12_tile_rate_limit_suspends_session(
     app.state.rate_limiter._limits = type(app.state.rate_limiter._limits)(
         burst_per_second=3, sustained_per_minute=600
     )
+    # A frozen clock keeps the five requests inside one burst window whatever the load.
+    frozen = time.time() + 10_000
+    app.state.rate_limiter._clock = lambda: frozen
     statuses = [
         (
             await gateway.get(
@@ -384,6 +388,8 @@ async def test_sec_12_ip_rate_limit_independent_of_user(
     app.state.rate_limiter._limits = type(app.state.rate_limiter._limits)(
         burst_per_second=2, sustained_per_minute=600
     )
+    frozen = time.time() + 20_000  # one burst window for the whole test, whatever the load
+    app.state.rate_limiter._clock = lambda: frozen
     one = {"X-Forwarded-For": "203.0.113.7"}
     two = {"X-Forwarded-For": "203.0.113.8"}
     results = [

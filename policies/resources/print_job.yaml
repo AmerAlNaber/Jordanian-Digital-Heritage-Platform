@@ -1,0 +1,28 @@
+# Print jobs (RDR-4, SEC-15): the owner follows their job and mints the single-use link; the
+# token in that link is the only credential that unlocks the file; rights officers and
+# platform admins view jobs for investigations.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: print_job
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///print_job.json
+  rules:
+    - actions: [download]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          expr: R.attr.token_valid == true
+
+    - actions: [view, link]
+      effect: EFFECT_ALLOW
+      derivedRoles: [owner]
+
+    - actions: [list, view]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer, platform_admin]

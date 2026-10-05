@@ -17,6 +17,7 @@ import argparse
 import datetime as dt
 import json
 import random
+import subprocess  # nosec B404  # the seed renderer runs itself in a fresh interpreter
 import sys
 from dataclasses import dataclass
 from importlib import resources
@@ -489,6 +490,20 @@ def generate(out: Path, *, scale: float = 1.0, preview: bool = False) -> Path:
         "pages": manifest_pages,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), "utf-8")
+    return out
+
+
+def generate_isolated(out: Path, *, scale: float = 1.0) -> Path:
+    """Render in a fresh interpreter.
+
+    Pillow's text layout returns a corrupt glyph run in a process where libvips has been
+    loaded (the two bring their own HarfBuzz and FreeType), so anything that uses libvips,
+    such as the worker and the test session, renders the seed book through this.
+    """
+    subprocess.run(  # noqa: S603  # nosec B603  # fixed interpreter and module, typed arguments
+        [sys.executable, "-m", "jdhp_api.seed.generate", "--out", str(out), "--scale", str(scale)],
+        check=True,
+    )
     return out
 
 

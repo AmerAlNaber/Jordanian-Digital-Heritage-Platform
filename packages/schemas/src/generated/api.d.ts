@@ -192,6 +192,63 @@ export interface paths {
         patch: operations["update_preferences_me_preferences_patch"];
         trace?: never;
     };
+    "/reader/prints/{job}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Print */
+        get: operations["get_print_reader_prints__job__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/prints/{job}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Print File
+         * @description The PDF, once. The token in ``t`` is the credential; the file is deleted after this.
+         */
+        get: operations["print_file_reader_prints__job__file_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/prints/{job}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Print Link
+         * @description A single-use download link that expires in fifteen minutes (SEC-15).
+         */
+        post: operations["print_link_reader_prints__job__link_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/reader/sessions": {
         parameters: {
             query?: never;
@@ -238,6 +295,28 @@ export interface paths {
         put?: never;
         /** Heartbeat */
         post: operations["heartbeat_reader_sessions__session__heartbeat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/sessions/{session}/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request Print
+         * @description Ask for a watermarked, low-resolution PDF of pages within the session's grant. The
+         *     caller presents both credentials, the signed-in token and the session's grant token; the
+         *     request is logged with its page numbers and counted against the grant's quota.
+         */
+        post: operations["request_print_reader_sessions__session__print_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -978,6 +1057,55 @@ export interface components {
             /** Theme */
             theme?: string | null;
         };
+        /** PrintJobOut */
+        PrintJobOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Downloaded At */
+            downloaded_at: string | null;
+            /** Grant */
+            grant: string;
+            /** Pages */
+            pages: number[];
+            /** Public Id */
+            public_id: string;
+            /** Quota Remaining */
+            quota_remaining: number;
+            /** Rendered At */
+            rendered_at: string | null;
+            state: components["schemas"]["PrintJobState"];
+            /** Work */
+            work: string;
+        };
+        /**
+         * PrintJobState
+         * @enum {string}
+         */
+        PrintJobState: "queued" | "ready" | "downloaded" | "failed";
+        /** PrintLinkOut */
+        PrintLinkOut: {
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Url
+             * @description Single-use download link, valid for fifteen minutes (SEC-15)
+             */
+            url: string;
+        };
+        /** PrintRequest */
+        PrintRequest: {
+            /**
+             * Pages
+             * @description Sequence numbers of the pages to print
+             */
+            pages: number[];
+        };
         /**
          * ProvenanceType
          * @enum {string}
@@ -1716,6 +1844,66 @@ export interface operations {
             };
         };
     };
+    get_print_reader_prints__job__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrintJobOut"];
+                };
+            };
+        };
+    };
+    print_file_reader_prints__job__file_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    print_link_reader_prints__job__link_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrintLinkOut"];
+                };
+            };
+        };
+    };
     open_session_reader_sessions_post: {
         parameters: {
             query?: never;
@@ -1807,6 +1995,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReaderSessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_print_reader_sessions__session__print_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrintRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrintJobOut"];
                 };
             };
             /** @description Validation Error */

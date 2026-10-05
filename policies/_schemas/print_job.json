@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Attributes of a print job",
+  "type": "object",
+  "properties": {
+    "owner_id": { "type": "string" },
+    "token_valid": { "type": "boolean" },
+    "state": { "type": "string", "enum": ["queued", "ready", "downloaded", "failed"] }
+  },
+  "required": ["token_valid"]
+}

@@ -1283,6 +1283,111 @@
         }
       }
     },
+    "/reader/sessions/{session}/print": {
+      "post": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Request Print",
+        "description": "Ask for a watermarked, low-resolution PDF of pages within the session's grant. The\ncaller presents both credentials, the signed-in token and the session's grant token; the\nrequest is logged with its page numbers and counted against the grant's quota.",
+        "operationId": "request_print_reader_sessions__session__print_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrintJobOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/prints/{job}": {
+      "get": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Get Print",
+        "operationId": "get_print_reader_prints__job__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrintJobOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/prints/{job}/link": {
+      "post": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Print Link",
+        "description": "A single-use download link that expires in fifteen minutes (SEC-15).",
+        "operationId": "print_link_reader_prints__job__link_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrintLinkOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/prints/{job}/file": {
+      "get": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Print File",
+        "description": "The PDF, once. The token in ``t`` is the credential; the file is deleted after this.",
+        "operationId": "print_file_reader_prints__job__file_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/search": {
       "get": {
         "tags": [
@@ -3183,6 +3288,130 @@
         "additionalProperties": false,
         "type": "object",
         "title": "PreferencesUpdate"
+      },
+      "PrintJobOut": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "work": {
+            "type": "string",
+            "title": "Work"
+          },
+          "grant": {
+            "type": "string",
+            "title": "Grant"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PrintJobState"
+          },
+          "pages": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Pages"
+          },
+          "quota_remaining": {
+            "type": "integer",
+            "title": "Quota Remaining"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "rendered_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rendered At"
+          },
+          "downloaded_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Downloaded At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "work",
+          "grant",
+          "state",
+          "pages",
+          "quota_remaining",
+          "created_at",
+          "rendered_at",
+          "downloaded_at"
+        ],
+        "title": "PrintJobOut"
+      },
+      "PrintJobState": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "ready",
+          "downloaded",
+          "failed"
+        ],
+        "title": "PrintJobState"
+      },
+      "PrintLinkOut": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Single-use download link, valid for fifteen minutes (SEC-15)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "expires_at"
+        ],
+        "title": "PrintLinkOut"
+      },
+      "PrintRequest": {
+        "properties": {
+          "pages": {
+            "items": {
+              "type": "integer",
+              "maximum": 100000.0,
+              "minimum": 1.0
+            },
+            "type": "array",
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Pages",
+            "description": "Sequence numbers of the pages to print"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "pages"
+        ],
+        "title": "PrintRequest"
       },
       "ProvenanceType": {
         "type": "string",

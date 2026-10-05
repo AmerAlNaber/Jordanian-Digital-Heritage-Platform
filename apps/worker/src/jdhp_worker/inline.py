@@ -7,7 +7,7 @@ from collections import deque
 from collections.abc import Callable, Coroutine
 from typing import Any
 
-from jdhp_worker.pipeline import derivatives, embeddings, fixity, ingest, ocr
+from jdhp_worker.pipeline import derivatives, embeddings, fixity, ingest, ocr, printing
 from jdhp_worker.runtime import Runtime
 
 PipelineFn = Callable[..., Coroutine[Any, Any, dict[str, object]]]
@@ -24,6 +24,7 @@ HANDLERS: dict[str, Callable[[Runtime, dict[str, Any]], Coroutine[Any, Any, dict
     "jdhp.fixity.verify": lambda rt, kw: fixity.verify_digital_object(
         rt, uuid.UUID(kw["digital_object_id"])
     ),
+    "jdhp.print.render": lambda rt, kw: printing.render_job(rt, uuid.UUID(kw["job_id"])),
 }
 
 

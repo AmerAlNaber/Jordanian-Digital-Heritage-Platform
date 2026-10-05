@@ -83,7 +83,10 @@ resourcePolicy:
         match:
           expr: R.attr.access_class != "embargoed" && R.attr.frozen != true
 
-    # Print follows read, except Restricted and Embargoed where it is disabled by default.
+    # Print follows the grant: the grant carries the print quota (RDR-4), so only a grant
+    # holder prints, on a published Open, Registered or Paid work. A member's grant on an Open
+    # or Registered work is created when they open the reader. Restricted and Embargoed never
+    # print by default.
     - actions: [print]
       effect: EFFECT_DENY
       roles: ["*"]
@@ -93,33 +96,14 @@ resourcePolicy:
 
     - actions: [print]
       effect: EFFECT_ALLOW
-      roles: ["*"]
-      condition:
-        match:
-          all:
-            of:
-              - expr: R.attr.publish_state == "published"
-              - expr: R.attr.access_class == "open"
-
-    - actions: [print]
-      effect: EFFECT_ALLOW
-      derivedRoles: [signed_in]
-      condition:
-        match:
-          all:
-            of:
-              - expr: R.attr.publish_state == "published"
-              - expr: R.attr.access_class == "registered"
-
-    - actions: [print]
-      effect: EFFECT_ALLOW
       derivedRoles: [grant_holder]
       condition:
         match:
           all:
             of:
               - expr: R.attr.publish_state == "published"
-              - expr: R.attr.access_class == "paid"
+              - expr: R.attr.frozen != true
+              - expr: R.attr.access_class in ["open", "registered", "paid"]
 
     - actions: [request_access]
       effect: EFFECT_ALLOW

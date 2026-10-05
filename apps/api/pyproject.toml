@@ -36,7 +36,15 @@ dependencies = [
 seed = ["Pillow>=11", "arabic-reshaper>=3.0", "python-bidi>=0.6"]
 
 [dependency-groups]
-dev = ["pytest>=8.4", "pytest-asyncio>=1.1", "pytest-cov>=6.2", "httpx>=0.28", "moto[s3]>=5.1", "fakeredis>=2.31"]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=1.1",
+    "pytest-cov>=6.2",
+    "httpx>=0.28",
+    "moto[s3]>=5.1",
+    "fakeredis>=2.31",
+    "pypdf>=6.0",
+]
 
 [build-system]
 requires = ["hatchling"]

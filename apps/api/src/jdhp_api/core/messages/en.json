@@ -30,5 +30,11 @@
   "errors.tile_request_invalid.title": "Invalid image request",
   "errors.tile_request_invalid.detail": "The requested image parameters are not supported.",
   "errors.tile_too_large.title": "Image larger than permitted",
-  "errors.tile_too_large.detail": "Protected pages are served as small tiles only."
+  "errors.tile_too_large.detail": "Protected pages are served as small tiles only.",
+  "errors.print_quota_exceeded.title": "Print quota exceeded",
+  "errors.print_quota_exceeded.detail": "This grant does not have enough print quota left for the pages requested.",
+  "errors.print_pages_invalid.title": "Pages cannot be printed",
+  "errors.print_pages_invalid.detail": "One or more requested pages are outside the work or outside what this grant covers.",
+  "errors.print_not_ready.title": "The print is not ready",
+  "errors.print_not_ready.detail": "The PDF is still being prepared, or it has already been downloaded."
 }

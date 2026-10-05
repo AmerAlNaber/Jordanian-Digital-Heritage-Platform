@@ -18,6 +18,7 @@ TASK_MODULES = (
     "jdhp_worker.tasks.ocr",
     "jdhp_worker.tasks.embeddings",
     "jdhp_worker.tasks.fixity",
+    "jdhp_worker.tasks.printing",
 )
 
 app = Celery("jdhp", include=list(TASK_MODULES))
@@ -48,6 +49,7 @@ def configure(settings: WorkerSettings, *, eager: bool = False) -> Celery:
             "jdhp.embeddings.*": {"queue": "embeddings"},
             "jdhp.translation.*": {"queue": "translation"},
             "jdhp.fixity.*": {"queue": "fixity"},
+            "jdhp.print.*": {"queue": "derivatives"},
             "jdhp.mail.*": {"queue": "mail"},
             "jdhp.maintenance.*": {"queue": "maintenance"},
         },

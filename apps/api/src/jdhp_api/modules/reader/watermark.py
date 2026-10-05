@@ -94,6 +94,28 @@ def platform_mark(image: pyvips.Image) -> pyvips.Image:
     )
 
 
+def print_mark(
+    image: pyvips.Image,
+    *,
+    user_tag: str,
+    grant_public_id: str,
+    work_public_id: str,
+    at: dt.datetime | None = None,
+) -> pyvips.Image:
+    """The mark on every printed page: who, under which grant, which work and when (RDR-4,
+    SEC-11). Larger than the tile mark, since a printed page is seen whole."""
+    stamp = (at or dt.datetime.now(dt.UTC)).strftime("%Y-%m-%dT%H:%MZ")
+    size = max(MIN_SIZE, image.width // 20)
+    return diagonal_mark(
+        image,
+        [
+            (f"{user_tag} · {grant_public_id}", OPACITY_PRIMARY),
+            (f"{work_public_id} · {stamp}", OPACITY_SECONDARY),
+        ],
+        size=size,
+    )
+
+
 def session_mark(
     image: pyvips.Image,
     *,

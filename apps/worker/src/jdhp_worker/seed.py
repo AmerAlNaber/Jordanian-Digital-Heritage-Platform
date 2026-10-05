@@ -23,7 +23,7 @@ from jdhp_api.modules.catalog import service as catalog
 from jdhp_api.modules.catalog.models import Work
 from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.schemas import IntakeManifest
-from jdhp_api.seed.generate import generate
+from jdhp_api.seed.generate import generate_isolated
 from jdhp_api.seed.loader import load_book
 from jdhp_worker import runtime as worker_runtime
 from jdhp_worker.inline import run_inline
@@ -138,7 +138,7 @@ def seed(
     ensure_local_buckets(rt)
     with tempfile.TemporaryDirectory(prefix="jdhp-seed-") as tmp:
         out = out_dir or Path(tmp)
-        generate(out, scale=scale)
+        generate_isolated(out, scale=scale)
         manifest = upload_seed(rt, out)
     # The seed registers as the app role: cataloguing is an application action, not a pipeline one.
     app_database = Database(rt.settings.sqlalchemy_url, pooled=False)

@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import datetime as dt
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from jdhp_api.core.orm import ReaderSessionState
+from jdhp_api.core.orm import PrintJobState, ReaderSessionState
 
 FINGERPRINT_MIN = 8
 FINGERPRINT_MAX = 512
@@ -47,3 +48,28 @@ class ReaderSessionOut(BaseModel):
     manifest_url: str
     tiles_base_url: str
     tokens: ReaderTokens | None = None
+
+
+class PrintRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    pages: list[Annotated[int, Field(ge=1, le=100_000)]] = Field(
+        min_length=1, max_length=200, description="Sequence numbers of the pages to print"
+    )
+
+
+class PrintJobOut(BaseModel):
+    public_id: str
+    work: str
+    grant: str
+    state: PrintJobState
+    pages: list[int]
+    quota_remaining: int
+    created_at: dt.datetime
+    rendered_at: dt.datetime | None
+    downloaded_at: dt.datetime | None
+
+
+class PrintLinkOut(BaseModel):
+    url: str = Field(description="Single-use download link, valid for fifteen minutes (SEC-15)")
+    expires_at: dt.datetime

@@ -391,7 +391,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: anonymous
     resource: open_draft_nogrant
@@ -496,7 +496,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: member
     resource: open_pub_grant
@@ -524,7 +524,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: member
     resource: registered_pub_grant
@@ -636,7 +636,7 @@ tests:
     actions:
       view: EFFECT_DENY
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: verified_researcher across every access class
   input:
@@ -671,7 +671,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: verified_researcher
     resource: open_pub_grant
@@ -699,7 +699,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: verified_researcher
     resource: registered_pub_grant
@@ -811,7 +811,7 @@ tests:
     actions:
       view: EFFECT_DENY
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: institutional_user across every access class
   input:
@@ -846,7 +846,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: institutional_user
     resource: open_pub_grant
@@ -874,7 +874,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: institutional_user
     resource: registered_pub_grant
@@ -986,7 +986,7 @@ tests:
     actions:
       view: EFFECT_DENY
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: institution_admin across every access class
   input:
@@ -1021,7 +1021,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: institution_admin
     resource: open_pub_grant
@@ -1049,7 +1049,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: institution_admin
     resource: registered_pub_grant
@@ -1161,7 +1161,7 @@ tests:
     actions:
       view: EFFECT_DENY
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: curator across every access class
   input:
@@ -1196,7 +1196,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: curator
     resource: open_pub_grant
@@ -1224,7 +1224,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: curator
     resource: registered_pub_grant
@@ -1336,7 +1336,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: reviewer across every access class
   input:
@@ -1371,7 +1371,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: reviewer
     resource: open_pub_grant
@@ -1399,7 +1399,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: reviewer
     resource: registered_pub_grant
@@ -1511,7 +1511,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: rights_officer across every access class
   input:
@@ -1546,7 +1546,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: rights_officer
     resource: open_pub_grant
@@ -1574,7 +1574,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: rights_officer
     resource: registered_pub_grant
@@ -1686,7 +1686,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
 - name: platform_admin across every access class
   input:
@@ -1721,7 +1721,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: platform_admin
     resource: open_pub_grant
@@ -1749,7 +1749,7 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_ALLOW
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY
   - principal: platform_admin
     resource: registered_pub_grant
@@ -1861,5 +1861,5 @@ tests:
     actions:
       view: EFFECT_ALLOW
       read: EFFECT_DENY
-      print: EFFECT_ALLOW
+      print: EFFECT_DENY
       request_access: EFFECT_DENY

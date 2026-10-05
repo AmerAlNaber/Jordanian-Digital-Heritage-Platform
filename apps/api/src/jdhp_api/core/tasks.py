@@ -21,6 +21,7 @@ QUEUE_BY_NAMESPACE = {
     "embeddings": "embeddings",
     "translation": "translation",
     "fixity": "fixity",
+    "print": "derivatives",
     "mail": "mail",
     "maintenance": "maintenance",
 }

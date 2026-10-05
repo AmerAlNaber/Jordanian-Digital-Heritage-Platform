@@ -274,7 +274,7 @@ Columns: STRIDE letter in brackets after the threat; L and I are likelihood and 
 | SEC-12 Tile rate limits with suspension | `core.ratelimit`, gateway | `test_sec_12_tile_rate_limit_suspends_session` | 1 |
 | SEC-13 Reader deterrents and CSP | Web reader | e2e `reader_blocks_context_menu_and_selection` | 1 |
 | SEC-14 Platform mark on samples and open works | Tile gateway | `test_sec_14_sample_tiles_carry_platform_mark` | 1 |
-| SEC-15 Single-use 15-minute download URLs | `core.storage` | `test_sec_15_download_url_single_use` | 1 |
+| SEC-15 Single-use 15-minute download URLs | `reader.printing` | `test_sec_15_download_url_single_use` | 1 |
 | SEC-16 Security headers and CSP | Caddy, web middleware | `test_sec_16_security_headers_present`, e2e CSP | 0 |
 | SEC-17 Input validation, uploads, parsers | Schemas, `ingest`, `packages/metadata` | `test_sec_17_unknown_fields_rejected`, `test_sec_17_upload_rejects_wrong_magic_bytes`, `test_sec_17_xml_parsers_reject_external_entities` | 0, 3 |
 | SEC-18 Lockfiles and scanning | CI | pip-audit, npm audit, Trivy gates | 0 |

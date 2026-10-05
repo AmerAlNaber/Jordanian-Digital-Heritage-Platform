@@ -2,25 +2,34 @@
 
 from __future__ import annotations
 
+import hmac
 from typing import Any
 
 from fastapi import Request
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from jdhp_api.core.auth import Principal
 from jdhp_api.core.authz import ResourceRef
 from jdhp_api.core.db import RlsContext
-from jdhp_api.core.errors import GrantTokenError, InvalidIdentifierError, NotFoundError
+from jdhp_api.core.errors import (
+    GrantRequiredError,
+    GrantTokenError,
+    InvalidIdentifierError,
+    NotFoundError,
+)
 from jdhp_api.core.ids import is_valid_name
-from jdhp_api.core.orm import ReaderSessionState
+from jdhp_api.core.orm import PrintJobState, ReaderSessionState
 from jdhp_api.core.tokens import GrantClaims
+from jdhp_api.modules.access.models import Grant
 from jdhp_api.modules.access.service import active_grant_for
 from jdhp_api.modules.catalog import service as catalog_service
 from jdhp_api.modules.catalog.loaders import load_work
 from jdhp_api.modules.catalog.models import Work
 from jdhp_api.modules.identity.models import User
 from jdhp_api.modules.reader import service
-from jdhp_api.modules.reader.models import ReaderSession
+from jdhp_api.modules.reader.models import PrintJob, ReaderSession
+from jdhp_api.modules.reader.printing import PrintContext, token_hash
 
 GRANT_HEADER = "X-Jdhp-Grant"
 
@@ -102,3 +111,60 @@ async def load_session(
         "state": str(reader.state),
     }
     return reader, ResourceRef(kind="reader_session", id=reader.public_id, attr=attr)
+
+
+async def load_session_for_print(
+    request: Request, session: AsyncSession, principal: Principal
+) -> tuple[PrintContext, ResourceRef]:
+    """The reader session from the path, proven by its grant token, and the work the ``print``
+    decision is about, with the session's grant as the work's grant attributes."""
+    reader, ref = await load_session(request, session, principal)
+    if not ref.attr.get("token_valid"):
+        raise GrantTokenError
+    services = request.app.state.reader
+    async with services.database.session(RlsContext.system()) as system:
+        work = await system.get(Work, reader.work_id)
+        grant = await system.get(Grant, reader.grant_id) if reader.grant_id else None
+        user = await system.get(User, reader.user_id) if reader.user_id else None
+    if work is None:
+        raise NotFoundError
+    if grant is None:
+        raise GrantRequiredError
+    context = PrintContext(reader=reader, work=work, grant=grant, user=user)
+    return context, ResourceRef(
+        kind="work", id=work.public_id, attr=catalog_service.work_attributes(work, grant)
+    )
+
+
+async def load_print_job(
+    request: Request, _session: AsyncSession, _principal: Principal
+) -> tuple[PrintJob, ResourceRef]:
+    """A print job by public name. The owner views it and mints links; the single-use token
+    in ``t`` is the only thing that unlocks the file (SEC-15)."""
+    public_id = str(request.path_params.get("job", ""))
+    if not is_valid_name(public_id):
+        raise InvalidIdentifierError
+    services = request.app.state.reader
+    async with services.database.session(RlsContext.system()) as system:
+        job = (
+            await system.scalars(select(PrintJob).where(PrintJob.public_id == public_id))
+        ).first()
+        if job is None:
+            raise NotFoundError
+        owner = await system.get(User, job.user_id)
+    token = request.query_params.get("t")
+    now = service.utcnow()
+    token_valid = bool(
+        token
+        and job.token_hash
+        and job.token_expires_at
+        and now < job.token_expires_at
+        and job.state == PrintJobState.READY
+        and hmac.compare_digest(token_hash(token), job.token_hash)
+    )
+    attr: dict[str, Any] = {
+        "owner_id": owner.keycloak_sub if owner else "",
+        "token_valid": token_valid,
+        "state": str(job.state),
+    }
+    return job, ResourceRef(kind="print_job", id=job.public_id, attr=attr)

@@ -1,0 +1,83 @@
+name: PrintJobs
+description: The owner follows a print job and mints its link; only a valid single-use token downloads the file (RDR-4, SEC-15); rights officers and platform admins view.
+principals:
+  anonymous:
+    id: anonymous
+    roles: [anonymous]
+    attr: {authenticated: false, verification_level: none, institution_id: "", mfa: false, session_age_seconds: 0, active_devices: 0, is_staff: false}
+  member:
+    id: member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  other_member:
+    id: other_member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  curator:
+    id: curator
+    roles: [curator]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  rights_officer:
+    id: rights_officer
+    roles: [rights_officer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  platform_admin:
+    id: platform_admin
+    roles: [platform_admin]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+resources:
+  job_with_token:
+    kind: print_job
+    id: job_with_token
+    attr: {owner_id: member, token_valid: true, state: ready}
+  job_without_token:
+    kind: print_job
+    id: job_without_token
+    attr: {owner_id: member, token_valid: false, state: ready}
+  job_queued:
+    kind: print_job
+    id: job_queued
+    attr: {owner_id: member, token_valid: false, state: queued}
+tests:
+  - name: a valid token downloads the file whoever presents it, and nothing else does
+    input:
+      principals: [anonymous, member, other_member, curator, rights_officer, platform_admin]
+      resources: [job_with_token, job_without_token, job_queued]
+      actions: [download]
+    expected:
+      - {principal: anonymous, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: member, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: other_member, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: curator, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: rights_officer, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: platform_admin, resource: job_with_token, actions: {download: EFFECT_ALLOW}}
+      - {principal: anonymous, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: member, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: other_member, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: curator, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: rights_officer, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: platform_admin, resource: job_without_token, actions: {download: EFFECT_DENY}}
+      - {principal: anonymous, resource: job_queued, actions: {download: EFFECT_DENY}}
+      - {principal: member, resource: job_queued, actions: {download: EFFECT_DENY}}
+      - {principal: other_member, resource: job_queued, actions: {download: EFFECT_DENY}}
+      - {principal: curator, resource: job_queued, actions: {download: EFFECT_DENY}}
+      - {principal: rights_officer, resource: job_queued, actions: {download: EFFECT_DENY}}
+      - {principal: platform_admin, resource: job_queued, actions: {download: EFFECT_DENY}}
+  - name: the owner views and mints links; rights officers and admins view; nobody else
+    input:
+      principals: [anonymous, member, other_member, curator, rights_officer, platform_admin]
+      resources: [job_without_token, job_queued]
+      actions: [view, link, list]
+    expected:
+      - {principal: anonymous, resource: job_without_token, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: member, resource: job_without_token, actions: {view: EFFECT_ALLOW, link: EFFECT_ALLOW, list: EFFECT_DENY}}
+      - {principal: other_member, resource: job_without_token, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: curator, resource: job_without_token, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: rights_officer, resource: job_without_token, actions: {view: EFFECT_ALLOW, link: EFFECT_DENY, list: EFFECT_ALLOW}}
+      - {principal: platform_admin, resource: job_without_token, actions: {view: EFFECT_ALLOW, link: EFFECT_DENY, list: EFFECT_ALLOW}}
+      - {principal: anonymous, resource: job_queued, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: member, resource: job_queued, actions: {view: EFFECT_ALLOW, link: EFFECT_ALLOW, list: EFFECT_DENY}}
+      - {principal: other_member, resource: job_queued, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: curator, resource: job_queued, actions: {view: EFFECT_DENY, link: EFFECT_DENY, list: EFFECT_DENY}}
+      - {principal: rights_officer, resource: job_queued, actions: {view: EFFECT_ALLOW, link: EFFECT_DENY, list: EFFECT_ALLOW}}
+      - {principal: platform_admin, resource: job_queued, actions: {view: EFFECT_ALLOW, link: EFFECT_DENY, list: EFFECT_ALLOW}}

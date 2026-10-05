@@ -10,9 +10,17 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
 from jdhp_api.core.ids import mint_name
-from jdhp_api.core.orm import Base, PrimaryKeyMixin, ReaderSessionState, TimestampMixin, pg_enum
+from jdhp_api.core.orm import (
+    Base,
+    PrimaryKeyMixin,
+    PrintJobState,
+    ReaderSessionState,
+    TimestampMixin,
+    pg_enum,
+)
 
 SESSION_SHOULDER = "s8"  # opaque public names for reader sessions (INT-7)
+PRINT_SHOULDER = "p8"  # and for print jobs
 
 
 class ReaderSession(PrimaryKeyMixin, TimestampMixin, Base):
@@ -43,6 +51,9 @@ class PrintJob(PrimaryKeyMixin, TimestampMixin, Base):
 
     __tablename__ = "print_job"
 
+    public_id: Mapped[str] = mapped_column(
+        String(32), unique=True, index=True, default=lambda: mint_name(PRINT_SHOULDER)
+    )
     reader_session_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("reader_session.id"))
     grant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("grant.id"), index=True)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), index=True)
@@ -51,4 +62,9 @@ class PrintJob(PrimaryKeyMixin, TimestampMixin, Base):
     rendered_at: Mapped[dt.datetime | None]
     export_key: Mapped[str | None] = mapped_column(Text)
     token_hash: Mapped[str | None] = mapped_column(String(64))
+    token_expires_at: Mapped[dt.datetime | None]
     downloaded_at: Mapped[dt.datetime | None]
+    state: Mapped[PrintJobState] = mapped_column(
+        pg_enum(PrintJobState, "print_job_state"), default=PrintJobState.QUEUED, index=True
+    )
+    error_detail: Mapped[str | None] = mapped_column(Text)

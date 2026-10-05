@@ -92,13 +92,10 @@ def expected(  # noqa: PLR0911  # a decision table: one return per row of the ac
             return authenticated and has_grant
         return False
     if action == "print":
-        if access_class in {"restricted", "embargoed"} or not published:
+        # The grant carries the quota (RDR-4): no grant, no print, whatever the class.
+        if access_class in {"restricted", "embargoed"} or not published or frozen:
             return False
-        if access_class == "open":
-            return True
-        if access_class == "registered":
-            return authenticated
-        return authenticated and has_grant  # paid
+        return authenticated and has_grant
     if action == "request_access":
         return authenticated and published and access_class == "restricted"
     raise ValueError(action)

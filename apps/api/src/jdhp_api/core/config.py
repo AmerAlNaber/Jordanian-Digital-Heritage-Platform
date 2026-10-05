@@ -156,6 +156,9 @@ class Settings(BaseSettings):
     registered_grant_days: int = Field(default=30, ge=1, le=365)
     default_device_limit: int = Field(default=2, ge=1, le=10)
     print_quota_default_pages: int = Field(default=20, ge=0, le=500)
+    # Print (RDR-4): the resolution the PDF declares and the longest edge a printed page may have.
+    print_ppi: int = Field(default=150, ge=72, le=200)
+    print_max_edge_px: int = Field(default=1754, ge=600, le=2500)
 
     # Observability
     sentry_dsn: SecretStr | None = None

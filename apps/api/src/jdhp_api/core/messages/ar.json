@@ -30,5 +30,11 @@
   "errors.tile_request_invalid.title": "طلب صورة غير صالح",
   "errors.tile_request_invalid.detail": "معاملات الصورة المطلوبة غير مدعومة.",
   "errors.tile_too_large.title": "حجم الصورة أكبر من المسموح",
-  "errors.tile_too_large.detail": "تُقدَّم الصفحات المحمية كبلاطات صغيرة فقط."
+  "errors.tile_too_large.detail": "تُقدَّم الصفحات المحمية كبلاطات صغيرة فقط.",
+  "errors.print_quota_exceeded.title": "تجاوزت حصة الطباعة",
+  "errors.print_quota_exceeded.detail": "لم يتبقَّ في هذا التصريح حصة طباعة كافية للصفحات المطلوبة.",
+  "errors.print_pages_invalid.title": "لا يمكن طباعة الصفحات",
+  "errors.print_pages_invalid.detail": "صفحة أو أكثر من الصفحات المطلوبة خارج العمل أو خارج ما يغطيه هذا التصريح.",
+  "errors.print_not_ready.title": "الطباعة غير جاهزة",
+  "errors.print_not_ready.detail": "لا يزال ملف PDF قيد التجهيز، أو سبق تنزيله."
 }

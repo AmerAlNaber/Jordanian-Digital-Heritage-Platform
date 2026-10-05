@@ -8,10 +8,26 @@ from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.responses import JSONResponse
 
 from jdhp_api.core.authz import Authorize, Authorized
-from jdhp_api.modules.reader import service
-from jdhp_api.modules.reader.loaders import load_session, load_work_for_manifest, load_work_for_open
-from jdhp_api.modules.reader.schemas import Heartbeat, ReaderSessionOut, SessionOpen
+from jdhp_api.core.storage import ObjectStore
+from jdhp_api.core.tasks import TaskDispatcher, get_dispatcher
+from jdhp_api.modules.reader import printing, service
+from jdhp_api.modules.reader.loaders import (
+    load_print_job,
+    load_session,
+    load_session_for_print,
+    load_work_for_manifest,
+    load_work_for_open,
+)
+from jdhp_api.modules.reader.schemas import (
+    Heartbeat,
+    PrintJobOut,
+    PrintLinkOut,
+    PrintRequest,
+    ReaderSessionOut,
+    SessionOpen,
+)
 from jdhp_api.modules.reader.service import RequestFacts
+from jdhp_api.modules.search.router import get_store
 
 router = APIRouter(prefix="/reader", tags=["reader"])
 
@@ -104,4 +120,78 @@ async def work_manifest(
         body,
         media_type=service.MANIFEST_MEDIA_TYPE,
         headers={"Cache-Control": "private, no-store"},
+    )
+
+
+# --- Print (RDR-4, SEC-11, SEC-15) ------------------------------------------------------------
+
+
+@router.post(
+    "/sessions/{session}/print",
+    response_model=PrintJobOut,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def request_print(
+    request: Request,
+    data: PrintRequest,
+    authorized: Annotated[Authorized, Depends(Authorize("print", "work", load_session_for_print))],
+    dispatcher: Annotated[TaskDispatcher, Depends(get_dispatcher)],
+) -> PrintJobOut:
+    """Ask for a watermarked, low-resolution PDF of pages within the session's grant. The
+    caller presents both credentials, the signed-in token and the session's grant token; the
+    request is logged with its page numbers and counted against the grant's quota."""
+    return await printing.request_print(
+        request.app.state.reader,
+        context=authorized.resource,
+        principal=authorized.principal,
+        pages=data.pages,
+        facts=_facts(request, authorized),
+        dispatcher=dispatcher,
+    )
+
+
+@router.get("/prints/{job}", response_model=PrintJobOut)
+async def get_print(
+    request: Request,
+    authorized: Annotated[Authorized, Depends(Authorize("view", "print_job", load_print_job))],
+) -> PrintJobOut:
+    return await printing.view_job(request.app.state.reader, authorized.resource)
+
+
+@router.post("/prints/{job}/link", response_model=PrintLinkOut)
+async def print_link(
+    request: Request,
+    authorized: Annotated[Authorized, Depends(Authorize("link", "print_job", load_print_job))],
+) -> PrintLinkOut:
+    """A single-use download link that expires in fifteen minutes (SEC-15)."""
+    return await printing.mint_download_link(
+        request.app.state.reader,
+        job=authorized.resource,
+        principal=authorized.principal,
+        facts=_facts(request, authorized),
+    )
+
+
+@router.get("/prints/{job}/file")
+async def print_file(
+    request: Request,
+    authorized: Annotated[Authorized, Depends(Authorize("download", "print_job", load_print_job))],
+    store: Annotated[ObjectStore, Depends(get_store)],
+) -> Response:
+    """The PDF, once. The token in ``t`` is the credential; the file is deleted after this."""
+    data, filename = await printing.deliver(
+        request.app.state.reader,
+        store,
+        job=authorized.resource,
+        principal=authorized.principal,
+        facts=_facts(request, authorized),
+    )
+    return Response(
+        content=data,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
     )
