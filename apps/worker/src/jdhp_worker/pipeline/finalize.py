@@ -47,8 +47,11 @@ async def maybe_finalize(rt: Runtime, digital_object_id: uuid.UUID) -> bool:
         if batch is not None:
             await ingest_service.mark_batch_state(session, batch.id, IntakeState.INGESTED)
         work = await session.get(Work, digital_object.work_id)
-        if work is not None:
-            rt.indexer.index_work(await work_document(session, work))
+        document = await work_document(session, work) if work is not None else None
+    # Indexing happens after the transaction commits: a search-index failure must not roll
+    # the object back out of ``ingested`` (CAT-4).
+    if document is not None:
+        rt.indexer.index_work(document)
     return True
 
 

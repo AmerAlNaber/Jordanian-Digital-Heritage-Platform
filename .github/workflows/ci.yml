@@ -282,16 +282,25 @@ jobs:
         run: docker compose run --rm seed
       - name: Wait for the batch to reach ingested
         run: |
+          query() { docker compose exec -T postgres psql -U postgres -d jdhp -tAc "$1" | tr -d '[:space:]'; }
+          progress_sql="select count(*) filter (where master_key is not null) || '/' || count(*) filter (where derivative_key is not null) || '/' || count(*) filter (where ocr_at is not null) || '/' || count(*) from page"
           for i in $(seq 1 120); do
-            state=$(docker compose exec -T postgres psql -U postgres -d jdhp -tAc "select state from intake_batch order by id desc limit 1" | tr -d '[:space:]')
-            echo "intake batch state: ${state:-none}"
+            state=$(query "select state from intake_batch order by id desc limit 1")
+            echo "intake batch state: ${state:-none} (pages with master/derivative/ocr of total: $(query "$progress_sql"))"
             case "$state" in
               ingested) exit 0 ;;
-              failed) echo "::error::seed ingest failed"; docker compose logs --no-color worker | tail -200; exit 1 ;;
+              failed)
+                echo "::error::seed ingest failed: $(query "select coalesce(error_detail, '') from intake_batch order by id desc limit 1")"
+                docker compose logs --no-color --tail=200 worker
+                exit 1 ;;
             esac
             sleep 5
           done
-          echo "::error::seed ingest did not finish in time"; exit 1
+          echo "::error::seed ingest did not finish in time"
+          echo "::group::worker log"
+          docker compose logs --no-color --tail=400 worker
+          echo "::endgroup::"
+          exit 1
       - name: The seed book is published and readable through the stack
         run: |
           set -eu

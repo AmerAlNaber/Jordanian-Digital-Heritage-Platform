@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import io
+import subprocess
+import sys
 from typing import Any
 
 import pytest
+import pyvips
 from PIL import Image, ImageCms
 
 from jdhp_worker.pipeline.derivatives import access_derivative, webp_resized
@@ -84,8 +87,84 @@ def test_derivatives_are_produced_in_both_formats() -> None:
         assert image.size == (150, 200)
 
 
+def _parchment(width: int, height: int) -> pyvips.Image:
+    return (
+        pyvips.Image.black(width, height, bands=3)
+        .new_from_image([240, 230, 210])
+        .copy(interpretation="srgb")
+    )
+
+
 def test_sec_14_platform_mark_changes_the_image() -> None:
-    plain = Image.new("RGB", (600, 800), (240, 230, 210))
+    plain = _parchment(600, 800)
     marked = platform_mark(plain)
-    assert marked.size == plain.size
-    assert marked.tobytes() != plain.tobytes()
+    assert (marked.width, marked.height, marked.bands) == (600, 800, 3)
+    assert marked.write_to_memory() != plain.write_to_memory()
+    # The pattern is drawn larger than the image and rotated, so every quarter carries ink.
+    for left, top in ((0, 0), (300, 0), (0, 400), (300, 400)):
+        quarter = marked.crop(left, top, 300, 400)
+        assert quarter.write_to_memory() != plain.crop(left, top, 300, 400).write_to_memory()
+
+
+def test_sec_14_sample_is_marked_and_thumbnail_is_not() -> None:
+    master = tiff_bytes(size=(300, 400))
+    thumb = webp_resized(master, 300, mark=False)
+    sample = webp_resized(master, 300, mark=True)
+    assert sample.startswith(b"RIFF")
+    assert thumb.startswith(b"RIFF")
+    assert (
+        pyvips.Image.new_from_buffer(sample, "").avg()
+        != pyvips.Image.new_from_buffer(thumb, "").avg()
+    )
+
+
+FORKED_RENDER = """
+import multiprocessing
+import sys
+
+import pyvips  # noqa: F401 - the Celery parent loads libvips through the task modules, then forks
+
+from jdhp_worker.pipeline.derivatives import webp_resized
+
+
+def render(conn, master):
+    try:
+        conn.send(("ok", str(len(webp_resized(master, 1200, mark=True)))))
+    except Exception as exc:
+        conn.send(("error", f"{exc.__class__.__name__}: {exc}"))
+
+
+if __name__ == "__main__":
+    master = sys.stdin.buffer.read()
+    context = multiprocessing.get_context("fork")
+    parent, child = context.Pipe(duplex=False)
+    process = context.Process(target=render, args=(child, master))
+    process.start()
+    child.close()
+    outcome, detail = parent.recv()
+    process.join(60)
+    print(outcome, detail)
+"""
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="the Celery prefork pool forks on Linux")
+def test_sec_14_platform_mark_renders_in_a_forked_worker() -> None:
+    """Regression: with libvips loaded in the parent, the mark must still render after a fork.
+
+    Pillow's text layout returned a corrupt glyph run in forked Celery workers, so every
+    public sample failed and the seed batch never finished. The mark is rendered by libvips.
+    The scenario runs in a fresh interpreter because libvips, once it has run an operation in
+    a process, is not safe to fork; the Celery parent only imports it.
+    """
+    master = tiff_bytes(size=(945, 1418))
+    result = subprocess.run(  # noqa: S603  # nosec B603  # fixed interpreter and script, no user input
+        [sys.executable, "-c", FORKED_RENDER],
+        input=master,
+        capture_output=True,
+        timeout=120,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr.decode()
+    outcome, _, detail = result.stdout.decode().strip().partition(" ")
+    assert outcome == "ok", detail
+    assert int(detail) > 0

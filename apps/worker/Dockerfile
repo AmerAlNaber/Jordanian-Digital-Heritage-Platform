@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.12-slim-bookworm AS runtime
 RUN apt-get update && apt-get upgrade -y --no-install-recommends \
-    && apt-get install -y --no-install-recommends libvips42 libopenjp2-7 libfribidi0 curl \
+    && apt-get install -y --no-install-recommends libvips42 libopenjp2-7 curl \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --uid 10002 --create-home jdhp
 WORKDIR /app

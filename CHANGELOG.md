@@ -22,6 +22,13 @@ All notable changes to this project are documented in this file. The format foll
 - CI (`.github/workflows/ci.yml`): lint and type checks, API tests with the 80 percent coverage gate against real PostgreSQL, Redis and Cerbos, worker and policy tests, web tests and build, OpenAPI and generated-type sync checks, Semgrep, Bandit, pip-audit, npm audit, gitleaks, image builds scanned with Trivy (SEC-18, SEC-20), and the Compose integration job that brings up every service and ingests the seed book.
 - `docs/COMPLIANCE_MATRIX.md` skeleton, `docs/operations/` runbooks, `tests/load` and `tests/search-eval` placeholders.
 
+### Fixed
+
+- Worker: public sample derivatives failed inside the Celery prefork pool. Pillow's text layout returned a corrupt glyph run in forked worker processes once libvips was loaded, every sample page errored and the seed batch never reached `ingested`. The platform mark is now rendered by libvips, the library that writes the derivative, and a regression test renders it in a forked child (SEC-14).
+- Worker: a digital object is marked `ingested` and committed before its work document is indexed, so a search-index failure no longer rolls the state back (CAT-4).
+- Compose: the API and worker depend on the OpenSearch template init container completing, which is the order the pipeline needs and what lets `docker compose up --wait` accept the one-shot container exiting (SRC-1).
+- CI: the Compose integration job reports page progress while it waits for the seed batch and prints the worker log when the wait times out.
+
 ### Security
 
 - Next.js pinned to 15.5.24 and transitive `postcss` and `sharp` raised through `pnpm.overrides` so `pnpm audit` passes at the high level (SEC-18). One advisory without a patched release, GHSA-vfj7-8cjw-p6xm in the development-only `braces` dependency of the Next.js ESLint plugin, is listed in `pnpm.auditConfig.ignoreGhsas` until a fix ships.

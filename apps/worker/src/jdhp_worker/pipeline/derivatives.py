@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import hashlib
-import io
 import uuid
 
 import pyvips
-from PIL import Image
 
 from jdhp_api.core import storage
 from jdhp_api.core.db import RlsContext
@@ -35,15 +33,14 @@ def access_derivative(master: bytes, fmt: str) -> bytes:
 
 
 def webp_resized(master: bytes, width: int, *, mark: bool) -> bytes:
-    with Image.open(io.BytesIO(master)) as image:
-        rgb = image.convert("RGB")
-        ratio = width / rgb.width
-        resized = rgb.resize((width, max(1, round(rgb.height * ratio))), Image.Resampling.LANCZOS)
+    """A WebP of the master scaled to ``width``, with the platform mark when ``mark`` is set."""
+    image = pyvips.Image.new_from_buffer(master, "")
+    if image.hasalpha():
+        image = image.flatten()
+    resized = image.resize(width / image.width, kernel="lanczos3")
     if mark:
         resized = platform_mark(resized)
-    out = io.BytesIO()
-    resized.save(out, format="WEBP", quality=80, method=4)
-    return out.getvalue()
+    return bytes(resized.webpsave_buffer(Q=80, effort=4, strip=True))
 
 
 async def generate_for_page(rt: Runtime, page_id: uuid.UUID) -> dict[str, object]:
