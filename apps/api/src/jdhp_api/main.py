@@ -10,6 +10,7 @@ import contextlib
 from collections.abc import AsyncIterator
 from typing import Any
 
+import redis.asyncio as redis_asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,12 +22,17 @@ from jdhp_api.core.db import Database
 from jdhp_api.core.errors import install_error_handlers
 from jdhp_api.core.middleware import RequestContextMiddleware
 from jdhp_api.core.observability import configure_logging
+from jdhp_api.core.tokens import ForensicKeys, GrantTokenIssuer, TileTokenSigner
+from jdhp_api.modules.access.router import router as access_router
 from jdhp_api.modules.audit.router import router as audit_router
 from jdhp_api.modules.catalog.router import router as catalog_router
 from jdhp_api.modules.content.router import router as content_router
 from jdhp_api.modules.identity.router import router as identity_router
 from jdhp_api.modules.identity.service import DatabaseUserSync
 from jdhp_api.modules.ingest.router import router as ingest_router
+from jdhp_api.modules.reader.cache import ReaderCache
+from jdhp_api.modules.reader.router import router as reader_router
+from jdhp_api.modules.reader.service import ReaderServices
 from jdhp_api.modules.review.router import router as review_router
 
 API_TITLE = "Jordanian Digital Heritage Platform API"
@@ -52,9 +58,20 @@ def create_app(
         app.state.policy_client = policy_client or CerbosPolicyClient(settings)
         app.state.token_verifier = token_verifier or TokenVerifier(settings)
         app.state.user_sync = user_sync or DatabaseUserSync(app.state.database)
+        redis_client = redis_asyncio.Redis.from_url(str(settings.redis_url))
+        app.state.redis = redis_client
+        app.state.reader = ReaderServices(
+            database=app.state.database,
+            settings=settings,
+            grant_tokens=GrantTokenIssuer(settings),
+            tile_tokens=TileTokenSigner(settings),
+            forensic=ForensicKeys(settings),
+            cache=ReaderCache(redis_client),
+        )
         try:
             yield
         finally:
+            await redis_client.aclose()
             if owns_database:
                 await app.state.database.dispose()
 
@@ -93,6 +110,8 @@ def _include_routers(app: FastAPI) -> None:
         content_router,
         review_router,
         audit_router,
+        access_router,
+        reader_router,
     ):
         app.include_router(router)
 

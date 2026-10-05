@@ -1,0 +1,27 @@
+# Reader sessions (SEC-2, RDR-5): the grant token proves possession on reader endpoints; the
+# session's owner may view it; rights officers and platform admins list and revoke.
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: reader_session
+  importDerivedRoles: [common]
+  schemas:
+    principalSchema:
+      ref: cerbos:///principal.json
+    resourceSchema:
+      ref: cerbos:///reader_session.json
+  rules:
+    - actions: [view, heartbeat, end]
+      effect: EFFECT_ALLOW
+      roles: ["*"]
+      condition:
+        match:
+          expr: R.attr.token_valid == true
+
+    - actions: [view]
+      effect: EFFECT_ALLOW
+      derivedRoles: [owner]
+
+    - actions: [list, view, revoke]
+      effect: EFFECT_ALLOW
+      roles: [rights_officer, platform_admin]

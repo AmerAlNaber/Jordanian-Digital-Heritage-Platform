@@ -1,0 +1,123 @@
+name: ReaderSessionsAndGrants
+description: The grant token proves possession of a reader session (SEC-2, RDR-5); owners view their own; rights officers revoke; members list their own grants (ACS-2).
+principals:
+  anonymous:
+    id: anonymous
+    roles: [anonymous]
+    attr: {authenticated: false, verification_level: none, institution_id: "", mfa: false, session_age_seconds: 0, active_devices: 0, is_staff: false}
+  member:
+    id: member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  other_member:
+    id: other_member
+    roles: [member]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: false, session_age_seconds: 10, active_devices: 1, is_staff: false}
+  curator:
+    id: curator
+    roles: [curator]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  rights_officer:
+    id: rights_officer
+    roles: [rights_officer]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+  platform_admin:
+    id: platform_admin
+    roles: [platform_admin]
+    attr: {authenticated: true, verification_level: phone, institution_id: "", mfa: true, session_age_seconds: 10, active_devices: 1, is_staff: true}
+resources:
+  session_with_token:
+    kind: reader_session
+    id: session_with_token
+    attr: {owner_id: member, token_valid: true, state: active}
+  session_without_token:
+    kind: reader_session
+    id: session_without_token
+    attr: {owner_id: member, token_valid: false, state: active}
+  anonymous_session_with_token:
+    kind: reader_session
+    id: anonymous_session_with_token
+    attr: {owner_id: "", token_valid: true, state: active}
+  members_grant:
+    kind: grant
+    id: members_grant
+    attr: {owner_id: member, institution_id: "", state: active}
+tests:
+  - name: a valid grant token lets its holder heartbeat and end the session, whoever they are
+    input:
+      principals: [anonymous, member, other_member]
+      resources: [session_with_token, anonymous_session_with_token]
+      actions: [view, heartbeat, end, revoke, list]
+    expected:
+      - principal: anonymous
+        resource: session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+      - principal: anonymous
+        resource: anonymous_session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+      - principal: member
+        resource: session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+      - principal: member
+        resource: anonymous_session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+      - principal: other_member
+        resource: session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+      - principal: other_member
+        resource: anonymous_session_with_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_ALLOW, end: EFFECT_ALLOW, revoke: EFFECT_DENY, list: EFFECT_DENY}
+  - name: without the token only the owner may view, and nobody may drive the session
+    input:
+      principals: [anonymous, member, other_member, curator]
+      resources: [session_without_token]
+      actions: [view, heartbeat, end]
+    expected:
+      - principal: anonymous
+        resource: session_without_token
+        actions: {view: EFFECT_DENY, heartbeat: EFFECT_DENY, end: EFFECT_DENY}
+      - principal: member
+        resource: session_without_token
+        actions: {view: EFFECT_ALLOW, heartbeat: EFFECT_DENY, end: EFFECT_DENY}
+      - principal: other_member
+        resource: session_without_token
+        actions: {view: EFFECT_DENY, heartbeat: EFFECT_DENY, end: EFFECT_DENY}
+      - principal: curator
+        resource: session_without_token
+        actions: {view: EFFECT_DENY, heartbeat: EFFECT_DENY, end: EFFECT_DENY}
+  - name: rights officers and platform admins list, view and revoke sessions by role
+    input:
+      principals: [rights_officer, platform_admin, curator]
+      resources: [session_without_token]
+      actions: [list, view, revoke, heartbeat]
+    expected:
+      - principal: rights_officer
+        resource: session_without_token
+        actions: {list: EFFECT_ALLOW, view: EFFECT_ALLOW, revoke: EFFECT_ALLOW, heartbeat: EFFECT_DENY}
+      - principal: platform_admin
+        resource: session_without_token
+        actions: {list: EFFECT_ALLOW, view: EFFECT_ALLOW, revoke: EFFECT_ALLOW, heartbeat: EFFECT_DENY}
+      - principal: curator
+        resource: session_without_token
+        actions: {list: EFFECT_DENY, view: EFFECT_DENY, revoke: EFFECT_DENY, heartbeat: EFFECT_DENY}
+  - name: members list their own grants; only rights officers revoke them
+    input:
+      principals: [anonymous, member, other_member, rights_officer, platform_admin]
+      resources: [members_grant]
+      actions: [list_own, view, revoke]
+    expected:
+      - principal: anonymous
+        resource: members_grant
+        actions: {list_own: EFFECT_DENY, view: EFFECT_DENY, revoke: EFFECT_DENY}
+      - principal: member
+        resource: members_grant
+        actions: {list_own: EFFECT_ALLOW, view: EFFECT_ALLOW, revoke: EFFECT_DENY}
+      - principal: other_member
+        resource: members_grant
+        actions: {list_own: EFFECT_ALLOW, view: EFFECT_DENY, revoke: EFFECT_DENY}
+      - principal: rights_officer
+        resource: members_grant
+        actions: {list_own: EFFECT_ALLOW, view: EFFECT_ALLOW, revoke: EFFECT_ALLOW}
+      - principal: platform_admin
+        resource: members_grant
+        actions: {list_own: EFFECT_ALLOW, view: EFFECT_ALLOW, revoke: EFFECT_DENY}

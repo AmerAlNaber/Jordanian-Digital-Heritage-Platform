@@ -234,6 +234,7 @@ class GrantSource(enum.StrEnum):
     PAYMENT = "payment"
     LICENSE = "license"
     STAFF = "staff"
+    ACCESS_CLASS = "access_class"  # implied by the work's class: Open and Registered (Phase 1)
 
 
 class PaymentStatus(enum.StrEnum):

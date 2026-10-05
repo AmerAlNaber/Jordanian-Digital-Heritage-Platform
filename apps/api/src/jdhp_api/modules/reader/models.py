@@ -9,7 +9,10 @@ from sqlalchemy import ForeignKey, Integer, LargeBinary, String, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
+from jdhp_api.core.ids import mint_name
 from jdhp_api.core.orm import Base, PrimaryKeyMixin, ReaderSessionState, TimestampMixin, pg_enum
+
+SESSION_SHOULDER = "s8"  # opaque public names for reader sessions (INT-7)
 
 
 class ReaderSession(PrimaryKeyMixin, TimestampMixin, Base):
@@ -17,6 +20,9 @@ class ReaderSession(PrimaryKeyMixin, TimestampMixin, Base):
 
     __tablename__ = "reader_session"
 
+    public_id: Mapped[str] = mapped_column(
+        String(32), unique=True, index=True, default=lambda: mint_name(SESSION_SHOULDER)
+    )
     user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("user.id"), index=True)
     work_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("work.id"), index=True)
     grant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("grant.id"), index=True)

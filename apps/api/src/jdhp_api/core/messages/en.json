@@ -18,5 +18,13 @@
   "errors.invalid_identifier.title": "Invalid identifier",
   "errors.invalid_identifier.detail": "The public identifier is malformed or contains a typing error.",
   "errors.review_transition.title": "Review transition not allowed",
-  "errors.review_transition.detail": "The review task cannot move to this state from its current state."
+  "errors.review_transition.detail": "The review task cannot move to this state from its current state.",
+  "errors.grant_token_invalid.title": "Reader credential invalid",
+  "errors.grant_token_invalid.detail": "The reader credential is missing, expired or belongs to another session.",
+  "errors.reader_session_ended.title": "Reading session ended",
+  "errors.reader_session_ended.detail": "This session is over. Open the book again to continue.",
+  "errors.device_limit.title": "Device limit reached",
+  "errors.device_limit.detail": "This grant is already open on the maximum number of devices. Close the reader on another device and try again.",
+  "errors.grant_required.title": "A grant is required",
+  "errors.grant_required.detail": "Reading this work requires an active grant."
 }

@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/access/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Own Grants */
+        get: operations["list_own_grants_access_grants_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/access/grants/{grant}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke Grant */
+        post: operations["revoke_grant_access_grants__grant__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/audit/events": {
         parameters: {
             query?: never;
@@ -156,6 +190,75 @@ export interface paths {
         head?: never;
         /** Update Preferences */
         patch: operations["update_preferences_me_preferences_patch"];
+        trace?: never;
+    };
+    "/reader/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open Session */
+        post: operations["open_session_reader_sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/sessions/{session}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Session */
+        get: operations["get_session_reader_sessions__session__get"];
+        put?: never;
+        post?: never;
+        /** End Session */
+        delete: operations["end_session_reader_sessions__session__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/sessions/{session}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Heartbeat */
+        post: operations["heartbeat_reader_sessions__session__heartbeat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reader/works/{name}/manifest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Work Manifest */
+        get: operations["work_manifest_reader_works__name__manifest_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/resolve/{name}": {
@@ -565,6 +668,63 @@ export interface components {
             /** Work Public Id */
             work_public_id: string;
         };
+        /** GrantOut */
+        GrantOut: {
+            /** Active */
+            active: boolean;
+            /** Device Limit */
+            device_limit: number;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Page From */
+            page_from: number | null;
+            /** Page To */
+            page_to: number | null;
+            /** Print Quota */
+            print_quota: number;
+            /** Print Used */
+            print_used: number;
+            /** Public Id */
+            public_id: string;
+            /** Revoked */
+            revoked: boolean;
+            /** Revoked At */
+            revoked_at: string | null;
+            source: components["schemas"]["GrantSource"];
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Work */
+            work: string;
+            work_access_class: components["schemas"]["AccessClass"];
+        };
+        /** GrantRevoke */
+        GrantRevoke: {
+            /** Reason */
+            reason: string;
+        };
+        /**
+         * GrantSource
+         * @enum {string}
+         */
+        GrantSource: "request" | "payment" | "license" | "staff" | "access_class";
+        /** Heartbeat */
+        Heartbeat: {
+            /** Device Fingerprint */
+            device_fingerprint: string;
+            /**
+             * Dwell Seconds
+             * @default 0
+             */
+            dwell_seconds: number;
+            /** Pages Viewed */
+            pages_viewed?: number[];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -780,6 +940,65 @@ export interface components {
          * @enum {string}
          */
         PublishState: "draft" | "review" | "published" | "withdrawn";
+        /** ReaderSessionOut */
+        ReaderSessionOut: {
+            /** Grant */
+            grant: string | null;
+            /**
+             * Hard Expires At
+             * Format: date-time
+             */
+            hard_expires_at: string;
+            /** Heartbeat Interval Seconds */
+            heartbeat_interval_seconds: number;
+            /**
+             * Idle Expires At
+             * Format: date-time
+             */
+            idle_expires_at: string;
+            /**
+             * Last Seen At
+             * Format: date-time
+             */
+            last_seen_at: string;
+            /** Manifest Url */
+            manifest_url: string;
+            /** Public Id */
+            public_id: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            state: components["schemas"]["ReaderSessionState"];
+            /** Tiles Base Url */
+            tiles_base_url: string;
+            tokens?: components["schemas"]["ReaderTokens"] | null;
+            /** Work */
+            work: string;
+        };
+        /**
+         * ReaderSessionState
+         * @enum {string}
+         */
+        ReaderSessionState: "active" | "expired" | "revoked" | "suspended";
+        /** ReaderTokens */
+        ReaderTokens: {
+            /** Grant Token */
+            grant_token: string;
+            /**
+             * Grant Token Expires At
+             * Format: date-time
+             */
+            grant_token_expires_at: string;
+            /** Tile Token */
+            tile_token: string;
+            /**
+             * Tile Token Expires At
+             * Format: date-time
+             */
+            tile_token_expires_at: string;
+        };
         /** RejectRequest */
         RejectRequest: {
             /** Reason */
@@ -830,6 +1049,16 @@ export interface components {
             state: components["schemas"]["ReviewStatus"];
             /** Work Public Id */
             work_public_id: string;
+        };
+        /** SessionOpen */
+        SessionOpen: {
+            /** Device Fingerprint */
+            device_fingerprint: string;
+            /**
+             * Work
+             * @description The work's public identifier
+             */
+            work: string;
         };
         /**
          * TermFacet
@@ -1067,6 +1296,59 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_own_grants_access_grants_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrantOut"][];
+                };
+            };
+        };
+    };
+    revoke_grant_access_grants__grant__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantRevoke"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrantOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_events_audit_events_get: {
         parameters: {
             query?: {
@@ -1332,6 +1614,130 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    open_session_reader_sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionOpen"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReaderSessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_session_reader_sessions__session__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReaderSessionOut"];
+                };
+            };
+        };
+    };
+    end_session_reader_sessions__session__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    heartbeat_reader_sessions__session__heartbeat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Heartbeat"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReaderSessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    work_manifest_reader_works__name__manifest_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

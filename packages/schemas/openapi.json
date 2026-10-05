@@ -1082,6 +1082,206 @@
           }
         }
       }
+    },
+    "/access/grants": {
+      "get": {
+        "tags": [
+          "access"
+        ],
+        "summary": "List Own Grants",
+        "operationId": "list_own_grants_access_grants_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GrantOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Own Grants Access Grants Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/access/grants/{grant}/revoke": {
+      "post": {
+        "tags": [
+          "access"
+        ],
+        "summary": "Revoke Grant",
+        "operationId": "revoke_grant_access_grants__grant__revoke_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantRevoke"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrantOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/sessions": {
+      "post": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Open Session",
+        "operationId": "open_session_reader_sessions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionOpen"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderSessionOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/sessions/{session}": {
+      "get": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Get Session",
+        "operationId": "get_session_reader_sessions__session__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderSessionOut"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "End Session",
+        "operationId": "end_session_reader_sessions__session__delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/reader/sessions/{session}/heartbeat": {
+      "post": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Heartbeat",
+        "operationId": "heartbeat_reader_sessions__session__heartbeat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderSessionOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reader/works/{name}/manifest": {
+      "get": {
+        "tags": [
+          "reader"
+        ],
+        "summary": "Work Manifest",
+        "operationId": "work_manifest_reader_works__name__manifest_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1854,6 +2054,133 @@
         ],
         "title": "ContentObjectOut"
       },
+      "GrantOut": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "work": {
+            "type": "string",
+            "title": "Work"
+          },
+          "work_access_class": {
+            "$ref": "#/components/schemas/AccessClass"
+          },
+          "source": {
+            "$ref": "#/components/schemas/GrantSource"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At"
+          },
+          "device_limit": {
+            "type": "integer",
+            "title": "Device Limit"
+          },
+          "page_from": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page From"
+          },
+          "page_to": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page To"
+          },
+          "print_quota": {
+            "type": "integer",
+            "title": "Print Quota"
+          },
+          "print_used": {
+            "type": "integer",
+            "title": "Print Used"
+          },
+          "revoked": {
+            "type": "boolean",
+            "title": "Revoked"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "work",
+          "work_access_class",
+          "source",
+          "starts_at",
+          "ends_at",
+          "device_limit",
+          "page_from",
+          "page_to",
+          "print_quota",
+          "print_used",
+          "revoked",
+          "revoked_at",
+          "active"
+        ],
+        "title": "GrantOut"
+      },
+      "GrantRevoke": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "GrantRevoke"
+      },
+      "GrantSource": {
+        "type": "string",
+        "enum": [
+          "request",
+          "payment",
+          "license",
+          "staff",
+          "access_class"
+        ],
+        "title": "GrantSource"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1866,6 +2193,37 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "Heartbeat": {
+        "properties": {
+          "device_fingerprint": {
+            "type": "string",
+            "maxLength": 512,
+            "minLength": 8,
+            "title": "Device Fingerprint"
+          },
+          "pages_viewed": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Pages Viewed"
+          },
+          "dwell_seconds": {
+            "type": "integer",
+            "maximum": 3600.0,
+            "minimum": 0.0,
+            "title": "Dwell Seconds",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "device_fingerprint"
+        ],
+        "title": "Heartbeat"
       },
       "InstitutionRef": {
         "properties": {
@@ -2585,6 +2943,129 @@
         ],
         "title": "PublishState"
       },
+      "ReaderSessionOut": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "work": {
+            "type": "string",
+            "title": "Work"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ReaderSessionState"
+          },
+          "grant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Seen At"
+          },
+          "idle_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Idle Expires At"
+          },
+          "hard_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Hard Expires At"
+          },
+          "heartbeat_interval_seconds": {
+            "type": "integer",
+            "title": "Heartbeat Interval Seconds"
+          },
+          "manifest_url": {
+            "type": "string",
+            "title": "Manifest Url"
+          },
+          "tiles_base_url": {
+            "type": "string",
+            "title": "Tiles Base Url"
+          },
+          "tokens": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReaderTokens"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "work",
+          "state",
+          "grant",
+          "started_at",
+          "last_seen_at",
+          "idle_expires_at",
+          "hard_expires_at",
+          "heartbeat_interval_seconds",
+          "manifest_url",
+          "tiles_base_url"
+        ],
+        "title": "ReaderSessionOut"
+      },
+      "ReaderSessionState": {
+        "type": "string",
+        "enum": [
+          "active",
+          "expired",
+          "revoked",
+          "suspended"
+        ],
+        "title": "ReaderSessionState"
+      },
+      "ReaderTokens": {
+        "properties": {
+          "grant_token": {
+            "type": "string",
+            "title": "Grant Token"
+          },
+          "grant_token_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Grant Token Expires At"
+          },
+          "tile_token": {
+            "type": "string",
+            "title": "Tile Token"
+          },
+          "tile_token_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Tile Token Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "grant_token",
+          "grant_token_expires_at",
+          "tile_token",
+          "tile_token_expires_at"
+        ],
+        "title": "ReaderTokens"
+      },
       "RejectRequest": {
         "properties": {
           "reason": {
@@ -2754,6 +3235,30 @@
           "ocr_text"
         ],
         "title": "ReviewTaskOut"
+      },
+      "SessionOpen": {
+        "properties": {
+          "work": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 3,
+            "title": "Work",
+            "description": "The work's public identifier"
+          },
+          "device_fingerprint": {
+            "type": "string",
+            "maxLength": 512,
+            "minLength": 8,
+            "title": "Device Fingerprint"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "work",
+          "device_fingerprint"
+        ],
+        "title": "SessionOpen"
       },
       "TermFacet": {
         "type": "string",

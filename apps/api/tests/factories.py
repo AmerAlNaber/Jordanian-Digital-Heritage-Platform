@@ -80,6 +80,8 @@ async def make_work(
                     page_type=PageType.TEXT if seq > 1 else PageType.COVER,
                     ocr_text=f"نص الصفحة {seq} سري داخلي",
                     thumb_key=f"access/{work.id}/{digital_object.id}/thumb/{seq}.webp",
+                    width_px=945,
+                    height_px=1418,
                 )
             )
         await session.flush()

@@ -145,6 +145,11 @@ class Settings(BaseSettings):
     tile_rate_sustained_per_minute: int = Field(default=600, ge=1)
     tiles_per_page_estimate: int = Field(default=12, ge=1)
     heartbeat_interval_seconds: int = Field(default=60, ge=10, le=60)
+    grant_token_ttl_seconds: int = Field(default=600, ge=60, le=600)
+    anonymous_session_max_seconds: int = Field(default=8 * 3600, ge=600, le=24 * 3600)
+    registered_grant_days: int = Field(default=30, ge=1, le=365)
+    default_device_limit: int = Field(default=2, ge=1, le=10)
+    print_quota_default_pages: int = Field(default=20, ge=0, le=500)
 
     # Observability
     sentry_dsn: SecretStr | None = None

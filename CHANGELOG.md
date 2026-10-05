@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Added
 
+- Reader sessions (`apps/api`, `reader` module): opening a session binds a principal, a work, a grant and one device; the browser holds a ten-minute grant token (JWT, EdDSA) and a five-minute tile token (HMAC), both refreshed by a heartbeat that re-validates expiry, revocation and the device limit, records pages read and dwell time in the audit log, and blanks the reader with a localized reason when the session is over (SEC-2, SEC-10, RDR-5, RDR-6). Per-session forensic keys are derived and stored sealed (SEC-11). A IIIF Presentation 3 manifest per work points at the tile gateway, carries no text, and shows only the sample range without a grant token (RDR-1). ADR-0007 records the credential formats.
+- Access (`access` module): grants implied by the Open and Registered classes are created on first read with a device limit and a print quota; members list their grants; rights officers revoke a grant and every reader on it loses access within the cache window (ACS-2, SEC-5). Grants and sessions carry opaque public names (INT-7). Cerbos `reader_session` policy with tests.
 - `docs/decisions/ADR-0004-phase-0-closure.md`: the owner's decisions at the close of Phase 0 (ARK test number until handover, typefaces confirmed, image server decision folded into the tile gateway work, accepted advisories kept under review, pipeline failures recorded on the batch).
 - `docs/decisions/ADR-0001-stack.md`: accepted record of the specified stack and the open decisions D1 to D17 (all defaults, repository name with `jdhp` as the technical short name, workers reuse the API package in-process).
 - `docs/ARCHITECTURE.md`: architecture of the core layer derived from `SPEC.md`.

@@ -18,5 +18,13 @@
   "errors.invalid_identifier.title": "معرّف غير صالح",
   "errors.invalid_identifier.detail": "المعرّف العام غير صالح أو يحتوي على خطأ مطبعي.",
   "errors.review_transition.title": "انتقال مراجعة غير مسموح",
-  "errors.review_transition.detail": "لا يمكن نقل مهمة المراجعة إلى هذه الحالة من حالتها الحالية."
+  "errors.review_transition.detail": "لا يمكن نقل مهمة المراجعة إلى هذه الحالة من حالتها الحالية.",
+  "errors.grant_token_invalid.title": "رمز القراءة غير صالح",
+  "errors.grant_token_invalid.detail": "رمز القراءة مفقود أو منتهٍ أو لا يخص هذه الجلسة.",
+  "errors.reader_session_ended.title": "انتهت جلسة القراءة",
+  "errors.reader_session_ended.detail": "انتهت هذه الجلسة. افتح الكتاب من جديد للمتابعة.",
+  "errors.device_limit.title": "تجاوزت عدد الأجهزة",
+  "errors.device_limit.detail": "هذا التصريح مفتوح على الحد الأقصى من الأجهزة. أغلق القارئ على جهاز آخر ثم حاول مرة أخرى.",
+  "errors.grant_required.title": "يلزم تصريح قراءة",
+  "errors.grant_required.detail": "قراءة هذا العمل تتطلب تصريحًا ساريًا."
 }

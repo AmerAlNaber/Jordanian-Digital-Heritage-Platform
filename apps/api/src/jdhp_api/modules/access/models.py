@@ -9,6 +9,7 @@ from decimal import Decimal
 from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
+from jdhp_api.core.ids import mint_name
 from jdhp_api.core.orm import (
     Base,
     GrantSource,
@@ -18,6 +19,8 @@ from jdhp_api.core.orm import (
     TimestampMixin,
     pg_enum,
 )
+
+GRANT_SHOULDER = "g8"  # opaque public names for grants; never the row id (INT-7)
 
 
 class AccessRequest(PrimaryKeyMixin, TimestampMixin, Base):
@@ -48,6 +51,9 @@ class Grant(PrimaryKeyMixin, TimestampMixin, Base):
         ),
     )
 
+    public_id: Mapped[str] = mapped_column(
+        String(32), unique=True, index=True, default=lambda: mint_name(GRANT_SHOULDER)
+    )
     user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("user.id"), index=True)
     institution_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("institution.id"), index=True

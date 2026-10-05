@@ -78,6 +78,28 @@ class RateLimitedError(JdhpError):
     code = "rate_limited"
 
 
+class GrantTokenError(UnauthorizedError):
+    """The reader credential is missing, malformed, expired or bound to something else."""
+
+    code = "grant_token_invalid"
+    headers = {"WWW-Authenticate": "Grant"}
+
+
+class ReaderSessionEndedError(UnauthorizedError):
+    """The reader session is over: expired, revoked or suspended. ``extra`` carries why."""
+
+    code = "reader_session_ended"
+    headers = {"WWW-Authenticate": "Grant"}
+
+
+class DeviceLimitError(ForbiddenError):
+    code = "device_limit"
+
+
+class GrantRequiredError(ForbiddenError):
+    code = "grant_required"
+
+
 def problem(
     request: Request, *, status: int, code: str, extra: Mapping[str, Any] | None = None
 ) -> JSONResponse:

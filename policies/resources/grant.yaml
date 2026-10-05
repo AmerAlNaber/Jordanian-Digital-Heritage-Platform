@@ -14,6 +14,11 @@ resourcePolicy:
       effect: EFFECT_ALLOW
       derivedRoles: [owner, same_institution_admin]
 
+    # A signed-in user lists the grants they hold (the service filters by holder).
+    - actions: [list_own]
+      effect: EFFECT_ALLOW
+      derivedRoles: [signed_in]
+
     - actions: [list, view, create, revoke, propose_extension]
       effect: EFFECT_ALLOW
       roles: [rights_officer]
