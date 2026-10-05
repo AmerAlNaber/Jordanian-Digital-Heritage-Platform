@@ -175,6 +175,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/phone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Phone */
+        get: operations["get_phone_me_phone_get"];
+        put?: never;
+        /**
+         * Start Phone
+         * @description Send a one-time code to the number (ACC-1). Three an hour, a minute apart.
+         */
+        post: operations["start_phone_me_phone_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/phone/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify Phone
+         * @description Confirm the code; a verified phone raises the member's verification level (ACC-1).
+         */
+        post: operations["verify_phone_me_phone_verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/preferences": {
         parameters: {
             query?: never;
@@ -190,6 +231,66 @@ export interface paths {
         head?: never;
         /** Update Preferences */
         patch: operations["update_preferences_me_preferences_patch"];
+        trace?: never;
+    };
+    "/me/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Sessions
+         * @description The user's open readers and the sign-in each belongs to (SEC-5).
+         */
+        get: operations["list_sessions_me_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/sessions/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke Session
+         * @description End one of the user's own readers; it goes dark within the cache window (SEC-5).
+         */
+        delete: operations["revoke_session_me_sessions__name__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/sign-ins/{sid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke Sign In
+         * @description End every reader opened under one sign-in; the web application ends the sign-in itself.
+         */
+        delete: operations["revoke_sign_in_me_sign_ins__sid__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/reader/prints/{job}": {
@@ -921,6 +1022,13 @@ export interface components {
             institution: components["schemas"]["InstitutionRef"] | null;
             /** Mfa */
             mfa: boolean;
+            /**
+             * Phone Number
+             * @description Masked: only the last two digits show
+             */
+            phone_number?: string | null;
+            /** Phone Verified At */
+            phone_verified_at?: string | null;
             /** Preferences */
             preferences: {
                 [key: string]: unknown;
@@ -1048,6 +1156,39 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** PhoneConfirm */
+        PhoneConfirm: {
+            /** Code */
+            code: string;
+        };
+        /**
+         * PhoneStart
+         * @description Ask for a verification code at a number in E.164 form (ACC-1).
+         */
+        PhoneStart: {
+            /**
+             * Phone Number
+             * @example +962790001234
+             */
+            phone_number: string;
+        };
+        /** PhoneStatus */
+        PhoneStatus: {
+            /** Expires At */
+            expires_at: string | null;
+            /**
+             * Pending
+             * @description A code is out and still valid
+             */
+            pending: boolean;
+            /**
+             * Phone Number
+             * @description Masked
+             */
+            phone_number?: string | null;
+            /** Verified At */
+            verified_at: string | null;
+        };
         /** PreferencesUpdate */
         PreferencesUpdate: {
             /** Locale */
@@ -1158,6 +1299,47 @@ export interface components {
          * @enum {string}
          */
         ReaderSessionState: "active" | "expired" | "revoked" | "suspended";
+        /**
+         * ReaderSessionSummary
+         * @description One open reader of the signed-in user, as the account page lists it (SEC-5).
+         */
+        ReaderSessionSummary: {
+            /** Current Sign In */
+            current_sign_in: boolean;
+            /**
+             * Device
+             * @description First eight characters of the device hash
+             */
+            device: string;
+            /**
+             * Idle Expires At
+             * Format: date-time
+             */
+            idle_expires_at: string;
+            /**
+             * Last Seen At
+             * Format: date-time
+             */
+            last_seen_at: string;
+            /** Public Id */
+            public_id: string;
+            /**
+             * Sign In
+             * @description The identity provider's session the reader was opened under
+             */
+            sign_in: string | null;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /** Title Ar */
+            title_ar: string;
+            /** Title En */
+            title_en: string | null;
+            /** Work */
+            work: string;
+        };
         /** ReaderTokens */
         ReaderTokens: {
             /** Grant Token */
@@ -1275,6 +1457,16 @@ export interface components {
              * @description The work's public identifier
              */
             work: string;
+        };
+        /** SessionsOut */
+        SessionsOut: {
+            /** Readers */
+            readers: components["schemas"]["ReaderSessionSummary"][];
+            /**
+             * Sign In
+             * @description This request's sign-in session
+             */
+            sign_in: string | null;
         };
         /**
          * TermFacet
@@ -1811,6 +2003,92 @@ export interface operations {
             };
         };
     };
+    get_phone_me_phone_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneStatus"];
+                };
+            };
+        };
+    };
+    start_phone_me_phone_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_phone_me_phone_verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_preferences_me_preferences_patch: {
         parameters: {
             query?: never;
@@ -1832,6 +2110,84 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Me"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_sessions_me_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionsOut"];
+                };
+            };
+        };
+    };
+    revoke_session_me_sessions__name__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_sign_in_me_sign_ins__sid__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

@@ -78,6 +78,7 @@ class Principal(BaseModel):
     mfa: bool = False
     session_age_seconds: int = 0
     active_devices: int = 0
+    session_id: str | None = None  # the identity provider's sign-in session (SEC-5)
     token_id: str | None = None
 
     @classmethod
@@ -215,6 +216,7 @@ def build_principal(claims: Mapping[str, Any], facts: UserFacts) -> Principal:
         session_age_seconds=max(0, int(time.time()) - auth_time),
         active_devices=facts.active_devices,
         token_id=str(claims["jti"]) if claims.get("jti") else None,
+        session_id=str(claims["sid"]) if claims.get("sid") else None,
     )
 
 

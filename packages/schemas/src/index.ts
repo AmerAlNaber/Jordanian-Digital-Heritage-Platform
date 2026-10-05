@@ -21,6 +21,9 @@ export type Region = Schemas["Region"];
 export type ReaderSessionOut = Schemas["ReaderSessionOut"];
 export type PrintJobOut = Schemas["PrintJobOut"];
 export type PrintLinkOut = Schemas["PrintLinkOut"];
+export type PhoneStatus = Schemas["PhoneStatus"];
+export type SessionsOut = Schemas["SessionsOut"];
+export type ReaderSessionSummary = Schemas["ReaderSessionSummary"];
 export type Problem = {
   type: string;
   title: string;

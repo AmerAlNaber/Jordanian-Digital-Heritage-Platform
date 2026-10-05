@@ -20,6 +20,7 @@ from jdhp_api.core.authz import CerbosPolicyClient, PolicyClient
 from jdhp_api.core.config import Settings, get_settings
 from jdhp_api.core.db import Database
 from jdhp_api.core.errors import install_error_handlers
+from jdhp_api.core.messaging import SmsSender, make_sms_sender
 from jdhp_api.core.middleware import RequestContextMiddleware
 from jdhp_api.core.observability import configure_logging
 from jdhp_api.core.storage import ObjectStore, app_store
@@ -50,6 +51,7 @@ def create_app(
     user_sync: UserSync | None = None,
     search_backend: SearchBackend | None = None,
     store: ObjectStore | None = None,
+    sms_sender: SmsSender | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(level=settings.log_level, json_output=settings.log_json)
@@ -67,6 +69,7 @@ def create_app(
         app.state.redis = redis_client
         app.state.search_backend = search_backend or OpenSearchBackend(settings)
         app.state.store = store or app_store(settings)
+        app.state.sms_sender = sms_sender or make_sms_sender(settings)
         app.state.reader = ReaderServices(
             database=app.state.database,
             settings=settings,

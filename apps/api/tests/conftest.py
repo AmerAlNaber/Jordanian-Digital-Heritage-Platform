@@ -31,6 +31,7 @@ from fastapi import FastAPI
 from jdhp_api.core.auth import TokenVerifier
 from jdhp_api.core.config import Settings, load_settings
 from jdhp_api.core.db import Database
+from jdhp_api.core.messaging import MockSmsSender
 from jdhp_api.core.tasks import RecordingDispatcher
 from jdhp_api.main import create_app
 from jdhp_api.testing import db as testing_db
@@ -281,7 +282,12 @@ def dispatcher() -> RecordingDispatcher:
 async def app(
     settings: Settings, database: Database, dispatcher: RecordingDispatcher
 ) -> AsyncIterator[FastAPI]:
-    application = create_app(settings, database=database, token_verifier=TokenVerifier(settings))
+    application = create_app(
+        settings,
+        database=database,
+        token_verifier=TokenVerifier(settings),
+        sms_sender=MockSmsSender(),
+    )
     application.state.dispatcher = dispatcher
     async with application.router.lifespan_context(application):
         yield application

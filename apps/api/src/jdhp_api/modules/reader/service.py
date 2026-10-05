@@ -180,6 +180,7 @@ async def open_session(
             work_id=work.id,
             grant_id=grant.id if grant else None,
             device_hash=device,
+            sid=principal.session_id,
             forensic_key_encrypted=services.forensic.seal(services.forensic.session_key(reader_id)),
             state=ReaderSessionState.ACTIVE,
             last_seen_at=now,
@@ -405,6 +406,48 @@ async def end_sessions_for_grant(
         )
         for reader in (await session.scalars(stmt)).all():
             await _close(session, reader, reason=reason, now=now)
+            ended.append(reader.public_id)
+    for public_id in ended:
+        await services.cache.clear_session(public_id)
+    return len(ended)
+
+
+async def revoke_reader(
+    services: ReaderServices, *, reader: ReaderSession, principal: Principal, facts: RequestFacts
+) -> None:
+    """The owner ends one of their readers from the account page (SEC-5)."""
+    now = utcnow()
+    async with services.database.session(RlsContext.system()) as session:
+        current = await session.get(ReaderSession, reader.id)
+        if current is None:
+            return
+        work = await session.get(Work, current.work_id)
+        await _close(session, current, reason="revoked", now=now)
+        await _audit_end(session, principal, current, work, "revoked", facts)
+    await services.cache.clear_session(reader.public_id)
+
+
+async def end_sessions_for_sign_in(
+    services: ReaderServices,
+    *,
+    user_id: uuid.UUID,
+    sid: str,
+    principal: Principal,
+    facts: RequestFacts,
+) -> int:
+    """Ending a sign-in ends every reader it opened, within the cache window (SEC-5)."""
+    now = utcnow()
+    ended: list[str] = []
+    async with services.database.session(RlsContext.system()) as session:
+        stmt = select(ReaderSession).where(
+            ReaderSession.user_id == user_id,
+            ReaderSession.sid == sid,
+            ReaderSession.state == ReaderSessionState.ACTIVE,
+        )
+        for reader in (await session.scalars(stmt)).all():
+            work = await session.get(Work, reader.work_id)
+            await _close(session, reader, reason="revoked", now=now)
+            await _audit_end(session, principal, reader, work, "revoked", facts)
             ended.append(reader.public_id)
     for public_id in ended:
         await services.cache.clear_session(public_id)

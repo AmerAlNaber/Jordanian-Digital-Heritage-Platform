@@ -35,6 +35,7 @@ class ReaderSession(PrimaryKeyMixin, TimestampMixin, Base):
     work_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("work.id"), index=True)
     grant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("grant.id"), index=True)
     device_hash: Mapped[str] = mapped_column(String(64))
+    sid: Mapped[str | None] = mapped_column(String(64), index=True)
     forensic_key_encrypted: Mapped[bytes] = mapped_column(LargeBinary)
     state: Mapped[ReaderSessionState] = mapped_column(
         pg_enum(ReaderSessionState, "reader_session_state"), default=ReaderSessionState.ACTIVE

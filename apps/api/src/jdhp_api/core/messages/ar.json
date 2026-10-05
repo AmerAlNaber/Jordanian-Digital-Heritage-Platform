@@ -38,5 +38,9 @@
   "errors.print_not_ready.title": "الطباعة غير جاهزة",
   "errors.print_not_ready.detail": "لا يزال ملف PDF قيد التجهيز، أو سبق تنزيله.",
   "errors.image_source_unavailable.title": "لم يستجب خادم الصور",
-  "errors.image_source_unavailable.detail": "تعذّر إنتاج صورة الصفحة الآن. حاول بعد قليل."
+  "errors.image_source_unavailable.detail": "تعذّر إنتاج صورة الصفحة الآن. حاول بعد قليل.",
+  "errors.phone_code_invalid.title": "لم يُقبل الرمز",
+  "errors.phone_code_invalid.detail": "الرمز خاطئ أو انتهت صلاحيته أو تجاوزت عدد المحاولات. اطلب رمزًا جديدًا.",
+  "errors.phone_send_limited.title": "طلبات كثيرة للرمز",
+  "errors.phone_send_limited.detail": "أُرسل رمز قبل قليل أو بلغت الحد الساعي. انتظر قبل طلب رمز آخر."
 }

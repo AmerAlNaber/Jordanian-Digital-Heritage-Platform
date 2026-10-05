@@ -120,6 +120,19 @@ class ImageSourceError(JdhpError):
     code = "image_source_unavailable"
 
 
+class PhoneCodeError(JdhpError):
+    """The phone code is wrong, expired, exhausted or was never sent; one answer for all (T-B7)."""
+
+    status = http.HTTP_400_BAD_REQUEST
+    code = "phone_code_invalid"
+
+
+class PhoneSendLimitError(RateLimitedError):
+    """Too many codes asked for this number in the window (ACC-1, SEC-4)."""
+
+    code = "phone_send_limited"
+
+
 class PrintQuotaError(ForbiddenError):
     """More pages than the grant's print quota has left (RDR-4)."""
 

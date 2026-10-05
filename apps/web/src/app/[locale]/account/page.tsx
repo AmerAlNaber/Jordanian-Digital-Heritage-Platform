@@ -1,10 +1,13 @@
-import type { Me } from "@jdhp/schemas";
+import type { Me, PhoneStatus, SessionsOut } from "@jdhp/schemas";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { PhoneVerification } from "@/components/account/PhoneVerification";
+import { SignIns } from "@/components/account/SignIns";
 import { loginHref } from "@/lib/account-actions";
 import { apiFetch } from "@/lib/api";
 import { currentSession } from "@/lib/session";
+import { currentSid, listSignIns, mergeSignIns } from "@/lib/sign-ins";
 import { resolveLocale } from "@/i18n/routing";
 
 export async function generateMetadata({
@@ -45,7 +48,13 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
       </div>
     );
   }
-  const me = await apiFetch<Me>("/me", { locale });
+  const [me, phone, sessions, signIns] = await Promise.all([
+    apiFetch<Me>("/me", { locale }),
+    apiFetch<PhoneStatus>("/me/phone", { locale }),
+    apiFetch<SessionsOut>("/me/sessions", { locale }),
+    listSignIns(session.data.accessToken).catch(() => []),
+  ]);
+  const grouped = mergeSignIns(signIns, sessions.readers, currentSid(session.data.accessToken));
   const roleKey = me.role as keyof IntlMessages["account"]["roles"];
   const verificationKey = me.verification_level as keyof IntlMessages["account"]["verifications"];
   return (
@@ -63,6 +72,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         <dt className="label">{t("preferences")}</dt>
         <dd className="m-0 font-mono text-step-n1">{JSON.stringify(me.preferences)}</dd>
       </dl>
+      <PhoneVerification status={phone} locale={locale} />
       <section aria-labelledby="account-security" className="mt-12">
         <h2 id="account-security" className="text-step-2">
           {t("security")}
@@ -96,6 +106,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         </ul>
         <p className="mt-4 text-step-n1 text-ink-muted">{t("securityNote")}</p>
       </section>
+      <SignIns signIns={grouped} locale={locale} />
     </div>
   );
 }

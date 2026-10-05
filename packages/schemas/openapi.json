@@ -447,6 +447,203 @@
         }
       }
     },
+    "/me/phone": {
+      "get": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Get Phone",
+        "operationId": "get_phone_me_phone_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneStatus"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Start Phone",
+        "description": "Send a one-time code to the number (ACC-1). Three an hour, a minute apart.",
+        "operationId": "start_phone_me_phone_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/phone/verify": {
+      "post": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Verify Phone",
+        "description": "Confirm the code; a verified phone raises the member's verification level (ACC-1).",
+        "operationId": "verify_phone_me_phone_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/sessions": {
+      "get": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "List Sessions",
+        "description": "The user's open readers and the sign-in each belongs to (SEC-5).",
+        "operationId": "list_sessions_me_sessions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionsOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/sessions/{name}": {
+      "delete": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Revoke Session",
+        "description": "End one of the user's own readers; it goes dark within the cache window (SEC-5).",
+        "operationId": "revoke_session_me_sessions__name__delete",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/sign-ins/{sid}": {
+      "delete": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Revoke Sign In",
+        "description": "End every reader opened under one sign-in; the web application ends the sign-in itself.",
+        "operationId": "revoke_sign_in_me_sign_ins__sid__delete",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/intake/batches": {
       "post": {
         "tags": [
@@ -2876,6 +3073,30 @@
           "mfa": {
             "type": "boolean",
             "title": "Mfa"
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Masked: only the last two digits show"
+          },
+          "phone_verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Verified At"
           }
         },
         "type": "object",
@@ -3246,6 +3467,92 @@
         ],
         "title": "Paginated[WorkSummary]"
       },
+      "PhoneConfirm": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^\\d{6}$",
+            "title": "Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "PhoneConfirm"
+      },
+      "PhoneStart": {
+        "properties": {
+          "phone_number": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{7,14}$",
+            "title": "Phone Number",
+            "examples": [
+              "+962790001234"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "phone_number"
+        ],
+        "title": "PhoneStart",
+        "description": "Ask for a verification code at a number in E.164 form (ACC-1)."
+      },
+      "PhoneStatus": {
+        "properties": {
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Masked"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "pending": {
+            "type": "boolean",
+            "title": "Pending",
+            "description": "A code is out and still valid"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "verified_at",
+          "pending",
+          "expires_at"
+        ],
+        "title": "PhoneStatus"
+      },
       "PreferencesUpdate": {
         "properties": {
           "locale": {
@@ -3527,6 +3834,84 @@
           "suspended"
         ],
         "title": "ReaderSessionState"
+      },
+      "ReaderSessionSummary": {
+        "properties": {
+          "public_id": {
+            "type": "string",
+            "title": "Public Id"
+          },
+          "work": {
+            "type": "string",
+            "title": "Work"
+          },
+          "title_ar": {
+            "type": "string",
+            "title": "Title Ar"
+          },
+          "title_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title En"
+          },
+          "device": {
+            "type": "string",
+            "title": "Device",
+            "description": "First eight characters of the device hash"
+          },
+          "sign_in": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sign In",
+            "description": "The identity provider's session the reader was opened under"
+          },
+          "current_sign_in": {
+            "type": "boolean",
+            "title": "Current Sign In"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Seen At"
+          },
+          "idle_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Idle Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_id",
+          "work",
+          "title_ar",
+          "title_en",
+          "device",
+          "sign_in",
+          "current_sign_in",
+          "started_at",
+          "last_seen_at",
+          "idle_expires_at"
+        ],
+        "title": "ReaderSessionSummary",
+        "description": "One open reader of the signed-in user, as the account page lists it (SEC-5)."
       },
       "ReaderTokens": {
         "properties": {
@@ -3850,6 +4235,35 @@
           "device_fingerprint"
         ],
         "title": "SessionOpen"
+      },
+      "SessionsOut": {
+        "properties": {
+          "sign_in": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sign In",
+            "description": "This request's sign-in session"
+          },
+          "readers": {
+            "items": {
+              "$ref": "#/components/schemas/ReaderSessionSummary"
+            },
+            "type": "array",
+            "title": "Readers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sign_in",
+          "readers"
+        ],
+        "title": "SessionsOut"
       },
       "TermFacet": {
         "type": "string",

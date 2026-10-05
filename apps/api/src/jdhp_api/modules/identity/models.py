@@ -53,6 +53,8 @@ class User(PrimaryKeyMixin, TimestampMixin, Base):
     preferences: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     last_seen_at: Mapped[dt.datetime | None]
     pseudonymized_at: Mapped[dt.datetime | None]
+    phone_number: Mapped[str | None] = mapped_column(Text)
+    phone_verified_at: Mapped[dt.datetime | None]
 
 
 class InstitutionLicense(PrimaryKeyMixin, TimestampMixin, Base):
@@ -83,3 +85,20 @@ class VerificationCase(PrimaryKeyMixin, TimestampMixin, Base):
     reason: Mapped[str | None] = mapped_column(Text)
     delete_documents_after: Mapped[dt.datetime | None]
     documents_deleted_at: Mapped[dt.datetime | None]
+
+
+class PhoneVerification(PrimaryKeyMixin, TimestampMixin, Base):
+    """The one pending phone code of a user: hashed, short-lived, attempt-limited (ACC-1)."""
+
+    __tablename__ = "phone_verification"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("user.id", ondelete="CASCADE"), unique=True
+    )
+    phone_number: Mapped[str] = mapped_column(Text)
+    code_hash: Mapped[str] = mapped_column(String(64))
+    expires_at: Mapped[dt.datetime]
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    sends_in_window: Mapped[int] = mapped_column(Integer, default=1)
+    window_started_at: Mapped[dt.datetime]
+    last_sent_at: Mapped[dt.datetime]

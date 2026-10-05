@@ -38,5 +38,9 @@
   "errors.print_not_ready.title": "The print is not ready",
   "errors.print_not_ready.detail": "The PDF is still being prepared, or it has already been downloaded.",
   "errors.image_source_unavailable.title": "The image server did not answer",
-  "errors.image_source_unavailable.detail": "The page image could not be produced right now. Try again in a moment."
+  "errors.image_source_unavailable.detail": "The page image could not be produced right now. Try again in a moment.",
+  "errors.phone_code_invalid.title": "The code was not accepted",
+  "errors.phone_code_invalid.detail": "The code is wrong, has expired, or too many attempts were made. Ask for a new code.",
+  "errors.phone_send_limited.title": "Too many codes",
+  "errors.phone_send_limited.detail": "A code was sent recently or the hourly limit was reached. Wait before asking for another."
 }
