@@ -1,8 +1,23 @@
-/* Placeholder until the design tokens are final (docs/DESIGN.md). Logical properties only (INT-2). */
+/*
+ * Keycloak pages take the platform palette (packages/design-tokens). Logical properties only (INT-2).
+ * The login theme switches PatternFly to its dark variant with the pf-v5-theme-dark class when the
+ * browser prefers dark; the tokens follow, so text keeps its contrast in both schemes (ACX-1).
+ */
 :root {
-  --jdhp-bg: oklch(97% 0.012 80);
-  --jdhp-ink: oklch(22% 0.02 60);
-  --jdhp-accent: oklch(45% 0.09 200);
+  color-scheme: light dark;
+  --jdhp-bg: oklch(94.5% 0.015 75);
+  --jdhp-ink: oklch(24% 0.02 60);
+  --jdhp-accent: oklch(41% 0.12 25);
 }
-body { background: var(--jdhp-bg); color: var(--jdhp-ink); }
-html[dir="rtl"] .pf-v5-c-login__main { text-align: start; }
+.pf-v5-theme-dark {
+  --jdhp-bg: oklch(21% 0.014 60);
+  --jdhp-ink: oklch(93% 0.012 80);
+  --jdhp-accent: oklch(72% 0.11 25);
+}
+body {
+  background: var(--jdhp-bg);
+  color: var(--jdhp-ink);
+}
+html[dir="rtl"] .pf-v5-c-login__main {
+  text-align: start;
+}

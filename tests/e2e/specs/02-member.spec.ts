@@ -37,7 +37,7 @@ test.describe.serial("a new member", () => {
     await expect(page.locator("#password-new")).toBeVisible();
     await page.locator("#password-new").fill(password);
     await page.locator("#password-confirm").fill(password);
-    await page.locator('input[type="submit"]').click();
+    await page.locator("#kc-submit").click();
     await expect(page).toHaveURL(new RegExp(`/${lang}/account`));
     await expect(page.getByText(msgs.account.signedInAs)).toBeVisible();
     await expect(page.getByText(msgs.account.verifications.email)).toBeVisible();

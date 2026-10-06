@@ -29,7 +29,7 @@ test.describe("public catalog", () => {
     await record.click();
     await expect(page).toHaveURL(new RegExp(`/${lang}/works/`));
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByText(msgs.work.pagesTitle)).toBeVisible();
+    await expect(page.getByRole("heading", { name: msgs.work.pagesTitle })).toBeVisible();
     await expectAccessible(page, `record (${lang})`);
   });
 });

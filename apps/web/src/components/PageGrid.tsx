@@ -63,12 +63,8 @@ export function PageGrid({
                 {tile}
               </Link>
             ) : (
-              <span
-                aria-label={t("pageLabel", { label: page.label ?? String(page.seq) })}
-                className="block w-full"
-              >
-                {tile}
-              </span>
+              // Not a link: the visible label under the tile names the page, so no ARIA name here.
+              <span className="block w-full">{tile}</span>
             )}
             <span className="label text-step-n2">
               {label}
