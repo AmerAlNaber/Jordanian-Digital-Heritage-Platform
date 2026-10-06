@@ -33,12 +33,12 @@ describe("audit viewer query (ADM-5)", () => {
     expect(toParams(query)).toEqual({ actor: "omar", since: "2026-10-05T10:00:00Z" });
     expect(apiQuery(query, 50)).toEqual({
       actor: "omar",
-      since: "2026-10-05T10:00Z",
+      since: "2026-10-05T10:00:00Z",
       limit: "50",
       offset: "50",
     });
     expect(exportHref(query, "csv")).toBe(
-      "/api/bff/audit/export?actor=omar&since=2026-10-05T10%3A00Z&format=csv",
+      "/api/bff/audit/export?actor=omar&since=2026-10-05T10%3A00%3A00Z&format=csv",
     );
   });
 });
