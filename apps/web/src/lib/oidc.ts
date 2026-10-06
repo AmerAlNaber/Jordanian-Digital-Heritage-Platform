@@ -12,23 +12,49 @@ export function callbackPath(kind: ClientKind): string {
   return kind === "staff" ? "/api/auth/callback/staff" : "/api/auth/callback";
 }
 
+/**
+ * Fetches the provider metadata from the internal address and checks it names the public issuer.
+ *
+ * Behind the edge, Keycloak is reached as `keycloak:8080` but issues tokens for the public URL; its
+ * discovery document carries the public issuer and front-channel endpoints, with back-channel
+ * endpoints on the address that was asked (hostname-backchannel-dynamic). A plain discovery call
+ * would refuse that document, because the issuer does not equal the address it came from.
+ */
+export async function discoverMetadata(
+  internalIssuer: string,
+  publicIssuer: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<client.ServerMetadata> {
+  const url = `${internalIssuer.replace(/\/$/, "")}/.well-known/openid-configuration`;
+  const response = await fetchImpl(url, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error(`OIDC discovery at ${url} answered ${response.status}`);
+  const metadata = (await response.json()) as client.ServerMetadata;
+  const expected = publicIssuer.replace(/\/$/, "");
+  if (typeof metadata.issuer !== "string" || metadata.issuer.replace(/\/$/, "") !== expected) {
+    throw new Error(
+      `OIDC issuer mismatch: discovery names ${String(metadata.issuer)}, expected ${expected}`,
+    );
+  }
+  return metadata;
+}
+
 export async function configuration(kind: ClientKind): Promise<client.Configuration> {
   let pending = configs.get(kind);
   if (!pending) {
     const id = kind === "staff" ? env("OIDC_STAFF_CLIENT_ID") : env("OIDC_WEB_CLIENT_ID");
     const secret =
       kind === "staff" ? env("OIDC_STAFF_CLIENT_SECRET") : env("OIDC_WEB_CLIENT_SECRET");
-    const internal = new URL(env("OIDC_INTERNAL_ISSUER"));
-    const options: client.DiscoveryRequestOptions = {};
-    if (internal.protocol === "http:") options.execute = [client.allowInsecureRequests];
-    pending = client.discovery(internal, id, secret, undefined, options).then((config) => {
-      // Tokens are issued for the public issuer; discovery may have run against the internal address.
-      const metadata = config.serverMetadata();
-      if (metadata.issuer !== env("OIDC_ISSUER")) {
-        // Keycloak with hostname-backchannel-dynamic reports the public issuer; nothing to do.
-      }
+    const internal = env("OIDC_INTERNAL_ISSUER");
+    pending = discoverMetadata(internal, env("OIDC_ISSUER")).then((metadata) => {
+      const config = new client.Configuration(metadata, id, secret);
+      if (new URL(internal).protocol === "http:") client.allowInsecureRequests(config);
       return config;
     });
+    // A failed discovery must not be cached, or one unlucky start would stick.
+    pending.catch(() => configs.delete(kind));
     configs.set(kind, pending);
   }
   return pending;

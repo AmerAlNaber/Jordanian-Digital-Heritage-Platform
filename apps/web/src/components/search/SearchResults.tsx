@@ -105,9 +105,7 @@ export async function SearchResults({
                             {body}
                           </Link>
                         ) : (
-                          <span title={t("scanHidden")} className="opacity-70">
-                            {body}
-                          </span>
+                          <span title={t("scanHidden")}>{body}</span>
                         )}
                       </li>
                     );

@@ -57,8 +57,8 @@ export async function SearchFacets({
                 <li key={bucket.value} className="flex items-baseline justify-between gap-3">
                   <Link
                     href={{ pathname: "/search", query: toggleFacet(query, facet, bucket.value) }}
-                    aria-pressed={active}
-                    className={active ? "font-medium" : ""}
+                    aria-current={active ? "true" : undefined}
+                    className={`inline-flex min-h-6 items-center py-0.5 ${active ? "font-medium" : ""}`}
                   >
                     {label(facet, bucket.value)}
                   </Link>

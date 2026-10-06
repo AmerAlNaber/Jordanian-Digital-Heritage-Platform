@@ -16,6 +16,7 @@ test.describe.serial("a rights officer", () => {
     msgs,
   }) => {
     const member = loadMember(lang);
+    expect(member.subject, "the member spec must have registered a member first").toBeTruthy();
     const email = `${unique(`officer-${lang}`)}@example.test`;
     const password = `Officer-${unique("pw")}`;
     await createStaffUser(email, password, "rights_officer");

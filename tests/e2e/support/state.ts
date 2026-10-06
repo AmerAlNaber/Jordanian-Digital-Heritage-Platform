@@ -16,5 +16,9 @@ export function saveMember(lang: Lang, state: MemberState): void {
 }
 
 export function loadMember(lang: Lang): MemberState {
-  return JSON.parse(readFileSync(join(root, `member-${lang}.json`), "utf8")) as MemberState;
+  try {
+    return JSON.parse(readFileSync(join(root, `member-${lang}.json`), "utf8")) as MemberState;
+  } catch {
+    return { email: "", password: "" };
+  }
 }
