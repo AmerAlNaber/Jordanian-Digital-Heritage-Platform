@@ -83,7 +83,17 @@ export default async function AuditPage({
     <div className="pt-12">
       <h1 className="text-step-3">{t("title")}</h1>
       <p className="reading mt-3 text-ink-muted">{t("intro")}</p>
-      {denied ? <p className="mt-6 text-danger">{t("needMfa")}</p> : null}
+      {denied ? (
+        <p className="mt-6 text-danger">
+          {t("needMfa")}{" "}
+          <a
+            href={loginHref({ returnTo: `/${locale}/staff/audit`, staff: true, reauth: true })}
+            className="font-medium"
+          >
+            {t("signInAgain")}
+          </a>
+        </p>
+      ) : null}
       <form method="get" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {(["actor", "action", "resource_kind", "resource_id"] as const).map((name) => (
           <label key={name} className="grid gap-1">

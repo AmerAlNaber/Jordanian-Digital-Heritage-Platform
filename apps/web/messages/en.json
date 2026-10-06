@@ -312,6 +312,7 @@
     "staffSignIn": "Staff sign-in",
     "roleOnly": "Rights officers and platform admins read the audit log.",
     "needMfa": "The audit log needs a sign-in with a one-time code.",
+    "signInAgain": "Sign in again with the code.",
     "filters": {
       "actor": "User (subject)",
       "action": "Action",

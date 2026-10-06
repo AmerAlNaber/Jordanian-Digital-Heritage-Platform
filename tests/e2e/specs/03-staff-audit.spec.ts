@@ -22,7 +22,8 @@ test.describe.serial("a rights officer", () => {
     await createStaffUser(email, password, "rights_officer");
 
     await page.goto(`/${lang}/staff/audit`);
-    await page.getByRole("link", { name: msgs.audit.staffSignIn }).click();
+    // The footer carries a staff link with the same name; the prompt in the main region is the one.
+    await page.getByRole("main").getByRole("link", { name: msgs.audit.staffSignIn }).click();
     await page.locator("#username").fill(email);
     await page.locator("#kc-login").click();
     await page.locator("#password").fill(password);
@@ -32,10 +33,26 @@ test.describe.serial("a rights officer", () => {
     await page.locator("#mode-manual").click();
     const secret = (await page.locator("#kc-totp-secret-key").textContent()) ?? "";
     expect(secret.replace(/\s/g, "").length).toBeGreaterThan(10);
+    const enrolledWindow = Math.floor(Date.now() / 30_000);
     await page.locator("#totp").fill(totp(secret));
     const label = page.locator("#userLabel");
     if (await label.count()) await label.fill("e2e authenticator");
     await page.locator('input[type="submit"]').click();
+
+    // Enrolling is not authenticating: this sign-in's token names the password only, so the
+    // viewer refuses and asks for a sign-in with the code (SEC-3). A code is never reusable, so
+    // the next one waits for the next thirty-second window.
+    await expect(page).toHaveURL(new RegExp(`/${lang}/staff/audit`));
+    await expect(page.getByText(msgs.audit.needMfa)).toBeVisible();
+    await page.getByRole("main").getByRole("link", { name: msgs.audit.signInAgain }).click();
+    // The provider still holds the session, so it asks for the password of that account only.
+    await expect(page.locator("#kc-attempted-username")).toBeVisible();
+    await page.locator("#password").fill(password);
+    await page.locator("#kc-login").click();
+    const nextWindow = (enrolledWindow + 1) * 30_000 - Date.now();
+    if (nextWindow > 0) await page.waitForTimeout(nextWindow);
+    await page.locator("#otp").fill(totp(secret));
+    await page.locator("#kc-login").click();
 
     await expect(page).toHaveURL(new RegExp(`/${lang}/staff/audit`));
     await expect(page.getByRole("heading", { level: 1, name: msgs.audit.title })).toBeVisible();

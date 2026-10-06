@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 import { env, isProduction } from "./env";
-import { type ClientKind, exchangeCode, rolesFromClaims } from "./oidc";
+import { type ClientKind, exchangeCode, sessionRoles } from "./oidc";
 import {
   SESSION_COOKIE,
   cookieOptions,
@@ -52,7 +52,7 @@ export async function handleCallback(request: NextRequest, expectedKind: ClientK
     idToken: tokens.id_token,
     expiresAt: Date.now() + (tokens.expiresIn() ?? 600) * 1000,
     subject: String(claims.sub),
-    roles: rolesFromClaims(claims as Record<string, unknown>),
+    roles: sessionRoles(claims as Record<string, unknown>, tokens.access_token),
     name: typeof claims.name === "string" ? claims.name : undefined,
     createdAt: Date.now(),
   });

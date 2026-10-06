@@ -35,10 +35,13 @@ export function loginHref(options: {
   register?: boolean;
   action?: AccountAction;
   staff?: boolean;
+  /** Ask the provider to run the whole sign-in again, whatever session it holds (SEC-3). */
+  reauth?: boolean;
 }): string {
   const params = new URLSearchParams({ return: options.returnTo });
   if (options.register) params.set("register", "1");
   if (options.action) params.set("action", options.action);
   if (options.staff) params.set("staff", "1");
+  if (options.reauth) params.set("reauth", "1");
   return `/api/auth/login?${params.toString()}`;
 }

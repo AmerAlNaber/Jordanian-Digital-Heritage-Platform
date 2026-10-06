@@ -25,6 +25,9 @@ export async function GET(request: NextRequest) {
   if (request.nextUrl.searchParams.get("register") === "1" && kind === "web") {
     extra.prompt = "create";
   }
+  // A fresh authentication, not the provider's session: a staff member who has just enrolled a
+  // code signs in with it, so the token names the second factor (SEC-3).
+  if (request.nextUrl.searchParams.get("reauth") === "1") extra.prompt = "login";
   const action = keycloakAction(request.nextUrl.searchParams.get("action"));
   if (action) extra.kc_action = action;
   const url = await authorizationUrl(kind, redirectUri, pkce, extra);

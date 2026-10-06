@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 import datetime as dt
 import re
+import uuid
 from collections.abc import Callable
 from typing import Any
 
@@ -85,6 +87,35 @@ def _code(sms: MockSmsSender) -> str:
     match = re.search(r"\b(\d{6})\b", sms.sent[-1].body)
     assert match, sms.sent[-1].body
     return match.group(1)
+
+
+async def test_sec_2_first_requests_of_one_sign_in_that_race_share_the_user_row(
+    admin_database: Database,
+) -> None:
+    """A page's first requests arrive together; two of them insert the same subject at once."""
+    claims = {
+        "sub": str(uuid.uuid4()),
+        "email": "race@example.test",
+        "name": "Racing Member",
+        "realm_access": {"roles": ["member"]},
+    }
+    async with admin_database.session(RlsContext.system()) as first:
+        winner = await service.upsert_from_claims(first, claims)
+
+        async def second_request() -> User:
+            async with admin_database.session(RlsContext.system()) as second:
+                return await service.upsert_from_claims(second, claims)
+
+        # The second insert waits on the first transaction's index entry, then finds the row taken.
+        task = asyncio.create_task(second_request())
+        await asyncio.sleep(0.3)
+        assert not task.done()
+        await first.commit()
+    loser = await task
+    assert loser.id == winner.id
+    async with admin_database.session(RlsContext.system()) as session:
+        rows = (await session.scalars(select(User).where(User.keycloak_sub == claims["sub"]))).all()
+    assert len(rows) == 1
 
 
 async def test_acc_1_phone_verification_raises_the_level_and_outlives_the_token_claim(

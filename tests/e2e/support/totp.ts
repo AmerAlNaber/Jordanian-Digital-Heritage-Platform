@@ -18,12 +18,21 @@ export function base32Decode(text: string): Buffer {
   return Buffer.from(out);
 }
 
-/** RFC 6238 with Keycloak's realm defaults: SHA-1, six digits, thirty-second steps. */
-export function totp(secretBase32: string, at = Date.now(), period = 30, digits = 6): string {
+/**
+ * RFC 6238 as the realm's OTP policy configures it (infra/keycloak/realm-jdhp.template.json):
+ * HmacSHA256, six digits, thirty-second steps. A code from another algorithm is refused.
+ */
+export function totp(
+  secretBase32: string,
+  at = Date.now(),
+  period = 30,
+  digits = 6,
+  algorithm = "sha256",
+): string {
   const counter = Math.floor(at / 1000 / period);
   const message = Buffer.alloc(8);
   message.writeBigUInt64BE(BigInt(counter));
-  const digest = createHmac("sha1", base32Decode(secretBase32)).update(message).digest();
+  const digest = createHmac(algorithm, base32Decode(secretBase32)).update(message).digest();
   const offset = (digest[digest.length - 1] ?? 0) & 0x0f;
   const binary =
     ((digest[offset] ?? 0) & 0x7f) * 2 ** 24 +

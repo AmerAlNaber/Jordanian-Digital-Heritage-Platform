@@ -17,7 +17,8 @@ export async function AuditTable({ events, locale }: { events: AuditEventOut[]; 
   const t = await getTranslations("audit");
   if (events.length === 0) return <p className="mt-6 text-ink-muted">{t("none")}</p>;
   return (
-    <div className="mt-4 overflow-x-auto">
+    // The wide table scrolls sideways; a keyboard reaches the region through the focus stop.
+    <div className="mt-4 overflow-x-auto" tabIndex={0} role="region" aria-label={t("title")}>
       <table className="w-full border-collapse text-step-n1">
         <thead>
           <tr className="hairline-bottom text-start">

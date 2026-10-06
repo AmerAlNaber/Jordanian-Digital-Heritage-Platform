@@ -9,18 +9,21 @@ import { saveMember } from "../support/state";
  * The Phase 1 acceptance path for a member: register in the interface language, verify the
  * email, choose a password, verify a phone, read the seed book and print two pages
  * (ACC-1, RDR-1, RDR-4, SEC-2, SEC-15).
+ *
+ * One journey, one browser context: Playwright gives every test a fresh context, so the steps
+ * that build on the registration share this test and are reported as steps.
  */
-test.describe.serial("a new member", () => {
+test("a new member registers, verifies a phone, reads the seed book and prints two pages", async ({
+  page,
+  lang,
+  msgs,
+}) => {
+  test.setTimeout(480_000);
   const password = `Zaytun-Teen-${unique("e2e")}`;
-  let email = "";
+  const email = `${unique(`member-${lang}`)}@example.test`;
   let workPath = "";
 
-  test("registers with email verification and chooses the password afterwards", async ({
-    page,
-    lang,
-    msgs,
-  }) => {
-    email = `${unique(`member-${lang}`)}@example.test`;
+  await test.step("registers with email verification and chooses the password afterwards", async () => {
     await page.goto(`/${lang}`);
     await page.getByRole("link", { name: msgs.nav.register }).click();
     // Keycloak's registration form, rendered in the page's language.
@@ -44,7 +47,7 @@ test.describe.serial("a new member", () => {
     saveMember(lang, { email, password, subject: await subjectOf(email) });
   });
 
-  test("verifies a phone number with the code the platform sends", async ({ page, lang, msgs }) => {
+  await test.step("verifies a phone number with the code the platform sends", async () => {
     await page.goto(`/${lang}/account`);
     const number = `+96279${String(Math.floor(Math.random() * 1_000_000)).padStart(7, "0")}`;
     await page.getByLabel(msgs.account.phone.numberLabel).fill(number);
@@ -58,7 +61,7 @@ test.describe.serial("a new member", () => {
     await expectAccessible(page, `account (${lang})`);
   });
 
-  test("reads the seed book in the secure reader", async ({ page, lang, msgs }) => {
+  await test.step("reads the seed book in the secure reader", async () => {
     await page.goto(`/${lang}/search?q=${encodeURIComponent("الكرم")}`);
     await page.getByRole("main").locator('a[href*="/works/"]').first().click();
     await page.getByRole("link", { name: msgs.access.read }).click();
@@ -74,7 +77,7 @@ test.describe.serial("a new member", () => {
     saveMember(lang, { email, password, subject: await subjectOf(email), work: workPath });
   });
 
-  test("prints two pages as a marked low-resolution PDF", async ({ page, lang, msgs }) => {
+  await test.step("prints two pages as a marked low-resolution PDF", async () => {
     await page.goto(workPath);
     await expect(page.locator(".openseadragon-canvas")).toBeVisible({ timeout: 60_000 });
     await page.getByRole("button", { name: msgs.reader.print }).click();

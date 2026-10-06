@@ -130,3 +130,32 @@ export function rolesFromClaims(claims: Record<string, unknown> | undefined): st
     ? access.roles.filter((r): r is string => typeof r === "string")
     : [];
 }
+
+/**
+ * The payload of a token the token endpoint just handed over, read without verifying it.
+ *
+ * Keycloak writes realm roles to the access token (the roles scope's default), not to the ID token,
+ * so the session's roles have to be read here. The token arrived over the back channel from the
+ * issuer's own endpoint, and it only shapes what the interface shows: the API verifies the
+ * signature and decides every authorization itself.
+ */
+export function tokenPayload(token: string | undefined): Record<string, unknown> | undefined {
+  const segment = token?.split(".")[1];
+  if (!segment) return undefined;
+  try {
+    const parsed: unknown = JSON.parse(Buffer.from(segment, "base64url").toString("utf8"));
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Realm roles from the ID token and the access token together, each one once. */
+export function sessionRoles(
+  idClaims: Record<string, unknown> | undefined,
+  accessToken: string | undefined,
+): string[] {
+  return [
+    ...new Set([...rolesFromClaims(idClaims), ...rolesFromClaims(tokenPayload(accessToken))]),
+  ];
+}

@@ -16,6 +16,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from jdhp_api.core import audit
@@ -105,9 +106,20 @@ async def upsert_from_claims(session: AsyncSession, claims: Mapping[str, Any]) -
             verification_level=claim_level,
             last_seen_at=now,
         )
-        session.add(user)
-        await session.flush()
-        return user
+        try:
+            async with session.begin_nested():
+                session.add(user)
+                await session.flush()
+        except IntegrityError:
+            # The first requests of a sign-in arrive together; another one created the row while
+            # this one was looking. The savepoint rollback has dropped the pending object, so that
+            # row is loaded and refreshed instead.
+            existing = await get_by_subject(session, subject)
+            if existing is None:
+                raise
+            user = existing
+        else:
+            return user
     user.role = primary_role(roles)
     user.last_seen_at = now
     if user.pseudonymized_at is None:

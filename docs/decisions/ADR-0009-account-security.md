@@ -77,6 +77,18 @@ SMS second factor out of the box.
    has a realm test; the end-to-end check is `scratchpad`-only tooling for now and becomes part of
    the Playwright suite in Phase 1.
 
+7. **Enrolling a second factor is not authenticating with it.** Driving the staff path through a
+   browser showed that a sign-in during which a one-time code is first set up carries an `amr` of
+   `pwd` alone: Keycloak records the methods whose authenticators ran, and a required action is
+   not one of them. The API keeps refusing staff reads for such a token (SEC-3), and the viewer
+   says so and offers a sign-in that asks the provider for a fresh authentication (`prompt=login`),
+   which the provider answers with the password and the new code. The same session showed two
+   more defects: the web read realm roles from the ID token, where Keycloak's `roles` scope does
+   not write them, so no staff session had a role (the session takes the roles of the access
+   token the token endpoint handed over, which is what the API authorizes on); and the first
+   requests of a sign-in, fired together by one page, raced to create the user row, so the
+   insert now runs under a savepoint and the loser takes the row the winner made.
+
 ## Consequences
 
 - The Keycloak image build needs Maven Central and the Keycloak image registry at build time,

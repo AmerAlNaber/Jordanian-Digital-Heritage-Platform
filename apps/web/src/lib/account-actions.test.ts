@@ -22,6 +22,9 @@ describe("account actions (ACC-1, ACC-2)", () => {
       "/api/auth/login?return=%2Fen%2Faccount&action=passkey",
     );
     expect(loginHref({ returnTo: "/en/staff", staff: true })).toContain("staff=1");
+    expect(loginHref({ returnTo: "/en/staff/audit", staff: true, reauth: true })).toContain(
+      "reauth=1",
+    );
   });
 
   it("renders Keycloak in the language of the page the user came from", () => {
