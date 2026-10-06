@@ -16,7 +16,7 @@ export async function Pagination({
   pageSize: number;
   total: number;
   query: Record<string, string | string[] | undefined>;
-  pathname?: "/catalog" | "/search";
+  pathname?: "/catalog" | "/search" | "/staff/audit";
 }) {
   const t = await getTranslations("catalog");
   const last = Math.max(1, Math.ceil(total / pageSize));

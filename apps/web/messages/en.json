@@ -18,7 +18,8 @@
     "switchLocale": "العربية",
     "menu": "Menu",
     "search": "Search",
-    "register": "Create account"
+    "register": "Create account",
+    "audit": "Audit log"
   },
   "home": {
     "statement": "A secure digital library for a protected heritage collection: the original book and its documented sources are always the authority.",
@@ -303,5 +304,54 @@
     },
     "cancel": "Cancel",
     "pagesSelected": "{count, plural, =0 {No pages} one {One page} other {# pages}}"
+  },
+  "audit": {
+    "title": "Audit log",
+    "intro": "Every protected read, authorization decision, sign-in, grant change and staff action, hash-chained. Search by user, book, action and time; exports are signed.",
+    "staffOnly": "The audit log is for staff.",
+    "staffSignIn": "Staff sign-in",
+    "roleOnly": "Rights officers and platform admins read the audit log.",
+    "needMfa": "The audit log needs a sign-in with a one-time code.",
+    "filters": {
+      "actor": "User (subject)",
+      "action": "Action",
+      "resource_kind": "Resource kind",
+      "resource_id": "Resource (public id)",
+      "since": "From (UTC)",
+      "until": "Until (UTC)"
+    },
+    "apply": "Search",
+    "clear": "Clear",
+    "utcNote": "Times are UTC.",
+    "count": "{count, plural, =0 {No events} one {# event} other {# events}}",
+    "chainIntact": "Chain intact over {count} events",
+    "chainBroken": "Chain broken after {count} events",
+    "exportCsv": "Export CSV",
+    "exportJson": "Export JSON",
+    "exportKey": "Verification key",
+    "exportNote": "Exports carry a Digest and an Ed25519 signature in the response headers; the key downloads beside them. Each export is itself logged.",
+    "none": "No events match.",
+    "columns": {
+      "seq": "#",
+      "when": "When (UTC)",
+      "actor": "Who",
+      "action": "Action",
+      "resource": "Resource",
+      "outcome": "Outcome",
+      "severity": "Severity",
+      "details": "Details"
+    },
+    "outcomes": {
+      "allow": "Allowed",
+      "deny": "Denied",
+      "success": "Success",
+      "failure": "Failure"
+    },
+    "severities": {
+      "info": "Info",
+      "notice": "Notice",
+      "warning": "Warning",
+      "high": "High"
+    }
   }
 }

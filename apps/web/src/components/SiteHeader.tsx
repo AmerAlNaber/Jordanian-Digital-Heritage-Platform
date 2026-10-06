@@ -60,7 +60,10 @@ export async function SiteHeader({
             </>
           )}
           {isStaff ? (
-            <span className="label">{roles.filter((r) => STAFF.has(r)).join(", ")}</span>
+            <>
+              <Link href="/staff/audit">{t("audit")}</Link>
+              <span className="label">{roles.filter((r) => STAFF.has(r)).join(", ")}</span>
+            </>
           ) : null}
         </nav>
       </div>

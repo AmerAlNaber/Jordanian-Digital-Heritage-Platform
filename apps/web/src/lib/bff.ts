@@ -10,7 +10,18 @@ const PASSTHROUGH_HEADERS = ["x-jdhp-grant", "accept-language"];
 export async function proxyToApi(
   request: NextRequest,
   path: string,
-  { method, body, query }: { method: "GET" | "POST" | "DELETE"; body?: unknown; query?: string },
+  {
+    method,
+    body,
+    query,
+    responseHeaders = [],
+  }: {
+    method: "GET" | "POST" | "DELETE";
+    body?: unknown;
+    query?: string;
+    /** Response headers to hand back besides the content type, such as a file's signature. */
+    responseHeaders?: string[];
+  },
 ): Promise<NextResponse> {
   const session = await currentSession().catch(() => null);
   const url = new URL(path.replace(/^\//, ""), env("API_INTERNAL_URL").replace(/\/?$/, "/"));
@@ -32,14 +43,16 @@ export async function proxyToApi(
     body: body === undefined ? undefined : JSON.stringify(body),
     cache: "no-store",
   });
-  const text = await response.text();
-  return new NextResponse(text, {
-    status: response.status,
-    headers: {
-      "Content-Type": response.headers.get("content-type") ?? "application/json",
-      "Cache-Control": "private, no-store",
-    },
+  const payload = await response.arrayBuffer();
+  const out = new Headers({
+    "Content-Type": response.headers.get("content-type") ?? "application/json",
+    "Cache-Control": "private, no-store",
   });
+  for (const name of responseHeaders) {
+    const value = response.headers.get(name);
+    if (value) out.set(name, value);
+  }
+  return new NextResponse(payload, { status: response.status, headers: out });
 }
 
 export async function readJson(request: NextRequest): Promise<unknown> {
