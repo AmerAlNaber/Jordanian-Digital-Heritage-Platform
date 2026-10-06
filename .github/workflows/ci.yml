@@ -268,6 +268,8 @@ jobs:
       - name: Configuration with generated secrets (no value is ever committed)
         run: infra/compose/make-env.sh
       - name: Start every service
+        env:
+          COMPOSE_FILE: docker-compose.yml:infra/compose/compose.ci.yaml
         run: docker compose up -d --build --wait --wait-timeout 900
       - name: Service state
         if: always()
@@ -392,6 +394,33 @@ jobs:
           assert not re.search(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", raw)
           print(f"search ok: {len(visible)} visible pages with regions, {len(hidden)} hidden, {checked} ground-truth lines absent")
           PY
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Browser for the end-to-end suite
+        run: pnpm --filter @jdhp/e2e exec playwright install --with-deps chromium
+      - name: End-to-end suite in Arabic and English with axe (Phase 1 gate, ACX-1)
+        env:
+          CI: "true"
+          E2E_BASE_URL: http://localhost:8080
+          E2E_MAILPIT_URL: http://localhost:8025
+        run: |
+          set -eu
+          export E2E_KC_ADMIN_USER="$(grep -E '^KEYCLOAK_ADMIN=' .env | cut -d= -f2 | cut -d'#' -f1 | tr -d ' ')"
+          export E2E_KC_ADMIN_PASSWORD="$(grep -E '^KEYCLOAK_ADMIN_PASSWORD=' .env | cut -d= -f2 | cut -d'#' -f1 | tr -d ' ')"
+          pnpm --filter @jdhp/e2e test
+      - name: End-to-end report and traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            tests/e2e/playwright-report
+            tests/e2e/test-results
+          if-no-files-found: ignore
       - name: Collect logs
         if: failure()
         run: |

@@ -1,0 +1,5 @@
+# CI additions to the base stack: the end-to-end suite on the runner reads verification emails
+# from Mailpit's API. Nothing here is for deployments.
+services:
+  mailpit:
+    ports: ["127.0.0.1:8025:8025"]

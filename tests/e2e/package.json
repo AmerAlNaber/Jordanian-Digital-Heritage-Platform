@@ -2,10 +2,17 @@
   "name": "@jdhp/e2e",
   "version": "0.1.0",
   "private": true,
-  "description": "Playwright end-to-end tests in both languages and both themes, with axe accessibility checks (Phase 1).",
+  "description": "Playwright end-to-end tests against the Compose stack: register, verify, read, print and audit, in Arabic and English, with axe accessibility checks (Phase 1 gate).",
+  "type": "module",
   "scripts": {
-    "test": "echo 'e2e suite starts in Phase 1 (register, find, read, print, audit)'",
-    "lint": "echo 'no lint yet'",
-    "typecheck": "echo 'no typecheck yet'"
+    "test": "playwright test",
+    "lint": "echo 'tests/e2e: formatted by the root prettier check, typed by typecheck'",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.3"
   }
 }
