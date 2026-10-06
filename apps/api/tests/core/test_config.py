@@ -123,3 +123,27 @@ def test_default_locale_is_arabic_and_only_supported_locales_allowed() -> None:
 def test_explicit_jwks_url_is_kept() -> None:
     settings = build(oidc_jwks_url="https://id.example.jo/certs")
     assert settings.oidc_jwks_url == AnyHttpUrl("https://id.example.jo/certs")
+
+
+def test_adr_0010_email_sms_adapter_needs_a_mail_catcher_and_never_carries_real_codes() -> None:
+    rig = build(
+        env="testrig",
+        oidc_issuer="http://keycloak:8080/auth/realms/jdhp",
+        public_base_url="https://rig.example.org",
+        api_base_url="https://rig.example.org/api",
+        sms_provider="email",
+        smtp_host="mailpit",
+    )
+    assert rig.env is Environment.TESTRIG
+    assert not rig.env.is_deployed
+    assert not rig.env.holds_real_content
+    with pytest.raises(ConfigurationError, match="smtp_host"):
+        build(
+            env="testrig",
+            public_base_url="http://x",
+            api_base_url="http://x/api",
+            oidc_issuer="http://x/realms/j",
+            sms_provider="email",
+        )
+    with pytest.raises(ConfigurationError, match="testing adapter"):
+        build(sms_provider="email", smtp_host="mailpit")

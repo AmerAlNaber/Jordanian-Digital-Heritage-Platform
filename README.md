@@ -71,4 +71,8 @@ The threat model in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) maps each sec
 
 ## Seed data
 
-The only content in this repository is a fictional 40-page book, «أخبار بلدة سُمَيْرة», written for the platform. Its scans are rendered from text in `apps/api/src/jdhp_api/seed/book/`, so no real heritage material is ever in a test fixture or a demo.
+The only content in this repository is fictional and written for the platform: the 40-page book «أخبار بلدة سُمَيْرة» in `apps/api/src/jdhp_api/seed/book/` and ten short books in `apps/api/src/jdhp_api/seed/library/` that spread across ten governorates, several periods and material types and all five access classes (two open, three registered, two paid, two restricted, one embargoed). Their scans are rendered from text, so no real heritage material is ever in a test fixture or a demo. `docker compose run --rm seed` ingests all eleven; `--only seed-book` ingests the chronicle alone.
+
+## Testing rig
+
+A public copy of the stack for testers, on one server with automatic TLS, a shared test inbox for verification emails and SMS codes, and one account per role: [`docs/operations/testing-rig.md`](docs/operations/testing-rig.md) and `deploy/testrig/bootstrap.sh` (ADR-0010).

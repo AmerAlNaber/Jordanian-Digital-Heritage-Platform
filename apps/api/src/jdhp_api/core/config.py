@@ -33,13 +33,18 @@ class Environment(enum.StrEnum):
     LOCAL = "local"
     TEST = "test"
     CI = "ci"
+    TESTRIG = "testrig"
     STAGING = "staging"
     PILOT = "pilot"
     PRODUCTION = "production"
 
     @property
     def is_deployed(self) -> bool:
-        """Staging, pilot and production run on shared infrastructure."""
+        """Staging, pilot and production run on shared infrastructure.
+
+        A testing rig is a public single-server stack with fictional content only
+        (ADR-0010): reachable from anywhere, but held to the local rules inside.
+        """
         return self in {Environment.STAGING, Environment.PILOT, Environment.PRODUCTION}
 
     @property
@@ -53,6 +58,7 @@ INSECURE_SECRET_VALUES = frozenset(
     {"", "change-me", "changeme", "secret", "password", "dev", "test", "example", "insecure"}
 )
 MOCK_PROVIDER = "mock"
+EMAIL_SMS_PROVIDER = "email"
 SUPPORTED_LOCALES = ("ar", "en")
 
 
@@ -130,6 +136,11 @@ class Settings(BaseSettings):
     payment_provider: str = MOCK_PROVIDER
     email_provider: str = MOCK_PROVIDER
     sms_provider: str = MOCK_PROVIDER
+    # The "email" SMS adapter hands codes to a mail catcher on a testing rig (ADR-0010).
+    smtp_host: str | None = None
+    smtp_port: int = Field(default=1025, ge=1, le=65535)
+    smtp_from: str = "noreply@localhost"
+    sms_inbox: str = "sms-codes@testrig.local"
 
     # Retention (ADR-0001 D16)
     retention_audit_years: int = Field(default=7, ge=1)
@@ -202,6 +213,7 @@ class Settings(BaseSettings):
             *self._secret_problems(),
             *self._deployment_problems(),
             *self._provider_problems(),
+            *self._test_adapter_problems(),
         ]
         if problems:
             raise ConfigurationError("refusing to start: " + "; ".join(problems))
@@ -257,6 +269,18 @@ class Settings(BaseSettings):
             for name in names
             if getattr(self, name) == MOCK_PROVIDER
         ]
+
+    def _test_adapter_problems(self) -> list[str]:
+        """Adapters that only make sense where nothing is real (ADR-0010)."""
+        problems: list[str] = []
+        if self.sms_provider == EMAIL_SMS_PROVIDER:
+            if self.env.holds_real_content:
+                problems.append(
+                    "sms_provider 'email' is a testing adapter; it may not carry real codes"
+                )
+            if not self.smtp_host:
+                problems.append("sms_provider 'email' needs smtp_host")
+        return problems
 
     @property
     def jwks_url(self) -> str:

@@ -1,0 +1,275 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "وقفيات عائلة الزُّهَيْري في مادبا",
+  "title_translit": "Waqfiyyāt ʿāʾilat al-Zuhayrī fī Mādabā",
+  "title_en": "Endowment Deeds of the al-Zuhayri Family in Madaba",
+  "uniform_title": "وقفيات آل الزهيري",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1669",
+  "date_hijri": "1080",
+  "extent": "٧ صفحات؛ وثائق",
+  "description_ar": "مجموعة وثائق وقف خيالية تُنسب إلى عائلة متخيَّلة من مادبا، تتضمن حجج وقف أرض وبيت وبستان على ذرية الواقف وعلى سبيل ماء، كتبها كاتب وقف متخيَّل سنة ١٠٨٠ هـ. مقيَّدة لأنها تمثّل وثائق عائلية حساسة في سيناريو الاختبار. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional set of endowment deeds attributed to an invented Madaba family, covering land, a house and an orchard endowed on the founder's descendants and a public water fountain, written by an invented endowment scribe in 1080 AH. Restricted because it stands for sensitive family documents in the test scenario. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/InC/1.0/",
+  "rights_basis": "Fictional work created for the platform. Restricted class assigned to exercise approval-only access; no third-party rights.",
+  "access_class": "restricted",
+  "agents": [
+   {
+    "role": "scribe",
+    "kind": "person",
+    "name_ar": "عبد الرحيم بن قاسم، كاتب الوقف",
+    "name_latin": "ʿAbd al-Raḥīm ibn Qāsim",
+    "dates_edtf": null
+   },
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "الواقف: حسن بن علي الزُّهَيْري",
+    "name_latin": "Ḥasan ibn ʿAlī al-Zuhayrī",
+    "dates_edtf": "1610/1684"
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "waqf",
+    "label_ar": "الوقف والأملاك",
+    "label_en": "Endowments and property"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "law",
+    "label_ar": "الشرع والقضاء",
+    "label_en": "Law and courts"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "madaba",
+    "label_ar": "مادبا",
+    "label_en": "Madaba"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "ottoman-17th",
+    "label_ar": "العهد العثماني، القرن الحادي عشر الهجري",
+    "label_en": "Ottoman period, seventeenth century"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "documents",
+    "label_ar": "وثائق",
+    "label_en": "Documents"
+   }
+  ],
+  "collection": {
+   "kind": "donor",
+   "title_ar": "مجموعة آل الزُّهَيْري (خيالية)",
+   "title_en": "Al-Zuhayri family collection (fictional)",
+   "description_ar": "وثائق ومخطوطات خيالية تُنسب إلى عائلة متخيَّلة من مادبا والكرك، وُضعت لاختبار الأعمال المقيّدة.",
+   "description_en": "Fictional documents and manuscripts attributed to an invented family of Madaba and Karak, written to exercise restricted works."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0009",
+  "condition": "أوراق منفصلة مطوية، ختم باهت في آخر كل حجة (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي؛ تُنسب للمجموعة الخيالية لآل الزُّهَيْري."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "وقفيات عائلة الزُّهَيْري",
+      "في مادبا"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "حجج وقف",
+      "حسن بن علي الزُّهَيْري"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "بخط عبد الرحيم بن قاسم",
+      "سنة ١٠٨٠ هـ"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "وقفيات آل الزُّهَيْري"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "حجة وقف الأرض والبيت والبستان",
+      "وشرط الواقف ومصرف الريع"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "كتبها",
+      "عبد الرحيم بن قاسم كاتب الوقف"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "في مادبا سنة ١٠٨٠ من الهجرة",
+      "بحضور الشهود"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "الحجة الأولى",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "وقف الأرض"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "الحمد لله الذي جعل الوقف صدقة جارية. حضر لدى الشهود",
+      "الحاج حسن بن علي الزُّهَيْري وأشهد على نفسه طائعًا",
+      "مختارًا أنه وقف قطعة الأرض المعروفة بأرض الجرن الواقعة",
+      "شرقي مادبا، وحدودها: قبلةً الطريق، وشرقًا أرض بني عطية،",
+      "وشمالاً الوادي، وغربًا أرض الواقف نفسه.",
+      "وقفًا صحيحًا شرعيًا مؤبدًا على أولاده الذكور والإناث",
+      "بالسوية، ثم على أولادهم بطنًا بعد بطن، فإذا انقرضوا فعلى",
+      "فقراء مادبا."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "الحجة الثانية",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "وقف البيت والبستان"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "ووقف الواقف المذكور داره الكائنة في حارة الزُّهَيْري",
+      "بمادبا، وهي بيتان وفناء وبئر، على أن يسكنها أكبر أولاده",
+      "ولا تُباع ولا تُوهب ولا تُورث. ووقف بستانه ذا الزيتون",
+      "والتين في وادي الحنانة على أن يُصرف ثلث ريعه على سبيل",
+      "الماء الذي أنشأه عند باب الحارة.",
+      "والثلث الثاني على إمام مسجد الحارة ليقرأ القرآن للواقف",
+      "كل جمعة، والثلث الباقي لإصلاح البيت والبستان والبئر."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "الشروط",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "شروط الواقف"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "اشترط الواقف أن يكون الناظر على الوقف أكبر أولاده ثم",
+      "أرشدهم، وأن لا يؤجر الأرض أكثر من ثلاث سنين، وأن لا",
+      "يؤجرها لمن يُخشى منه الاستيلاء، وأن يُقدَّم إصلاح الوقف",
+      "على صرف ريعه.",
+      "واشترط أن من غيّر هذا الوقف أو بدّله فعليه ما على",
+      "المبدّلين، وأن تُحفظ هذه الحجة عند الناظر وتُقرأ على",
+      "الذرية في كل عيد حتى لا ينساها أحد."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الشهادة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "أسماء الشهود"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "شهد على ذلك وأشهد به على نفسه الواقف المذكور في مجلس",
+      "الشرع بمادبا يوم الخميس الخامس عشر من شهر شوال سنة ألف",
+      "وثمانين من الهجرة، وشهد الشيخ محمد بن سلامة إمام الحارة،",
+      "والحاج يوسف بن عودة، وسالم بن خليل، وعبد الله بن حمدان،",
+      "وكتبه عبد الرحيم بن قاسم كاتب الوقف.",
+      "وكل الأسماء والأمكنة في هذه الحجة متخيَّلة وُضعت",
+      "للاختبار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّت الحجج الثلاث",
+      "بخط عبد الرحيم بن قاسم",
+      "في مادبا في شوال سنة ١٠٨٠ هجرية",
+      "وقف صحيح شرعي لا يُباع ولا يُوهب",
+      "والله على ما نقول وكيل"
+     ]
+    }
+   ]
+  }
+ ]
+}

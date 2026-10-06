@@ -1,0 +1,266 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "مذكرات معلّم في جرش: سنوات ١٩٦٠ - ١٩٦٨",
+  "title_translit": "Mudhakkirāt muʿallim fī Jarash: sanawāt 1960-1968",
+  "title_en": "Memoirs of a Teacher in Jerash: The Years 1960 to 1968",
+  "uniform_title": "مذكرات معلّم في جرش",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1968",
+  "date_hijri": "1388",
+  "extent": "٧ صفحات؛ مسوّدة مطبوعة على الآلة الكاتبة",
+  "description_ar": "مذكرات خيالية لمعلّم متخيَّل اسمه عيسى بن فرحان العجلوني عن سنواته في مدرسة جرش الثانوية، كتبها على الآلة الكاتبة سنة ١٩٦٨. محجوبة لأنها في سيناريو الاختبار قيد مراجعة الحقوق قبل النشر. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "Fictional memoirs of the invented teacher Isa ibn Farhan al-Ajluni about his years at Jerash secondary school, typed in 1968. Embargoed because in the test scenario it is under rights review before publication. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/UND/1.0/",
+  "rights_basis": "Fictional work created for the platform. Embargoed class assigned to exercise staff-only visibility; no third-party rights.",
+  "access_class": "embargoed",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "عيسى بن فرحان العجلوني",
+    "name_latin": "ʿĪsā ibn Farḥān al-ʿAjlūnī",
+    "dates_edtf": "1930/1999"
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "memoir",
+    "label_ar": "مذكرات وسير",
+    "label_en": "Memoirs and biography"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "education",
+    "label_ar": "التعليم والمدارس",
+    "label_en": "Education and schools"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "jerash",
+    "label_ar": "جرش",
+    "label_en": "Jerash"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "early-kingdom",
+    "label_ar": "عهد المملكة المبكر",
+    "label_en": "Early Kingdom period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "typescript",
+    "label_ar": "مسوّدة مطبوعة على الآلة الكاتبة",
+    "label_en": "Typescript"
+   }
+  ],
+  "collection": {
+   "kind": "project",
+   "title_ar": "مجموعة البذرة التجريبية",
+   "title_en": "Seed collection",
+   "description_ar": "أعمال خيالية تُستخدم في الاختبار والعروض.",
+   "description_en": "Fictional works used for tests and demonstrations."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0011",
+  "condition": "أوراق مطبوعة على الآلة الكاتبة بنسخة كربونية، مثبّتة بدبوس صدئ (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي؛ قيد مراجعة الحقوق في سيناريو الاختبار."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "مذكرات معلّم في جرش",
+      "سنوات ١٩٦٠ - ١٩٦٨"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "عيسى بن فرحان العجلوني"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "مسوّدة غير منشورة",
+      "جرش ١٩٦٨"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "مذكرات معلّم في جرش"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "ما رأيته وعشته في مدرسة جرش الثانوية",
+      "من سنة ١٩٦٠ إلى سنة ١٩٦٨"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "كتبها",
+      "عيسى بن فرحان العجلوني"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "مسوّدة على الآلة الكاتبة",
+      "لم تُطبع بعد"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "الفصل الأول",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "أول يوم في المدرسة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "وصلت جرش في أيلول سنة ١٩٦٠ على باص الصباح من عمّان ومعي",
+      "حقيبة واحدة وشهادة دار المعلمين. كانت المدرسة بناءً",
+      "حجريًا من طابقين على تلة تطل على الأعمدة القديمة، وفيها",
+      "ثلاثمئة تلميذ وأحد عشر معلمًا، وكان المدير رجلاً طويلاً",
+      "صارمًا يحفظ أسماء التلاميذ كلهم.",
+      "دخلت الصف الأول الثانوي لأدرّس التاريخ فسألني تلميذ في",
+      "الصف الأخير: هل الأعمدة التي نراها من النافذة أقدم من",
+      "الإسلام؟ فعرفت أني سأتعلم في هذه البلدة أكثر مما أعلّم."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "الفصل الثاني",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "الرحلة إلى الآثار"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في ربيع ١٩٦٢ أخذت تلاميذي في رحلة إلى المدينة القديمة،",
+      "فمشينا في الشارع المعمّد وصعدنا المدرج الجنوبي وقرأ",
+      "أحدهم من كتاب الجغرافيا، ثم جلسنا في الظل وتحدثنا عمن",
+      "بنى هذه المدينة ولماذا هجرها أهلها.",
+      "وكان بين التلاميذ ولد من قرية قريبة اسمه نايف، يعرف كل",
+      "حجر في المدينة لأن أباه كان حارسًا فيها، فجعلته دليلنا",
+      "ذلك اليوم وتعلّمنا منه جميعًا. وصار نايف فيما بعد",
+      "معلّمًا للآثار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "الفصل الثالث",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "المدرسة في سنة الحرب"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في حزيران سنة ١٩٦٧ أُغلقت المدرسة قبل الامتحانات، وجاء",
+      "إلى جرش مئات من الناس يحملون ما استطاعوا، فجعلنا الصفوف",
+      "مأوى لهم وطبخ المعلمون والتلاميذ لهم في ساحة المدرسة.",
+      "وبقي بعضهم في البلدة إلى اليوم.",
+      "وعدنا إلى الدروس في تشرين الأول وفي الصفوف تلاميذ جدد لا",
+      "يعرفون أحدًا، فأمرت أن يجلس كل تلميذ قديم إلى جانب تلميذ",
+      "جديد، وكان ذلك أنفع ما فعلته في سنواتي التسع."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الخاتمة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "لماذا أكتب هذه المذكرات"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "أكتب هذه الأوراق سنة ١٩٦٨ وأنا أستعد للانتقال إلى عمّان،",
+      "لا لأن حياتي تستحق أن تُروى بل لأن المدرسة والبلدة",
+      "تستحقان. وقد غيّرت أسماء الناس فيها حتى لا أحرج أحدًا،",
+      "ولذلك لا أريد أن تُنشر قبل أن يراجعها من يعنيهم الأمر.",
+      "وكل ما في هذه المذكرات من أشخاص وأحداث متخيَّل وُضع",
+      "للاختبار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "انتهت المسوّدة",
+      "جرش، آب ١٩٦٨",
+      "عيسى بن فرحان العجلوني",
+      "لا تُنشر قبل المراجعة"
+     ]
+    }
+   ]
+  }
+ ]
+}

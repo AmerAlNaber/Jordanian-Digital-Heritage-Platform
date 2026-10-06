@@ -128,7 +128,37 @@ class SeedBook(BaseModel):
     pages: list[SeedPage]
 
 
+MAIN_SLUG = "seed-book"
+
+
 @cache
 def load_book() -> SeedBook:
+    """The 40-page seed book, the reference work of every test."""
     text = resources.files("jdhp_api.seed.book").joinpath("book.json").read_text("utf-8")
     return SeedBook.model_validate(json.loads(text))
+
+
+@cache
+def load_library() -> tuple[tuple[str, SeedBook], ...]:
+    """The short books of the fictional library, in file order, each named by its file stem."""
+    folder = resources.files("jdhp_api.seed.library")
+    entries = sorted(
+        (e for e in folder.iterdir() if e.name.endswith(".json")), key=lambda e: e.name
+    )
+    return tuple(
+        (entry.name[:-5], SeedBook.model_validate(json.loads(entry.read_text("utf-8"))))
+        for entry in entries
+    )
+
+
+def load_all() -> tuple[tuple[str, SeedBook], ...]:
+    """Every seed book: the reference work first, then the library."""
+    return ((MAIN_SLUG, load_book()), *load_library())
+
+
+def find_book(slug: str) -> SeedBook:
+    for name, book in load_all():
+        if name == slug:
+            return book
+    msg = f"no seed book named {slug!r}"
+    raise KeyError(msg)

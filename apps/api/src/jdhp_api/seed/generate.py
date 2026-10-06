@@ -26,7 +26,7 @@ from typing import Any, assert_never
 
 from PIL import Image, ImageChops, ImageCms, ImageDraw, ImageFont, features
 
-from jdhp_api.seed.loader import SeedBlock, SeedPage, load_book
+from jdhp_api.seed.loader import MAIN_SLUG, SeedBlock, SeedBook, SeedPage, find_book, load_book
 from jdhp_metadata.checksums import ChecksumEntry, format_manifest, sha256_file
 
 PPI = 400
@@ -427,8 +427,16 @@ def srgb_profile_bytes() -> bytes:
     return ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB")).tobytes()
 
 
-def generate(out: Path, *, scale: float = 1.0, preview: bool = False) -> Path:
-    book = load_book()
+def generate(
+    out: Path,
+    *,
+    scale: float = 1.0,
+    preview: bool = False,
+    book: SeedBook | None = None,
+    staging_prefix: str = "intake/seed-book",
+) -> Path:
+    """Render one seed book (the 40-page book unless another is given) into ``out``."""
+    book = book or load_book()
     renderer = Renderer(scale)
     masters = out / "master"
     truth_dir = out / "ground_truth"
@@ -486,14 +494,14 @@ def generate(out: Path, *, scale: float = 1.0, preview: bool = False) -> Path:
             "color_target_ref": book.capture.color_target_ref,
             "operator": book.capture.operator,
         },
-        "staging_prefix": "intake/seed-book",
+        "staging_prefix": staging_prefix,
         "pages": manifest_pages,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), "utf-8")
     return out
 
 
-def generate_isolated(out: Path, *, scale: float = 1.0) -> Path:
+def generate_isolated(out: Path, *, scale: float = 1.0, book: str = MAIN_SLUG) -> Path:
     """Render in a fresh interpreter.
 
     Pillow's text layout returns a corrupt glyph run in a process where libvips has been
@@ -501,10 +509,24 @@ def generate_isolated(out: Path, *, scale: float = 1.0) -> Path:
     such as the worker and the test session, renders the seed book through this.
     """
     subprocess.run(  # noqa: S603  # nosec B603  # fixed interpreter and module, typed arguments
-        [sys.executable, "-m", "jdhp_api.seed.generate", "--out", str(out), "--scale", str(scale)],
+        [
+            sys.executable,
+            "-m",
+            "jdhp_api.seed.generate",
+            "--out",
+            str(out),
+            "--scale",
+            str(scale),
+            "--book",
+            book,
+        ],
         check=True,
     )
     return out
+
+
+def staging_prefix_for(slug: str) -> str:
+    return "intake/seed-book" if slug == MAIN_SLUG else f"intake/seed-{slug}"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -516,9 +538,20 @@ def main(argv: list[str] | None = None) -> int:
         "--scale", type=float, default=1.0, help="1.0 renders 400 ppi masters; 0.25 for tests"
     )
     parser.add_argument("--preview", action="store_true", help="also write half-size PNG previews")
+    parser.add_argument(
+        "--book",
+        default=MAIN_SLUG,
+        help="which seed book to render: the 40-page book or a library file stem",
+    )
     args = parser.parse_args(argv)
-    generate(args.out, scale=args.scale, preview=args.preview)
-    sys.stdout.write(f"seed book rendered to {args.out}\n")
+    generate(
+        args.out,
+        scale=args.scale,
+        preview=args.preview,
+        book=find_book(args.book),
+        staging_prefix=staging_prefix_for(args.book),
+    )
+    sys.stdout.write(f"seed book {args.book} rendered to {args.out}\n")
     return 0
 
 

@@ -1,11 +1,14 @@
-"""Seed the platform with the fictional book through the real pipeline.
+"""Seed the platform with the fictional library through the real pipeline.
 
-``python -m jdhp_worker.seed [--scale 1.0] [--inline] [--no-publish]``
+``python -m jdhp_worker.seed [--scale 1.0] [--inline] [--no-publish] [--only SLUG ...]``
 
-1. Render the seed book and upload masters and ground truth to the uploads bucket.
+For the 40-page seed book and each short book of the library (ADR-0001 D15):
+
+1. Render the book and upload masters and ground truth to the uploads bucket.
 2. Register the intake batch through the API's intake service (as the seed curator).
-3. Create the author, printer, vocabulary terms and the seed collection; publish the work.
-4. Run the pipeline inline (``--inline``) or hand it to the workers through the broker.
+3. Create the agents and vocabulary terms, attach the collection (shared across books) and
+   publish the work; an embargoed work is published too, so staff-only visibility is exercised.
+4. Run the pipeline inline (``--inline``) or hand each batch to the workers through the broker.
 """
 
 from __future__ import annotations
@@ -14,17 +17,21 @@ import argparse
 import json
 import sys
 import tempfile
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
+
+from sqlalchemy import select
 
 from jdhp_api.core.auth import Principal, VerificationLevel
 from jdhp_api.core.db import Database, RlsContext
 from jdhp_api.core.orm import PublishState
 from jdhp_api.modules.catalog import service as catalog
-from jdhp_api.modules.catalog.models import Work
+from jdhp_api.modules.catalog.models import Collection, Work
 from jdhp_api.modules.ingest import service as ingest_service
 from jdhp_api.modules.ingest.schemas import IntakeManifest
-from jdhp_api.seed.generate import generate_isolated
-from jdhp_api.seed.loader import load_book
+from jdhp_api.seed.generate import generate_isolated, staging_prefix_for
+from jdhp_api.seed.loader import MAIN_SLUG, SeedBook, load_all, load_book
 from jdhp_worker import runtime as worker_runtime
 from jdhp_worker.inline import run_inline
 from jdhp_worker.runtime import Runtime
@@ -50,35 +57,64 @@ def ensure_local_buckets(rt: Runtime) -> None:
     rt.store.ensure_bucket(settings.bucket_audit_archive, object_lock=True)
 
 
-def upload_seed(rt: Runtime, out: Path) -> dict[str, object]:
+def upload_seed(rt: Runtime, out: Path, prefix: str = STAGING_PREFIX) -> dict[str, object]:
+    """Upload one rendered book's masters and ground truth under ``prefix``; return its manifest."""
     settings = rt.settings
     for master in sorted((out / "master").glob("*.tif")):
         rt.store.put(
             settings.bucket_uploads,
-            f"{STAGING_PREFIX}/{master.name}",
+            f"{prefix}/{master.name}",
             master.read_bytes(),
             content_type="image/tiff",
         )
     for truth in sorted((out / "ground_truth").glob("*.json")):
         rt.store.put(
             settings.bucket_uploads,
-            f"{STAGING_PREFIX}/ground_truth/{truth.name}",
+            f"{prefix}/ground_truth/{truth.name}",
             truth.read_bytes(),
             content_type="application/json",
         )
     manifest = json.loads((out / "manifest.json").read_text("utf-8"))
-    manifest["staging_prefix"] = STAGING_PREFIX
+    manifest["staging_prefix"] = prefix
     return manifest  # type: ignore[no-any-return]
 
 
+async def _collection_for(
+    session: Any, settings: WorkerSettings, book: SeedBook, *, publish: bool
+) -> Collection:
+    """The book's collection, created once and shared by every book that names it."""
+    wanted = book.work.collection
+    stmt = select(Collection).where(
+        Collection.kind == wanted.kind, Collection.title_ar == wanted.title_ar
+    )
+    existing = (await session.scalars(stmt)).first()
+    if existing is not None:
+        return existing  # type: ignore[no-any-return]
+    return await catalog.create_collection(
+        session,
+        settings,
+        kind=wanted.kind,
+        title_ar=wanted.title_ar,
+        title_en=wanted.title_en,
+        description_ar=wanted.description_ar,
+        description_en=wanted.description_en,
+        publish=publish,
+    )
+
+
 async def register(
-    database: Database, settings: WorkerSettings, manifest: dict[str, object], *, publish: bool
+    database: Database,
+    settings: WorkerSettings,
+    manifest: dict[str, object],
+    *,
+    publish: bool,
+    book: SeedBook | None = None,
 ) -> tuple[str, str]:
-    """Register the batch and catalog metadata as the seed curator.
+    """Register one book's batch and catalog metadata as the seed curator.
 
     Returns the batch code and the work name.
     """
-    book = load_book()
+    book = book or load_book()
     async with database.session(SEED_PRINCIPAL.rls_context()) as session:
         batch = await ingest_service.register_batch(
             session,
@@ -109,16 +145,7 @@ async def register(
                 label_en=seed_term.label_en,
             )
             await catalog.link_term(session, work, term)
-        collection = await catalog.create_collection(
-            session,
-            settings,
-            kind=book.work.collection.kind,
-            title_ar=book.work.collection.title_ar,
-            title_en=book.work.collection.title_en,
-            description_ar=book.work.collection.description_ar,
-            description_en=book.work.collection.description_en,
-            publish=publish,
-        )
+        collection = await _collection_for(session, settings, book, publish=publish)
         await catalog.add_to_collection(session, collection, work)
         if publish:
             await catalog.set_publish_state(
@@ -132,22 +159,25 @@ async def register(
         return batch.code, work.public_id
 
 
-def seed(
-    rt: Runtime, *, scale: float, inline: bool, publish: bool, out_dir: Path | None = None
+def seed_one(
+    rt: Runtime,
+    app_database: Database,
+    slug: str,
+    book: SeedBook,
+    *,
+    scale: float,
+    inline: bool,
+    publish: bool,
+    out_dir: Path | None = None,
 ) -> dict[str, object]:
-    ensure_local_buckets(rt)
-    with tempfile.TemporaryDirectory(prefix="jdhp-seed-") as tmp:
+    """Render, upload, register and ingest one book."""
+    with tempfile.TemporaryDirectory(prefix=f"jdhp-seed-{slug}-") as tmp:
         out = out_dir or Path(tmp)
-        generate_isolated(out, scale=scale)
-        manifest = upload_seed(rt, out)
-    # The seed registers as the app role: cataloguing is an application action, not a pipeline one.
-    app_database = Database(rt.settings.sqlalchemy_url, pooled=False)
-    try:
-        batch_code, work_name = rt.run(
-            register(app_database, rt.settings, manifest, publish=publish)
-        )
-    finally:
-        rt.run(app_database.dispose())
+        generate_isolated(out, scale=scale, book=slug)
+        manifest = upload_seed(rt, out, prefix=staging_prefix_for(slug))
+    batch_code, work_name = rt.run(
+        register(app_database, rt.settings, manifest, publish=publish, book=book)
+    )
 
     async def _batch_id() -> str:
         async with rt.database.session(RlsContext.system()) as session:
@@ -156,11 +186,57 @@ def seed(
             return str(batch.id)
 
     batch_id = rt.run(_batch_id())
+    summary: dict[str, object] = {
+        "book": slug,
+        "batch": batch_code,
+        "work": work_name,
+        "access_class": book.work.access_class,
+        "pages": len(book.pages),
+    }
     if inline:
         results = run_inline(rt, "jdhp.ingest.package", batch_id=batch_id)
-        return {"batch": batch_code, "work": work_name, "tasks": len(results), "mode": "inline"}
-    rt.send("jdhp.ingest.package", batch_id=batch_id)
-    return {"batch": batch_code, "work": work_name, "mode": "queued"}
+        summary["tasks"] = len(results)
+    else:
+        rt.send("jdhp.ingest.package", batch_id=batch_id)
+    return summary
+
+
+def seed(
+    rt: Runtime,
+    *,
+    scale: float,
+    inline: bool,
+    publish: bool,
+    out_dir: Path | None = None,
+    only: Sequence[str] = (),
+) -> dict[str, object]:
+    """Seed every book (or the ``only`` slugs); the 40-page seed book always goes first."""
+    ensure_local_buckets(rt)
+    chosen = [(slug, book) for slug, book in load_all() if not only or slug in only]
+    if only and len(chosen) != len(set(only)):
+        unknown = sorted(set(only) - {slug for slug, _ in chosen})
+        msg = f"unknown seed books: {', '.join(unknown)}"
+        raise SystemExit(msg)
+    # The seed registers as the app role: cataloguing is an application action, not a pipeline one.
+    app_database = Database(rt.settings.sqlalchemy_url, pooled=False)
+    books: list[dict[str, object]] = []
+    try:
+        for slug, book in chosen:
+            books.append(
+                seed_one(
+                    rt,
+                    app_database,
+                    slug,
+                    book,
+                    scale=scale,
+                    inline=inline,
+                    publish=publish,
+                    out_dir=(out_dir / slug) if out_dir else None,
+                )
+            )
+    finally:
+        rt.run(app_database.dispose())
+    return {"books": books, "mode": "inline" if inline else "queued"}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -170,10 +246,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scale", type=float, default=1.0)
     parser.add_argument("--inline", action="store_true", help="run the pipeline in this process")
     parser.add_argument("--no-publish", action="store_true")
+    parser.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        metavar="SLUG",
+        help=f"seed only this book (repeatable); the 40-page book is {MAIN_SLUG!r}",
+    )
     args = parser.parse_args(argv)
     settings = get_worker_settings()
     rt = worker_runtime.build_runtime(settings, loop=not args.inline)
-    result = seed(rt, scale=args.scale, inline=args.inline, publish=not args.no_publish)
+    result = seed(
+        rt, scale=args.scale, inline=args.inline, publish=not args.no_publish, only=args.only
+    )
     sys.stdout.write(json.dumps(result, ensure_ascii=False) + "\n")
     return 0
 

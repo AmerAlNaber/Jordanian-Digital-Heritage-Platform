@@ -1,0 +1,47 @@
+# Testing rig (ADR-0010): the platform's routes plus a shared test inbox and the identity
+# provider's administration console, both behind one basic-auth credential. TLS is automatic for
+# the public hostname. Nothing here is for a stack that holds real content.
+{
+	admin off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+import /etc/caddy/routes.caddy
+
+{$JDHP_PUBLIC_HOST} {
+	# The mail catcher's inbox: every verification email and every SMS code the stack sends.
+	handle /mail/* {
+		basic_auth {
+			{$JDHP_TESTRIG_INBOX_USER} {$JDHP_TESTRIG_INBOX_HASH}
+		}
+		header Cache-Control "private, no-store"
+		reverse_proxy mailpit:8025
+	}
+	handle /mail {
+		redir /mail/ 308
+	}
+
+	# The identity provider's console and its master realm, for the people running the rig.
+	handle /auth/admin/* {
+		basic_auth {
+			{$JDHP_TESTRIG_INBOX_USER} {$JDHP_TESTRIG_INBOX_HASH}
+		}
+		reverse_proxy keycloak:8080 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {host}
+		}
+	}
+	handle /auth/realms/master/* {
+		basic_auth {
+			{$JDHP_TESTRIG_INBOX_USER} {$JDHP_TESTRIG_INBOX_HASH}
+		}
+		reverse_proxy keycloak:8080 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {host}
+		}
+	}
+
+	import jdhp_routes
+}

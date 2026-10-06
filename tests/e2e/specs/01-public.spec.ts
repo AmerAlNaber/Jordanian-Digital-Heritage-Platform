@@ -21,7 +21,7 @@ test.describe("public catalog", () => {
     lang,
     msgs,
   }) => {
-    await page.goto(`/${lang}/search?q=${encodeURIComponent("الكرم")}`);
+    await page.goto(`/${lang}/search?q=${encodeURIComponent("سميرة")}`);
     const results = page.getByRole("main");
     const record = results.locator('a[href*="/works/"]').first();
     await expect(record).toBeVisible();

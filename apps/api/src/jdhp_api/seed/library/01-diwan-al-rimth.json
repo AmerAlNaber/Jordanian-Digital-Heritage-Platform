@@ -1,0 +1,314 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "ديوان الرِّمث: قصائد من سهول حوران الجنوبية",
+  "title_translit": "Dīwān al-Rimth: qaṣāʾid min suhūl Ḥawrān al-janūbiyya",
+  "title_en": "The Rimth Collection: Poems from the Southern Hauran Plains",
+  "uniform_title": "ديوان الرمث",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1894",
+  "date_hijri": "1312",
+  "extent": "٧ صفحات؛ مخطوط بخط النسخ",
+  "description_ar": "مجموعة قصائد خيالية في وصف السهل والمطر والحصاد وأهل قرية تل الرِّمث المتخيَّلة في لواء إربد، نظمها شاعر متخيَّل اسمه سالم بن عودة الحوراني. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional collection of poems on the plain, the rain, the harvest and the people of the invented village of Tall al-Rimth in the Irbid district, by the invented poet Salim ibn Awda al-Hawrani. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+  "rights_basis": "Fictional work created for the platform; no third-party rights.",
+  "access_class": "open",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "سالم بن عودة الحوراني",
+    "name_latin": "Sālim ibn ʿAwda al-Ḥawrānī",
+    "dates_edtf": "1851/1917"
+   },
+   {
+    "role": "scribe",
+    "kind": "person",
+    "name_ar": "ناسخ الديوان: عقلة بن مفلح",
+    "name_latin": "ʿUqla ibn Mufliḥ",
+    "dates_edtf": null
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "poetry",
+    "label_ar": "شعر ونظم",
+    "label_en": "Poetry"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "agriculture",
+    "label_ar": "الزراعة والمواسم",
+    "label_en": "Agriculture and seasons"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "irbid",
+    "label_ar": "إربد",
+    "label_en": "Irbid"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "tall-al-rimth",
+    "label_ar": "تل الرِّمث (خيالي)",
+    "label_en": "Tall al-Rimth (fictional)"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "late-ottoman",
+    "label_ar": "أواخر العهد العثماني",
+    "label_en": "Late Ottoman period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "manuscript",
+    "label_ar": "مخطوط",
+    "label_en": "Manuscript"
+   }
+  ],
+  "collection": {
+   "kind": "series",
+   "title_ar": "سلسلة البادية والطرق",
+   "title_en": "Desert and roads series",
+   "description_ar": "سلسلة خيالية عن الطرق والقوافل والسكة والموانئ.",
+   "description_en": "A fictional series on roads, caravans, the railway and the ports."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0002",
+  "condition": "ورق مصفرّ، حبر داكن، تآكل خفيف في الهوامش (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "ديوان الرِّمث",
+      "قصائد من سهول حوران الجنوبية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "نظم",
+      "سالم بن عودة الحوراني",
+      "شاعر تل الرِّمث"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "نسخة بخط عقلة بن مفلح",
+      "سنة ١٣١٢ هـ"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "ديوان الرِّمث"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "قصائد في السهل والمطر والحصاد",
+      "وفي أهل القرية وضيوفها"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "نظمها",
+      "سالم بن عودة الحوراني"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "كُتبت هذه النسخة في تل الرِّمث",
+      "سنة ١٣١٢ هـ الموافقة ١٨٩٤ م"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "القصيدة الأولى: في وصف السهل",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في وصف السهل بعد المطر"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "يا سهلَ حورانَ هل جادتك غاديةٌ",
+      "فاخضرَّ عودُك واهتزّت مغانيكا",
+      "نزلَ الغمامُ على التلّ فأنبتَ ما",
+      "بينَ الحصى من زهورٍ في أعاليكا",
+      "والرِّمثُ يرعاهُ قطيعُ البيتِ في دَعَةٍ",
+      "والراعياتُ يُغنّينَ لأهاليكا",
+      "إذا تهلّلَ وجهُ الأرضِ من فرحٍ",
+      "ضحكَ الفلاحُ وقالَ: اليومَ ساقيكا",
+      "ومرّ ركبٌ من الشامِ على عجلٍ",
+      "فما استطاعَ عن المرعى تخطّيكا",
+      "يا تلُّ ما زلتَ في عيني كما كنتَ",
+      "طفلاً أسيرُ على الدربِ إلى فيكا"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "القصيدة الثانية: في الحصاد",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "أغنية الحصاد"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "قامَ الحصّادُ مع الفجرِ على عجلٍ",
+      "والمنجلُ البارقُ في كفّه يتثنّى",
+      "والقمحُ ذهبٌ على السهلِ مبسوطٌ",
+      "يميلُ مع الريحِ ويهمسُ ويتغنّى",
+      "تجمعُ النسوةُ ما أسقطَهُ المنجلُ",
+      "وتضحكُ الصغرى وتحكي ما تمنّى",
+      "وعلى البيدرِ يُدارُ النورجُ في مهلٍ",
+      "حتى يصيرَ التبنُ عن الحبِّ مُستغنى",
+      "فإذا المساءُ أتى والقومُ قد تعبوا",
+      "شدّوا على الدفِّ وغنّوا ما تسنّى",
+      "يا ربَّنا باركْ لنا في زرعِنا أبدًا",
+      "واحفظْ بلادَ العربِ من جورٍ ومن ضَنّى"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "القصيدة الثالثة: في المطر",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "دعاء الاستسقاء"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "ضنَّ الغمامُ وجفَّ العينُ والنهرُ",
+      "وأجدبَ السهلُ وانزوى في بيتِه الزهرُ",
+      "خرجَ الشيوخُ إلى التلِّ تحفُّ بهم",
+      "صبيةٌ قد علا وجوهَهم الغبرُ",
+      "يا ربِّ أنتَ الغنيُّ عنّا ونحنُ لنا",
+      "فقرٌ إليكَ، فجُدْ يا من له الأمرُ",
+      "فما مضى اليومُ حتى أقبلتْ سحبٌ",
+      "سودٌ، وهبّتْ من المغربِ ريحٌ صُفرُ",
+      "وانهلَّ ماءٌ على الأرضِ فأحياها",
+      "وسالتِ الشعابُ وقامَ لنا العُذرُ",
+      "فقال شيخُ القريةِ: احمدوا ربّكم",
+      "ما خابَ من دعا، وما ضاعَ له أجرُ"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "القصيدة الرابعة: في الضيف",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في إكرام الضيف"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "إذا أتاكَ الضيفُ ليلاً في الشتا",
+      "فافتحْ له البابَ وأوقدْ نارَكا",
+      "واحلبْ له من ناقةِ البيتِ ما",
+      "يكفيه، واسترْ عن عيونٍ دارَكا",
+      "ولا تسلْهُ من أينَ جاءَ ولا",
+      "إلى أينَ يمضي، فذاكَ ما جارَكا",
+      "ثلاثةُ أيامٍ يكونُ لكَ الضيفُ",
+      "أميرًا، فإذا مضتْ فسلْ أخبارَكا",
+      "هكذا علّمنا الأوائلُ في السهلِ",
+      "وهكذا نُعلّمُ من بعدِنا صغارَكا"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمَّ نسخُ الديوان بحمد الله",
+      "على يد عقلة بن مفلح في تل الرِّمث",
+      "في شهر شعبان سنة ١٣١٢ هجرية",
+      "لصاحبه الشاعر سالم بن عودة الحوراني",
+      "غفر الله له ولوالديه"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 8,
+   "type": "endpaper",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "stamp",
+     "lines": [
+      "منصة التراث الأردني الرقمي",
+      "نسخة رقمية تجريبية لعمل خيالي"
+     ]
+    }
+   ]
+  }
+ ]
+}

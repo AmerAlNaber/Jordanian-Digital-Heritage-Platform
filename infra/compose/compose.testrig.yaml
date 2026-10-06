@@ -1,0 +1,79 @@
+# Testing rig (ADR-0010): one public server, the whole stack behind Caddy with automatic TLS,
+# fictional content only. Layer it on docker-compose.yml:
+#   COMPOSE_FILE=docker-compose.yml:infra/compose/compose.testrig.yaml
+# Testers read every verification email and every SMS code in the shared inbox under /mail, behind
+# the basic-auth credential in .env. Nothing here is for a stack that holds real content.
+services:
+  caddy:
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      JDHP_PUBLIC_HOST: ${JDHP_PUBLIC_HOST:?set JDHP_PUBLIC_HOST to the rig's hostname}
+      JDHP_TESTRIG_INBOX_USER: ${JDHP_TESTRIG_INBOX_USER:?set the inbox user}
+      JDHP_TESTRIG_INBOX_HASH: ${JDHP_TESTRIG_INBOX_HASH:?set the inbox password hash}
+    volumes:
+      - ./infra/compose/caddy/Caddyfile.testrig:/etc/caddy/Caddyfile:ro
+      - ./infra/compose/caddy/routes.caddy:/etc/caddy/routes.caddy:ro
+      - caddy-data:/data
+
+  web:
+    restart: always
+  api:
+    restart: always
+    environment:
+      JDHP_ENV: testrig
+      JDHP_SMS_PROVIDER: email
+      JDHP_SMTP_HOST: mailpit
+      JDHP_SMTP_PORT: "1025"
+      JDHP_SMTP_FROM: noreply@${JDHP_PUBLIC_HOST:-testrig.local}
+      JDHP_SMS_INBOX: sms-codes@${JDHP_PUBLIC_HOST:-testrig.local}
+  worker:
+    restart: always
+    environment:
+      JDHP_ENV: testrig
+      JDHP_SMS_PROVIDER: email
+      JDHP_SMTP_HOST: mailpit
+      JDHP_SMTP_PORT: "1025"
+      JDHP_SMTP_FROM: noreply@${JDHP_PUBLIC_HOST:-testrig.local}
+      JDHP_SMS_INBOX: sms-codes@${JDHP_PUBLIC_HOST:-testrig.local}
+  tiles:
+    restart: always
+  keycloak:
+    restart: always
+  postgres:
+    restart: always
+  redis:
+    restart: always
+  minio:
+    restart: always
+  opensearch:
+    restart: always
+  cantaloupe:
+    restart: always
+
+  mailpit:
+    restart: always
+    environment:
+      # Served under the platform's hostname, behind Caddy's basic auth.
+      MP_WEBROOT: /mail/
+      MP_MAX_MESSAGES: "5000"
+
+  # One account per role for the testers, created once (compose profile "testrig").
+  testrig-users:
+    image: jdhp-keycloak:local
+    pull_policy: never
+    profiles: ["testrig"]
+    entrypoint: ["/bin/bash", "/opt/jdhp/testrig-users.sh"]
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      JDHP_TESTRIG_USER_PASSWORD: ${JDHP_TESTRIG_USER_PASSWORD:?set the testers' password}
+      JDHP_PUBLIC_HOST: ${JDHP_PUBLIC_HOST:-testrig.local}
+    volumes:
+      - ./infra/compose/keycloak/testrig-users.sh:/opt/jdhp/testrig-users.sh:ro
+    network_mode: "service:keycloak"
+    depends_on:
+      keycloak:
+        condition: service_healthy

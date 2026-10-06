@@ -1,0 +1,274 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "كتاب الأعشاب والطبّ في جبال الكرك",
+  "title_translit": "Kitāb al-aʿshāb wa-al-ṭibb fī jibāl al-Karak",
+  "title_en": "The Book of Herbs and Medicine in the Karak Mountains",
+  "uniform_title": "كتاب الأعشاب والطب",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1766",
+  "date_hijri": "1180",
+  "extent": "٧ صفحات؛ مخطوط",
+  "description_ar": "مخطوط خيالي في الطب الشعبي والأعشاب يُنسب إلى حكيم متخيَّل من دير الشَّوْك في جبال الكرك، يصف الأعشاب ومواضع نباتها واستعمالاتها وأدوية البيت. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional manuscript on folk medicine and herbs attributed to an invented healer of Dayr al-Shawk in the Karak mountains, describing plants, where they grow, their uses and household remedies. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+  "rights_basis": "Fictional work created for the platform; no third-party rights.",
+  "access_class": "registered",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "الحكيم موسى بن يونس الكركي",
+    "name_latin": "al-Ḥakīm Mūsā ibn Yūnus al-Karakī",
+    "dates_edtf": "1710/1781"
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "medicine",
+    "label_ar": "الطب الشعبي والأعشاب",
+    "label_en": "Folk medicine and herbs"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "natural-history",
+    "label_ar": "النبات والطبيعة",
+    "label_en": "Plants and natural history"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "karak",
+    "label_ar": "الكرك",
+    "label_en": "Karak"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "dayr-al-shawk",
+    "label_ar": "دير الشَّوْك (خيالي)",
+    "label_en": "Dayr al-Shawk (fictional)"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "ottoman-18th",
+    "label_ar": "العهد العثماني، القرن الثاني عشر الهجري",
+    "label_en": "Ottoman period, eighteenth century"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "manuscript",
+    "label_ar": "مخطوط",
+    "label_en": "Manuscript"
+   }
+  ],
+  "collection": {
+   "kind": "donor",
+   "title_ar": "مجموعة آل الزُّهَيْري (خيالية)",
+   "title_en": "Al-Zuhayri family collection (fictional)",
+   "description_ar": "وثائق ومخطوطات خيالية تُنسب إلى عائلة متخيَّلة من مادبا والكرك، وُضعت لاختبار الأعمال المقيّدة.",
+   "description_en": "Fictional documents and manuscripts attributed to an invented family of Madaba and Karak, written to exercise restricted works."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0005",
+  "condition": "مخطوط على ورق سميك، أرضة في الزاوية السفلى (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي؛ تُنسب للمجموعة الخيالية لآل الزُّهَيْري."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "كتاب الأعشاب والطبّ",
+      "في جبال الكرك"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "تأليف",
+      "الحكيم موسى بن يونس الكركي",
+      "من أهل دير الشَّوْك"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "كُتب سنة ١١٨٠ هـ"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "كتاب الأعشاب والطبّ"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "في معرفة الأعشاب ومواضعها",
+      "وما يُداوى به من العلل في البيت"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "جمعه",
+      "الحكيم موسى بن يونس الكركي"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "بخط مؤلفه في دير الشَّوْك",
+      "سنة ١١٨٠ من الهجرة"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "الباب الأول",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في الزعتر والميرمية"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "الزعتر البري ينبت على سفوح الجبل المواجهة للشمس، ويُقطف",
+      "في أول الصيف قبل أن يزهر، ويُجفف في الظل لا في الشمس حتى",
+      "يحفظ رائحته. وهو نافع لوجع الصدر إذا غُلي في الماء وشُرب",
+      "ساخنًا، ولوجع الأسنان إذا مُضغ.",
+      "والميرمية تنبت في الوديان الظليلة، وورقها رمادي ناعم،",
+      "تُشرب لوجع البطن وتُغلى للنساء بعد الولادة. وينهى",
+      "الحكماء عن الإكثار منها لأنها تُجفف الجسد."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "الباب الثاني",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في البابونج والخبّيزة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "البابونج زهر أصفر صغير أبيض الأطراف ينبت في أرض الحصاد",
+      "بعد المطر، ويُجمع في نيسان ويُجفف ويُحفظ في كيس كتان.",
+      "يُغلى للأطفال إذا اضطربت بطونهم وللكبار إذا قلّ نومهم،",
+      "ويُغسل به العين إذا احمرّت.",
+      "والخبّيزة تُطبخ وتُؤكل في الشتاء وهي من طعام الفقراء،",
+      "ولكن ورقها إذا دُقّ ووُضع على الجرح سكّن حرارته، وإذا",
+      "غُلي وشُرب ليّن البطن."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "الباب الثالث",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في أدوية البيت"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "زيت الزيتون أصل الأدوية في جبالنا: يُدهن به المفصل",
+      "الموجوع، ويُقطر في الأذن إذا أوجعت، ويُشرب على الريق لمن",
+      "اشتكى بطنه. والعسل يُمزج بالزيت للسعال، ويُوضع على",
+      "الحروق مع الدقيق.",
+      "والحنّاء تُوضع على القدم إذا تشققت وعلى الرأس إذا كثر",
+      "صداعه، والملح يُذاب في الماء الفاتر للمضمضة، والثوم",
+      "يُؤكل نيئًا لمن سكنه البرد. وكل ذلك مما جرّبه الحكماء",
+      "قبلي وجرّبته بعدهم."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الباب الرابع",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في ما ينبغي للحكيم"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "ينبغي للحكيم أن يسأل المريض عن طعامه ونومه قبل أن يسأله",
+      "عن وجعه، وأن لا يعطي دواءً لا يعرف أصله، وأن يبدأ بالأخف",
+      "فالأخف. وليعلم أن أكثر العلل في جبالنا من البرد والجوع",
+      "وقلة النظافة، فمن أصلح هذه الثلاثة أصلح أكثر الأبدان.",
+      "ولا يأخذ الحكيم من الفقير أجرًا، ويأخذ من الغني ما يطيب",
+      "به قلبه، وهذه وصية أبي رحمه الله وأنا أوصي بها من بعدي."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ الكتاب بحمد الله وعونه",
+      "على يد مؤلفه موسى بن يونس",
+      "في دير الشَّوْك من جبال الكرك",
+      "في شهر ربيع الأول سنة ١١٨٠ هجرية",
+      "نفع الله به من قرأه"
+     ]
+    }
+   ]
+  }
+ ]
+}

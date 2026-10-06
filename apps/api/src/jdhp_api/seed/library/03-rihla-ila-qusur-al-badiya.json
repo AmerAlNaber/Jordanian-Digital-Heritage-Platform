@@ -1,0 +1,314 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "رحلة إلى قصور البادية: مشاهدات في طريق الأزرق",
+  "title_translit": "Riḥla ilā quṣūr al-bādiya: mushāhadāt fī ṭarīq al-Azraq",
+  "title_en": "A Journey to the Desert Castles: Observations on the Azraq Road",
+  "uniform_title": "رحلة إلى قصور البادية",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1932",
+  "date_hijri": "1351",
+  "extent": "٨ صفحات؛ خريطة واحدة",
+  "description_ar": "سرد خيالي لرحلة قام بها كاتب متخيَّل اسمه نظمي بن حسن العُمَري من الزرقاء إلى واحة الأزرق سنة ١٩٣٢، يصف فيها الطريق والخانات والقصور الصحراوية والنزل عند خان الرُّقَيْب المتخيَّل. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional account of a journey by the invented writer Nazmi ibn Hasan al-Umari from Zarqa to the Azraq oasis in 1932, describing the road, the caravanserais, the desert castles and the lodging at the invented Khan al-Ruqayb. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+  "rights_basis": "Fictional work created for the platform; no third-party rights.",
+  "access_class": "registered",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "نظمي بن حسن العُمَري",
+    "name_latin": "Naẓmī ibn Ḥasan al-ʿUmarī",
+    "dates_edtf": "1899/1961"
+   },
+   {
+    "role": "printer",
+    "kind": "organization",
+    "name_ar": "مطبعة الشرق في عمّان (خيالية)",
+    "name_latin": "al-Sharq Press, Amman (fictional)",
+    "dates_edtf": null
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "travel",
+    "label_ar": "رحلات ووصف البلاد",
+    "label_en": "Travel and description"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "roads",
+    "label_ar": "الطرق والقوافل",
+    "label_en": "Roads and caravans"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "zarqa",
+    "label_ar": "الزرقاء",
+    "label_en": "Zarqa"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "khan-al-ruqayb",
+    "label_ar": "خان الرُّقَيْب (خيالي)",
+    "label_en": "Khan al-Ruqayb (fictional)"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "mandate",
+    "label_ar": "عهد الإمارة والانتداب",
+    "label_en": "Emirate and Mandate period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "printed-book",
+    "label_ar": "كتاب مطبوع",
+    "label_en": "Printed book"
+   }
+  ],
+  "collection": {
+   "kind": "series",
+   "title_ar": "سلسلة البادية والطرق",
+   "title_en": "Desert and roads series",
+   "description_ar": "سلسلة خيالية عن الطرق والقوافل والسكة والموانئ.",
+   "description_en": "A fictional series on roads, caravans, the railway and the ports."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0004",
+  "condition": "غلاف ورقي، بقع حبر على الخريطة (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "رحلة إلى قصور البادية",
+      "مشاهدات في طريق الأزرق"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "بقلم",
+      "نظمي بن حسن العُمَري"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "مطبعة الشرق - عمّان",
+      "١٣٥١ هـ - ١٩٣٢ م"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "رحلة إلى قصور البادية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "مشاهدات في طريق الأزرق",
+      "وما رآه الكاتب من القصور والخانات والآبار"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "كتبها",
+      "نظمي بن حسن العُمَري"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "طُبعت على نفقة المؤلف",
+      "في مطبعة الشرق بعمّان سنة ١٩٣٢"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "الفصل الأول",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "الخروج من الزرقاء"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "خرجنا من الزرقاء في فجر يوم الثلاثاء الرابع من نيسان على",
+      "سيارة شحن قديمة يقودها رجل من أهل البلد اسمه أبو خليل،",
+      "ومعنا من الزاد خبز وزيتون وتمر وقربتان من الماء. وكان",
+      "الطريق في أوله معبّدًا بالحصى ثم صار أثرًا في الرمل",
+      "تعرفه السيارة بعادتها لا بعلاماته.",
+      "وبعد ساعتين ظهر لنا على البعد بناء حجري أسود هو أول قصور",
+      "البادية في طريقنا، وقال أبو خليل إن الرعاة ينزلون فيه في",
+      "الشتاء ويوقدون نارهم في قاعته الكبرى."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "الفصل الثاني",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "خان الرُّقَيْب"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "بلغنا خان الرُّقَيْب قبل الظهر، وهو بناء مربع من حجر",
+      "البازلت له باب واحد وفناء واسع وبئر في وسطه، وفيه رجل",
+      "عجوز يقال له الحاج صالح يبيع الشاي والسكر ويؤجر الفرش",
+      "للمسافرين بقرش في الليلة.",
+      "وحدّثنا الحاج صالح أن القوافل كانت تمر بالخان في زمان",
+      "أبيه حاملة الملح من الأزرق والقمح من حوران، وأن السيارات",
+      "قطعت رزق الجمّالة فلم يبق في الخان إلا هو وكلبه وبئره.",
+      "ونمنا تلك الليلة في الفناء تحت نجوم لم أر مثلها كثرة ولا",
+      "قربًا."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "map",
+   "label": "٥",
+   "section": "الخريطة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "خريطة الطريق من الزرقاء إلى الأزرق"
+     ]
+    },
+    {
+     "kind": "figure",
+     "lines": [
+      "خريطة الطريق ومواضع الخانات والآبار"
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "خريطة رسمها المؤلف بيده تبيّن الطريق من الزرقاء إلى واحة",
+      "الأزرق، وعليها خان الرُّقَيْب والبئر الكبرى وموضع القصر",
+      "الأسود، والمسافات بالساعات على السيارة."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الفصل الثالث",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "واحة الأزرق"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "وصلنا الأزرق في اليوم الثاني عند العصر، فإذا بالماء يلمع",
+      "بين القصب والنخيل وطيور كثيرة تحط وتطير، وقلعة سوداء على",
+      "طرف البركة يسكنها جنود قليلون وأهل بيت من الدروز يزرعون",
+      "حولها.",
+      "وفي الأزرق يُستخرج الملح من الملاّحات في الصيف ويُحمل",
+      "على الجمال إلى عمّان ودمشق، ويعيش أهلها على صيد السمك",
+      "الصغير والطير وعلى ما تحمله القوافل من حبوب.",
+      "وقد أحصيت في البركة في مساء واحد أكثر من عشرين نوعًا من",
+      "الطير لا أعرف أسماءها."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "text",
+   "label": "٧",
+   "section": "الخاتمة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "ما خرجت به من الرحلة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "خرجت من هذه الرحلة بأن البادية ليست خلاءً كما يظن أهل",
+      "المدن، بل فيها طرق وخانات وآبار وناس يعرفون كل حجر فيها،",
+      "وأن القصور القديمة التي بناها الأوائل تستحق أن تُدرس",
+      "وتُصان قبل أن يأخذها الرمل.",
+      "وأوصي من أراد الرحلة أن يخرج في الربيع لا في الصيف، وأن",
+      "يحمل الماء ضعف ما يظن أنه يحتاج، وأن يصحب دليلاً من أهل",
+      "البلد ولا يعتمد على الخرائط وحدها."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 8,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّت الرحلة بحمد الله",
+      "وطُبع الكتاب في مطبعة الشرق بعمّان",
+      "في شهر أيلول سنة ١٩٣٢",
+      "في ثلاثمائة نسخة",
+      "نظمي بن حسن العُمَري"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,309 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "جغرافية شرقي الأردن للمدارس الابتدائية",
+  "title_translit": "Jughrāfiyat Sharqī al-Urdunn lil-madāris al-ibtidāʾiyya",
+  "title_en": "Geography of Transjordan for Primary Schools",
+  "uniform_title": "جغرافية شرقي الأردن",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1947",
+  "date_hijri": "1366",
+  "extent": "٧ صفحات؛ جدول واحد",
+  "description_ar": "كتاب مدرسي خيالي في الجغرافيا للصف الرابع الابتدائي، وضعه معلّم متخيَّل اسمه فايز بن عبد الرحمن النابلسي، يعرّف التلاميذ بالألوية والأنهار والجبال والمناخ وطرق المواصلات. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional geography textbook for the fourth primary grade by the invented teacher Fayiz ibn Abd al-Rahman al-Nabulsi, introducing pupils to districts, rivers, mountains, climate and transport. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+  "rights_basis": "Fictional work created for the platform; no third-party rights.",
+  "access_class": "registered",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "فايز بن عبد الرحمن النابلسي",
+    "name_latin": "Fāyiz ibn ʿAbd al-Raḥmān al-Nābulsī",
+    "dates_edtf": "1905/1979"
+   },
+   {
+    "role": "printer",
+    "kind": "organization",
+    "name_ar": "المطبعة الوطنية في عمّان (خيالية)",
+    "name_latin": "National Press, Amman (fictional)",
+    "dates_edtf": null
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "education",
+    "label_ar": "التعليم والمدارس",
+    "label_en": "Education and schools"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "geography",
+    "label_ar": "الجغرافيا",
+    "label_en": "Geography"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "amman",
+    "label_ar": "عمّان",
+    "label_en": "Amman"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "early-kingdom",
+    "label_ar": "عهد المملكة المبكر",
+    "label_en": "Early Kingdom period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "printed-book",
+    "label_ar": "كتاب مطبوع",
+    "label_en": "Printed book"
+   }
+  ],
+  "collection": {
+   "kind": "project",
+   "title_ar": "مجموعة البذرة التجريبية",
+   "title_en": "Seed collection",
+   "description_ar": "أعمال خيالية تُستخدم في الاختبار والعروض.",
+   "description_en": "Fictional works used for tests and demonstrations."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0006",
+  "condition": "كتاب مدرسي مستعمل، كتابات بقلم الرصاص على الهوامش (افتراضية).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "جغرافية شرقي الأردن",
+      "للمدارس الابتدائية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "تأليف",
+      "فايز بن عبد الرحمن النابلسي",
+      "معلّم في مدرسة عمّان الابتدائية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "المطبعة الوطنية - عمّان",
+      "١٣٦٦ هـ - ١٩٤٧ م"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "جغرافية شرقي الأردن"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "للصف الرابع الابتدائي",
+      "مع أسئلة في آخر كل درس"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "وضعه",
+      "فايز بن عبد الرحمن النابلسي"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "الطبعة الثانية",
+      "المطبعة الوطنية في عمّان سنة ١٩٤٧"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "الدرس الأول",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "موقع البلاد وحدودها"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "تقع بلادنا شرقي نهر الأردن، يحدها من الشمال سورية ومن",
+      "الشرق العراق ومن الجنوب الحجاز ومن الغرب نهر الأردن",
+      "والبحر الميت ووادي عربة. وهي بلاد جبال في الغرب وبادية",
+      "في الشرق، وبينهما سهول تُزرع قمحًا وشعيرًا.",
+      "أسئلة: ما حدود بلادنا من الجهات الأربع؟ أين تقع الجبال",
+      "وأين تقع البادية؟ ما الذي يُزرع في السهول؟"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "table",
+   "label": "٤",
+   "section": "الدرس الثاني",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "ألوية البلاد ومراكزها"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في البلاد أربعة ألوية، لكل لواء مركز يقيم فيه المتصرف،",
+      "وفيما يلي جدول بها وبأشهر ما فيها."
+     ]
+    },
+    {
+     "kind": "table",
+     "columns": [
+      "اللواء",
+      "المركز",
+      "أشهر ما فيه"
+     ],
+     "rows": [
+      [
+       "عجلون",
+       "إربد",
+       "سهول القمح وجبال الزيتون"
+      ],
+      [
+       "البلقاء",
+       "السلط",
+       "العاصمة عمّان والغور"
+      ],
+      [
+       "الكرك",
+       "الكرك",
+       "القلعة والأغنام"
+      ],
+      [
+       "معان",
+       "معان",
+       "سكة الحديد والعقبة"
+      ]
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "الجدول للتدريس، وقد تتغير الألوية ومراكزها بقرار الحكومة."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "الدرس الثالث",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "المناخ والمطر"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "مناخ بلادنا معتدل في الجبال، حار في الغور والعقبة، بارد",
+      "في الشتاء على القمم حيث يسقط الثلج في بعض السنين. ويأتي",
+      "المطر في الشتاء من جهة البحر، فتُمطر الجبال الغربية",
+      "كثيرًا وتقلّ الأمطار كلما اتجهنا شرقًا نحو البادية.",
+      "ولهذا يزرع أهل الجبال الزيتون والعنب والتين، ويزرع أهل",
+      "السهول القمح، ويربّي أهل البادية الإبل والغنم ويتنقلون",
+      "وراء العشب.",
+      "أسئلة: لماذا تُمطر الجبال الغربية أكثر من البادية؟ ماذا",
+      "يزرع أهل الجبال؟"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الدرس الرابع",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "طرق المواصلات"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "يصل بلادنا بجاراتها طريق معبّد من عمّان إلى دمشق شمالاً",
+      "وإلى معان جنوبًا، وسكة الحديد الحجازية التي تمر بالمفرق",
+      "والزرقاء وعمّان والقطرانة ومعان، وطريق البادية إلى",
+      "بغداد. وفي العقبة ميناء صغير على البحر الأحمر تأتيه",
+      "السفن الشراعية من مصر والحجاز.",
+      "والجمال والخيل والحمير لا تزال وسائل النقل في القرى",
+      "والبادية، أما السيارات فكثرت في المدن بعد الحرب.",
+      "أسئلة: ما المدن التي تمر بها سكة الحديد؟ أين يقع ميناء",
+      "بلادنا؟"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ الكتاب بعون الله",
+      "وطُبع في المطبعة الوطنية بعمّان",
+      "في شهر آب سنة ١٩٤٧",
+      "وأُجيز لتدريسه في المدارس الابتدائية",
+      "فايز بن عبد الرحمن النابلسي"
+     ]
+    }
+   ]
+  }
+ ]
+}

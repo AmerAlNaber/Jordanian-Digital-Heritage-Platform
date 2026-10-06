@@ -1,0 +1,353 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "تقويم مواسم الغور لسنة ١٩٣٥: جدول الزرع والحصاد والأسواق",
+  "title_translit": "Taqwīm mawāsim al-Ghawr li-sanat 1935",
+  "title_en": "Almanac of the Ghor Seasons for 1935: Sowing, Harvest and Market Calendar",
+  "uniform_title": "تقويم مواسم الغور",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1935",
+  "date_hijri": "1353",
+  "extent": "٧ صفحات؛ جدول واحد؛ دورية سنوية",
+  "description_ar": "تقويم زراعي خيالي لسنة ١٩٣٥ يحدد مواعيد الزرع والحصاد وأسواق الأسبوع في قرى الغور الأوسط المتخيَّلة، أصدرته لجنة فلاحي الغور المتخيَّلة. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional agricultural almanac for 1935 giving sowing and harvest dates and weekly market days for invented villages of the middle Ghor, issued by the invented Ghor Farmers' Committee. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+  "rights_basis": "Fictional work created for the platform; no third-party rights.",
+  "access_class": "open",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "organization",
+    "name_ar": "لجنة فلاحي الغور (خيالية)",
+    "name_latin": "Ghor Farmers' Committee (fictional)",
+    "dates_edtf": null
+   },
+   {
+    "role": "printer",
+    "kind": "organization",
+    "name_ar": "مطبعة السلط الأهلية (خيالية)",
+    "name_latin": "al-Salt Civic Press (fictional)",
+    "dates_edtf": null
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "agriculture",
+    "label_ar": "الزراعة والمواسم",
+    "label_en": "Agriculture and seasons"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "markets",
+    "label_ar": "الأسواق والتجارة",
+    "label_en": "Markets and trade"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "balqa",
+    "label_ar": "البلقاء",
+    "label_en": "Balqa"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "qaryat-al-buhayra",
+    "label_ar": "قرية البُحيرة (خيالية)",
+    "label_en": "Qaryat al-Buhayra (fictional)"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "mandate",
+    "label_ar": "عهد الإمارة والانتداب",
+    "label_en": "Emirate and Mandate period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "periodical",
+    "label_ar": "دورية",
+    "label_en": "Periodical"
+   }
+  ],
+  "collection": {
+   "kind": "project",
+   "title_ar": "مجموعة البذرة التجريبية",
+   "title_en": "Seed collection",
+   "description_ar": "أعمال خيالية تُستخدم في الاختبار والعروض.",
+   "description_en": "Fictional works used for tests and demonstrations."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0003",
+  "condition": "كراسة مطبوعة على ورق رخيص، تمزّق في الغلاف الخلفي (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "تقويم مواسم الغور",
+      "لسنة ١٩٣٥ ميلادية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "تصدره",
+      "لجنة فلاحي الغور",
+      "السنة الثالثة"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "مطبعة السلط الأهلية",
+      "١٣٥٣ هـ - ١٩٣٥ م"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "تقويم مواسم الغور"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "جدول الزرع والحصاد وأيام الأسواق",
+      "في قرى الغور الأوسط"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "جمعته ورتّبته",
+      "لجنة فلاحي الغور"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "يُوزّع مجانًا على الفلاحين",
+      "وطُبع في السلط سنة ١٩٣٥"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "المقدمة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "كلمة اللجنة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "هذا هو العدد الثالث من تقويم مواسم الغور، نضعه بين أيدي",
+      "الفلاحين ليعرفوا متى يبذرون ومتى يحصدون ومتى تقوم",
+      "الأسواق في القرى. وقد جمعنا فيه ما تواتر عن الشيوخ وما",
+      "جرّبته اللجنة في السنتين الماضيتين من مواعيد الموز",
+      "والقمح والشعير والخضار الشتوية.",
+      "ونذكّر إخواننا بأن الغور أدفأ من الجبل بشهر كامل، فما",
+      "يُزرع في السلط في آذار يُزرع عندنا في شباط، وما يُحصد",
+      "هناك في حزيران يُحصد هنا في أيار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "table",
+   "label": "٤",
+   "section": "جدول المواسم",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "مواعيد الزرع والحصاد لسنة ١٩٣٥"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "الأشهر بالتقويم الميلادي، والقرى المذكورة هي البُحيرة",
+      "والمنشيّة والزّور، وكلها قرى متخيَّلة."
+     ]
+    },
+    {
+     "kind": "table",
+     "columns": [
+      "المحصول",
+      "الزرع",
+      "الحصاد",
+      "ملاحظة"
+     ],
+     "rows": [
+      [
+       "القمح",
+       "تشرين الثاني",
+       "أيار",
+       "بذار بلدي"
+      ],
+      [
+       "الشعير",
+       "تشرين الثاني",
+       "نيسان",
+       "يسبق القمح"
+      ],
+      [
+       "الموز",
+       "آذار",
+       "على مدار السنة",
+       "يحتاج الري"
+      ],
+      [
+       "البندورة",
+       "شباط",
+       "أيار - حزيران",
+       "في البيوت الدافئة"
+      ],
+      [
+       "الباذنجان",
+       "آذار",
+       "تموز",
+       ""
+      ],
+      [
+       "السمسم",
+       "نيسان",
+       "آب",
+       "يُنفض على البيدر"
+      ],
+      [
+       "الذرة البيضاء",
+       "أيار",
+       "أيلول",
+       "بعد الحصاد"
+      ]
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "الجدول من تجربة اللجنة في موسمي ١٩٣٣ و١٩٣٤، وقد تتقدم",
+      "المواعيد أو تتأخر أسبوعًا بحسب المطر."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "أسواق الأسبوع",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "أيام الأسواق في قرى الغور"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "يقوم سوق البُحيرة يوم الاثنين وتأتيه قوافل الخضار من",
+      "الزّور ومن المنشيّة، ويقوم سوق المنشيّة يوم الخميس",
+      "ويُباع فيه الموز والحمضيات والدجاج، وسوق الزّور يوم",
+      "السبت وهو سوق الحبوب والتبن والأغنام.",
+      "وننصح الفلاح أن يبيع القمح بعد الحصاد بشهر لا في أسبوعه،",
+      "لأن السعر يرتفع إذا قلّ المعروض، وأن يحفظ البذار في",
+      "الجرار المغلقة بعيدًا عن الفئران والرطوبة.",
+      "وتُذكّر اللجنة بأن الري في الغور بالدور، وأن من يأخذ دور",
+      "غيره يُحرم من الماء أسبوعًا كاملاً بحكم المختار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "نصائح الموسم",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "في مقاومة الجراد والدودة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "إذا ظهر الجراد في أول الربيع فليخرج أهل القرية كلهم",
+      "رجالاً ونساءً بالأغصان والصفائح ويطردوه قبل أن يحط على",
+      "الزرع، ويحفروا له الخنادق في طرف الحقل ويدفنوه فيها.",
+      "وأما دودة البندورة فتُلتقط باليد في الصباح الباكر قبل أن",
+      "تشتد الشمس، ويُرشّ الزرع بماء الرماد المنقوع ليلة كاملة،",
+      "فقد جرّبته اللجنة في موسم ١٩٣٤ فنفع."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ التقويم بعون الله",
+      "وطُبع في مطبعة السلط الأهلية",
+      "في شهر كانون الأول سنة ١٩٣٤",
+      "ليكون بين يدي الفلاحين قبل موسم ١٩٣٥",
+      "لجنة فلاحي الغور"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 8,
+   "type": "endpaper",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "stamp",
+     "lines": [
+      "منصة التراث الأردني الرقمي",
+      "نسخة رقمية تجريبية لعمل خيالي"
+     ]
+    }
+   ]
+  }
+ ]
+}

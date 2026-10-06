@@ -1,0 +1,338 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "دفتر تاجر محطات سكة الحجاز: حسابات معان من سنة ١٣٢٨ إلى ١٣٣٠",
+  "title_translit": "Daftar tājir maḥaṭṭāt sikkat al-Ḥijāz",
+  "title_en": "Ledger of a Hejaz Railway Stations Merchant: Ma'an Accounts, 1328 to 1330 AH",
+  "uniform_title": "دفتر تاجر محطات سكة الحجاز",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1910/1912",
+  "date_hijri": "1328/1330",
+  "extent": "٧ صفحات؛ جدول حسابات",
+  "description_ar": "دفتر حسابات خيالي لتاجر متخيَّل اسمه عبد القادر بن محمود المعاني كان يموّن محطات سكة الحجاز بين معان والمدوّرة بالقمح والشعير والفحم والزيت، فيه قيود الشراء والبيع وأسماء الوكلاء المتخيَّلين. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional account ledger of the invented merchant Abd al-Qadir ibn Mahmud al-Maani, who supplied the Hejaz railway stations between Ma'an and al-Mudawwara with wheat, barley, charcoal and oil, with purchase and sale entries and the names of invented agents. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/InC/1.0/",
+  "rights_basis": "Fictional work created for the platform. Paid class assigned to exercise timed access; no third-party rights.",
+  "access_class": "paid",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "person",
+    "name_ar": "عبد القادر بن محمود المعاني",
+    "name_latin": "ʿAbd al-Qādir ibn Maḥmūd al-Maʿānī",
+    "dates_edtf": "1862/1931"
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "trade-railway",
+    "label_ar": "التجارة وسكة الحديد",
+    "label_en": "Trade and the railway"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "markets",
+    "label_ar": "الأسواق والتجارة",
+    "label_en": "Markets and trade"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "maan",
+    "label_ar": "معان",
+    "label_en": "Ma'an"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "khan-al-darb",
+    "label_ar": "خان الدرب (خيالي)",
+    "label_en": "Khan al-Darb (fictional)"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "late-ottoman",
+    "label_ar": "أواخر العهد العثماني",
+    "label_en": "Late Ottoman period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "ledger",
+    "label_ar": "سجل تجاري",
+    "label_en": "Commercial ledger"
+   }
+  ],
+  "collection": {
+   "kind": "series",
+   "title_ar": "سلسلة البادية والطرق",
+   "title_en": "Desert and roads series",
+   "description_ar": "سلسلة خيالية عن الطرق والقوافل والسكة والموانئ.",
+   "description_en": "A fictional series on roads, caravans, the railway and the ports."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0007",
+  "condition": "دفتر بجلد أسود، أوراق مخرّمة من الرطوبة في آخره (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "دفتر الحسابات",
+      "لمحطات سكة الحجاز"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "التاجر",
+      "عبد القادر بن محمود المعاني",
+      "خان الدرب - معان"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "من سنة ١٣٢٨ إلى سنة ١٣٣٠ هـ"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "دفتر تاجر محطات سكة الحجاز"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "حسابات التموين بين معان والمدوّرة",
+      "قمح وشعير وفحم وزيت"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "بخط صاحبه",
+      "عبد القادر بن محمود المعاني"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "ابتُدئ في محرم سنة ١٣٢٨",
+      "وخُتم في ذي الحجة سنة ١٣٣٠"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "التمهيد",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "بيان الدفتر"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "هذا دفتري الذي أقيّد فيه ما أشتريه من قمح حوران وشعير",
+      "الكرك وفحم البلوط من عجلون وزيت نابلس، وما أبيعه لناظر",
+      "المحطات ولرئيس المستودع في معان ولوكلاء المحطات في",
+      "الشيدية والمدوّرة. وكل قيد بتاريخه وثمنه وشاهده.",
+      "وقد اتفقت مع ناظر المحطات على أن أورد في كل شهر أربعين",
+      "كيلة قمح وثلاثين كيلة شعير وعشرة قناطير فحم، ويدفع لي",
+      "الثمن في أول الشهر التالي بالمجيدي الفضي."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "table",
+   "label": "٤",
+   "section": "حسابات سنة ١٣٢٨",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "ما ورد وما بيع في سنة ١٣٢٨ هجرية"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "الأثمان بالمجيدي، والكيلة كيلة معان، والقنطار مئة رطل."
+     ]
+    },
+    {
+     "kind": "table",
+     "columns": [
+      "الشهر",
+      "قمح (كيلة)",
+      "شعير (كيلة)",
+      "فحم (قنطار)",
+      "الثمن (مجيدي)"
+     ],
+     "rows": [
+      [
+       "محرم",
+       "٤٠",
+       "٣٠",
+       "١٠",
+       "٣٨٠"
+      ],
+      [
+       "صفر",
+       "٤٠",
+       "٣٠",
+       "١٢",
+       "٣٩٥"
+      ],
+      [
+       "ربيع الأول",
+       "٣٥",
+       "٣٠",
+       "١٠",
+       "٣٥٠"
+      ],
+      [
+       "ربيع الآخر",
+       "٤٠",
+       "٢٥",
+       "٨",
+       "٣٤٠"
+      ],
+      [
+       "جمادى الأولى",
+       "٤٥",
+       "٣٠",
+       "١٠",
+       "٤١٠"
+      ],
+      [
+       "رجب",
+       "٤٠",
+       "٣٠",
+       "١٥",
+       "٤٢٠"
+      ],
+      [
+       "رمضان",
+       "٥٠",
+       "٣٥",
+       "١٠",
+       "٤٥٠"
+      ]
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "نقص قمح ربيع الأول لتأخر قافلة حوران بسبب المطر، وزاد فحم",
+      "رجب لبرد ذلك الشهر."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "قيود متفرقة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "ما وقع في سنة ١٣٢٩"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في شهر صفر سنة ١٣٢٩ احترق مستودع الفحم في محطة الشيدية",
+      "فخسرت عشرين قنطارًا لم يُدفع ثمنها، وقيّدتها دينًا على",
+      "الناظر وشهد على ذلك الحاج عودة. وفي رجب تأخر القطار",
+      "القادم من دمشق أسبوعًا لانقطاع الخط عند القطرانة فبعت",
+      "القمح لأهل معان بسعر أقل.",
+      "وفي شوال اشتريت من وكيلي في الكرك مئة كيلة شعير بسعر",
+      "رخيص لأن الموسم كان خصبًا، وخزنتها في خان الدرب للسنة",
+      "التالية."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "الخاتمة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "حساب الختام سنة ١٣٣٠"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "ختمت الدفتر في ذي الحجة سنة ١٣٣٠ وقد بلغ ما بعته في",
+      "السنوات الثلاث أربعة عشر ألف مجيدي وما اشتريته أحد عشر",
+      "ألفًا ومئتين، وما لي من دين على المحطات ثلاثمئة وعشرون",
+      "مجيديًا، وما عليّ لوكلائي مئة وخمسون.",
+      "وأوصي ابني محمود إن مت أن يستوفي الدين من الناظر",
+      "بالحسنى، وأن يفي ما علينا للوكلاء قبل أن يقسم شيئًا من",
+      "المال، وأن يبقي الخان مفتوحًا للمسافرين كما كان في",
+      "حياتي."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ الدفتر",
+      "بخط صاحبه عبد القادر بن محمود المعاني",
+      "في خان الدرب بمعان",
+      "آخر ذي الحجة سنة ١٣٣٠ هجرية",
+      "والله خير الشاهدين"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,272 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "سجل محكمة الطفيلة الشرعية: قيود سنة ١٢٩٠ هـ",
+  "title_translit": "Sijill maḥkamat al-Ṭafīla al-sharʿiyya: quyūd sanat 1290",
+  "title_en": "Register of the Tafilah Sharia Court: Entries of the Year 1290 AH",
+  "uniform_title": "سجل محكمة الطفيلة",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1873",
+  "date_hijri": "1290",
+  "extent": "٧ صفحات؛ سجل",
+  "description_ar": "سجل محكمة خيالي يضم قيود سنة ١٢٩٠ هـ لمحكمة متخيَّلة في الطفيلة: عقود بيع، وزواج، وتقسيم تركة، ونزاع على ماء، كتبها كاتب المحكمة المتخيَّل. مقيَّد لأنه يمثّل سجلات قضائية فيها أسماء أشخاص في سيناريو الاختبار. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional court register of entries for the year 1290 AH from an invented court in Tafilah: sales, a marriage, an estate division and a water dispute, written by the invented court scribe. Restricted because it stands for judicial records naming people in the test scenario. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/InC/1.0/",
+  "rights_basis": "Fictional work created for the platform. Restricted class assigned to exercise approval-only access; no third-party rights.",
+  "access_class": "restricted",
+  "agents": [
+   {
+    "role": "author",
+    "kind": "organization",
+    "name_ar": "محكمة الطفيلة الشرعية (خيالية)",
+    "name_latin": "Tafilah Sharia Court (fictional)",
+    "dates_edtf": null
+   },
+   {
+    "role": "scribe",
+    "kind": "person",
+    "name_ar": "كاتب المحكمة: خليل بن إبراهيم",
+    "name_latin": "Khalīl ibn Ibrāhīm",
+    "dates_edtf": null
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "law",
+    "label_ar": "الشرع والقضاء",
+    "label_en": "Law and courts"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "social-history",
+    "label_ar": "تاريخ اجتماعي",
+    "label_en": "Social history"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "tafilah",
+    "label_ar": "الطفيلة",
+    "label_en": "Tafilah"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "late-ottoman",
+    "label_ar": "أواخر العهد العثماني",
+    "label_en": "Late Ottoman period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "register",
+    "label_ar": "سجل",
+    "label_en": "Register"
+   }
+  ],
+  "collection": {
+   "kind": "donor",
+   "title_ar": "مجموعة آل الزُّهَيْري (خيالية)",
+   "title_en": "Al-Zuhayri family collection (fictional)",
+   "description_ar": "وثائق ومخطوطات خيالية تُنسب إلى عائلة متخيَّلة من مادبا والكرك، وُضعت لاختبار الأعمال المقيّدة.",
+   "description_en": "Fictional documents and manuscripts attributed to an invented family of Madaba and Karak, written to exercise restricted works."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0010",
+  "condition": "سجل مجلّد بالجلد، صفحات مرقّمة، حبر باهت في القيد الرابع (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي؛ تُنسب للمجموعة الخيالية لآل الزُّهَيْري."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "سجل محكمة الطفيلة",
+      "قيود سنة ١٢٩٠ هـ"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "المحكمة الشرعية في الطفيلة",
+      "كتابة خليل بن إبراهيم"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "السجل الرابع"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "سجل محكمة الطفيلة الشرعية"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "ما قُيّد فيها من عقود وأحكام",
+      "في سنة ألف ومئتين وتسعين من الهجرة"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "بقلم كاتبها",
+      "خليل بن إبراهيم"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "يُحفظ عند القاضي",
+      "ولا يُخرج من المحكمة"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "القيد الأول",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "عقد بيع كرم"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في اليوم الثالث من محرم سنة ١٢٩٠ حضر لدى القاضي سالم بن",
+      "حمد العكشة وباع إلى فارس بن محمود الصرايرة كرم العنب",
+      "المعروف بكرم الشِّق في جهة عيمة، وحدوده قبلةً طريق",
+      "البصيرة وشرقًا كرم البائع وشمالاً الوادي وغربًا صخرة",
+      "النسر، بثمن قدره ألف ومئتا قرش قبضها البائع وأقرّ بذلك.",
+      "شهد عليه عودة بن فلاح ومحمد بن سلامة.",
+      "والأسماء كلها متخيَّلة وُضعت للاختبار."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "text",
+   "label": "٤",
+   "section": "القيد الثاني",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "عقد زواج"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في اليوم العشرين من ربيع الأول حضر لدى القاضي عيسى بن",
+      "مفلح وكيلاً عن ابنته فاطمة البكر البالغة، وزوّجها من علي",
+      "بن سليمان القطاونة على مهر مقدّم قدره خمسمئة قرش ومؤخر",
+      "مثله، وشرطت الزوجة أن لا تُخرج من الطفيلة إلا برضاها.",
+      "وقبل الزوج ذلك وشهد على العقد سلامة بن عودة وخليل بن",
+      "حسين، وختم القاضي.",
+      "ودُفع للمحكمة رسم العقد عشرة قروش."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "text",
+   "label": "٥",
+   "section": "القيد الثالث",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "قسمة تركة"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في رجب حضر ورثة المرحوم حسن بن عطا الله وهم زوجته وابناه",
+      "وبنتاه، وطلبوا قسمة تركته وهي بيت في البلدة وعشرون رأسًا",
+      "من الغنم وبئر وجرن، فقسمها القاضي على الفريضة الشرعية:",
+      "للزوجة الثمن، وللذكر مثل حظ الأنثيين فيما بقي، وجعل",
+      "البئر والجرن مشاعًا بينهم لا يُقسم.",
+      "وتُصدق الورثة على القسمة وأخذ كل منهم ورقة بنصيبه، ورضوا",
+      "جميعًا."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "text",
+   "label": "٦",
+   "section": "القيد الرابع",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "نزاع على ماء العين"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "في ذي القعدة تخاصم أهل حارة الفوقا وأهل حارة التحتا على",
+      "ماء عين الطفيلة، فادّعى أهل الفوقا أن لهم يومين من كل",
+      "أسبوع وأن أهل التحتا أخذوا منهم يومًا. فسمع القاضي",
+      "الشهود من الشيوخ فشهدوا أن القسمة القديمة ثلاثة أيام",
+      "للفوقا وأربعة للتحتا لكثرة بساتينهم.",
+      "فحكم القاضي بالقسمة القديمة وأمر بأن تُكتب في السجل حتى",
+      "لا يُعاد النزاع، وأشهد على ذلك مختاري الحارتين."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ ما قُيّد في سنة ١٢٩٠",
+      "بقلم كاتب المحكمة خليل بن إبراهيم",
+      "وختم عليه القاضي",
+      "ويتلوه السجل الخامس إن شاء الله"
+     ]
+    }
+   ]
+  }
+ ]
+}

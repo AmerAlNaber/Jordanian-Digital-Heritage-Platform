@@ -62,7 +62,7 @@ test("a new member registers, verifies a phone, reads the seed book and prints t
   });
 
   await test.step("reads the seed book in the secure reader", async () => {
-    await page.goto(`/${lang}/search?q=${encodeURIComponent("الكرم")}`);
+    await page.goto(`/${lang}/search?q=${encodeURIComponent("سميرة")}`);
     await page.getByRole("main").locator('a[href*="/works/"]').first().click();
     await page.getByRole("link", { name: msgs.access.read }).click();
     await expect(page).toHaveURL(new RegExp(`/${lang}/read/`));

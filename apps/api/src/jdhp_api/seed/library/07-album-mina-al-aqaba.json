@@ -1,0 +1,273 @@
+{
+ "fictional_notice": "This book, its places, its author and every person and event in it are invented for the Jordanian Digital Heritage Platform. Governorate names are real catalogue subjects; the towns, sites and people are fictional. No real heritage material appears here (ADR-0001 D15).",
+ "work": {
+  "title_ar": "ألبوم ميناء العقبة: صور وشروح من سنة ١٩٥٢",
+  "title_translit": "Albūm mīnāʾ al-ʿAqaba: ṣuwar wa-shurūḥ min sanat 1952",
+  "title_en": "Album of the Port of Aqaba: Photographs and Captions from 1952",
+  "uniform_title": "ألبوم ميناء العقبة",
+  "language": "ara",
+  "script": "Arab",
+  "date_edtf": "1952",
+  "date_hijri": "1371",
+  "extent": "٧ صفحات؛ ٣ صور",
+  "description_ar": "ألبوم خيالي يضم صورًا متخيَّلة لميناء العقبة ورصيفه وسفنه وعمّاله سنة ١٩٥٢ مع شروح كتبها مصوّر متخيَّل اسمه جورج بن إلياس الحداد. الصور في هذه النسخة رسوم تخطيطية مولّدة لا صور حقيقية. عمل تخييلي كُتب خصيصًا لمنصة التراث الأردني الرقمي.",
+  "description_en": "A fictional album of invented photographs of the port of Aqaba, its quay, ships and workers in 1952, with captions by the invented photographer George ibn Ilyas al-Haddad. The images in this copy are generated schematic drawings, not photographs. Written for the Jordanian Digital Heritage Platform.",
+  "rights_statement": "http://rightsstatements.org/vocab/InC/1.0/",
+  "rights_basis": "Fictional work created for the platform. Paid class assigned to exercise timed access; no third-party rights.",
+  "access_class": "paid",
+  "agents": [
+   {
+    "role": "photographer",
+    "kind": "person",
+    "name_ar": "جورج بن إلياس الحداد",
+    "name_latin": "George ibn Ilyās al-Ḥaddād",
+    "dates_edtf": "1921/1990"
+   }
+  ],
+  "terms": [
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "photography",
+    "label_ar": "التصوير الفوتوغرافي",
+    "label_en": "Photography"
+   },
+   {
+    "scheme": "local_ar",
+    "facet": "subject",
+    "code": "ports",
+    "label_ar": "الموانئ والبحر",
+    "label_en": "Ports and the sea"
+   },
+   {
+    "scheme": "gazetteer_jo",
+    "facet": "place",
+    "code": "aqaba",
+    "label_ar": "العقبة",
+    "label_en": "Aqaba"
+   },
+   {
+    "scheme": "period_jo",
+    "facet": "period",
+    "code": "early-kingdom",
+    "label_ar": "عهد المملكة المبكر",
+    "label_en": "Early Kingdom period"
+   },
+   {
+    "scheme": "material",
+    "facet": "material",
+    "code": "photograph-album",
+    "label_ar": "ألبوم صور",
+    "label_en": "Photograph album"
+   }
+  ],
+  "collection": {
+   "kind": "series",
+   "title_ar": "سلسلة البادية والطرق",
+   "title_en": "Desert and roads series",
+   "description_ar": "سلسلة خيالية عن الطرق والقوافل والسكة والموانئ.",
+   "description_en": "A fictional series on roads, caravans, the railway and the ports."
+  }
+ },
+ "item": {
+  "shelfmark": "JDHP-SEED-0008",
+  "condition": "ألبوم مجلّد بالقماش، الصور ملصقة على ورق أسود (افتراضي).",
+  "provenance": "نسخة خيالية أُنشئت لمنصة التراث الأردني الرقمي."
+ },
+ "capture": {
+  "device": "Synthetic page generator (Pillow, libvips)",
+  "color_target_ref": "synthetic-srgb",
+  "operator": "seed generator"
+ },
+ "pages": [
+  {
+   "seq": 1,
+   "type": "cover",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "ألبوم ميناء العقبة",
+      "صور وشروح من سنة ١٩٥٢"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "تصوير وشرح",
+      "جورج بن إلياس الحداد"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "العقبة",
+      "١٣٧١ هـ - ١٩٥٢ م"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 2,
+   "type": "title",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "display",
+     "lines": [
+      "ألبوم ميناء العقبة"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "صور الرصيف والسفن والعمّال",
+      "مع شرح لكل صورة"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "صوّرها وكتب شروحها",
+      "جورج بن إلياس الحداد"
+     ]
+    },
+    {
+     "kind": "center",
+     "lines": [
+      "نسخة واحدة مجلّدة باليد",
+      "العقبة سنة ١٩٥٢"
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 3,
+   "type": "text",
+   "label": "٣",
+   "section": "المقدمة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "كلمة المصوّر"
+     ]
+    },
+    {
+     "kind": "body",
+     "lines": [
+      "جئت العقبة في شباط سنة ١٩٥٢ بآلة تصوير ألمانية وثلاثين",
+      "فيلمًا، وبقيت فيها ثلاثة أشهر أصوّر الميناء وأهله. وقد",
+      "اخترت لهذا الألبوم ما رأيته أصدق في تمثيل المدينة:",
+      "الرصيف الجديد، والسفن الشراعية التي لا تزال تأتي من",
+      "السويس وجدة، والعمّال الذين يحملون الأكياس على ظهورهم من",
+      "الفجر إلى الظهر.",
+      "وكتبت تحت كل صورة ما أعرفه عنها، ومن سمّى لي الأسماء من",
+      "أهل البلد."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 4,
+   "type": "illustration",
+   "label": "٤",
+   "section": "الصورة الأولى",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "الرصيف الجديد عند الصباح"
+     ]
+    },
+    {
+     "kind": "figure",
+     "lines": [
+      "صورة الرصيف الجديد وسفينتان شراعيتان"
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "الرصيف الحجري الجديد في صباح يوم من شباط، وعليه سفينتان",
+      "شراعيتان من جدة تفرغان حمولة من الأرز والقهوة، وفي الخلف",
+      "جبال سيناء تظهر عبر الخليج."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 5,
+   "type": "illustration",
+   "label": "٥",
+   "section": "الصورة الثانية",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "العمّال عند المستودع"
+     ]
+    },
+    {
+     "kind": "figure",
+     "lines": [
+      "صورة عمّال الميناء أمام المستودع الكبير"
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "عمّال الميناء أمام المستودع الكبير وقت استراحة الظهر، وعددهم",
+      "سبعة عشر رجلاً أكثرهم من أهل العقبة ومعان، وبينهم رئيس",
+      "العمّال الحاج سليمان المتخيَّل وقد رفع يده."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 6,
+   "type": "illustration",
+   "label": "٦",
+   "section": "الصورة الثالثة",
+   "blocks": [
+    {
+     "kind": "heading",
+     "lines": [
+      "القلعة والنخيل"
+     ]
+    },
+    {
+     "kind": "figure",
+     "lines": [
+      "صورة القلعة القديمة من جهة البحر"
+     ]
+    },
+    {
+     "kind": "caption",
+     "lines": [
+      "القلعة القديمة من جهة البحر وأمامها صف من النخيل وقوارب",
+      "الصيادين المقلوبة على الرمل، وقد صُوّرت عند الغروب في آخر",
+      "يوم لي في العقبة."
+     ]
+    }
+   ]
+  },
+  {
+   "seq": 7,
+   "type": "colophon",
+   "label": null,
+   "blocks": [
+    {
+     "kind": "center",
+     "lines": [
+      "تمّ الألبوم",
+      "في العقبة في شهر أيار سنة ١٩٥٢",
+      "جورج بن إلياس الحداد",
+      "نسخة واحدة لا غير"
+     ]
+    }
+   ]
+  }
+ ]
+}

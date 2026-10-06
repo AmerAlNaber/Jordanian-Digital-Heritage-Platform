@@ -48,6 +48,7 @@ services:
       JDHP_PUBLIC_HOST: ${JDHP_PUBLIC_HOST:-:8080}
     volumes:
       - ./infra/compose/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./infra/compose/caddy/routes.caddy:/etc/caddy/routes.caddy:ro
       - caddy-data:/data
     networks: [edge, app]
     depends_on: [web, api, keycloak, tiles]
