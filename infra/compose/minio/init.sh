@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 # Buckets, lifecycle rules and the two credentials: the app credential never writes preservation.
+# The app credential may also stat objects (GetObjectAttributes) in the buckets it can already read:
+# S3 clients use it before a ranged read, and it reveals nothing GetObject does not.
 set -eu
 : "${MINIO_ROOT_USER:?}"; : "${MINIO_ROOT_PASSWORD:?}"
 : "${JDHP_S3_ACCESS_KEY:?}"; : "${JDHP_S3_SECRET_KEY:?}"; : "${JDHP_S3_INGEST_ACCESS_KEY:?}"; : "${JDHP_S3_INGEST_SECRET_KEY:?}"
@@ -16,7 +18,7 @@ mc ilm rule add --expire-days 30 "local/$U" >/dev/null 2>&1 || true
 mc ilm rule add --expire-days 1 "local/$E" >/dev/null 2>&1 || true
 cat > /tmp/app-policy.json <<JSON
 {"Version":"2012-10-17","Statement":[
- {"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],
+ {"Effect":"Allow","Action":["s3:GetObject","s3:GetObjectAttributes","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],
   "Resource":["arn:aws:s3:::$A","arn:aws:s3:::$A/*","arn:aws:s3:::$U","arn:aws:s3:::$U/*","arn:aws:s3:::$E","arn:aws:s3:::$E/*"]},
  {"Effect":"Allow","Action":["s3:PutObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::$L","arn:aws:s3:::$L/*"]}
 ]}
