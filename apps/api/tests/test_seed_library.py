@@ -139,7 +139,7 @@ def test_find_book_refuses_an_unknown_slug() -> None:
 
 
 def test_a_library_book_renders_with_its_own_manifest(tmp_path: Path) -> None:
-    """Rendered in a fresh interpreter, as every caller does: Pillow and libvips share no process."""
+    """Rendered in a fresh interpreter like every caller: Pillow and libvips share no process."""
     slug = "04-kitab-al-aashab-wa-al-tibb"
     out = generate_isolated(tmp_path, scale=0.15, book=slug)
     manifest = json.loads((out / "manifest.json").read_text("utf-8"))
