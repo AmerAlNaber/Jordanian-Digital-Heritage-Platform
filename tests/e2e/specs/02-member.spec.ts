@@ -82,8 +82,9 @@ test("a new member registers, verifies a phone, reads the seed book and prints t
     await expect(page.locator(".openseadragon-canvas")).toBeVisible({ timeout: 60_000 });
     await page.getByRole("button", { name: msgs.reader.print }).click();
     await page.getByLabel(msgs.print.range).check();
-    await page.getByLabel(msgs.print.from).fill("1");
-    await page.getByLabel(msgs.print.to).fill("2");
+    // Exact names: the reader's own "go to page" field shares words with these labels.
+    await page.getByLabel(msgs.print.from, { exact: true }).fill("1");
+    await page.getByLabel(msgs.print.to, { exact: true }).fill("2");
     await page.getByRole("button", { name: msgs.print.submit }).click();
     await expect(page.getByText(msgs.print.ready)).toBeVisible({ timeout: 120_000 });
     const link = page.getByRole("link", { name: msgs.print.download });
