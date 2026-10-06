@@ -17,10 +17,10 @@
   "access_class": "paid",
   "agents": [
    {
-    "role": "photographer",
+    "role": "author",
     "kind": "person",
-    "name_ar": "جورج بن إلياس الحداد",
-    "name_latin": "George ibn Ilyās al-Ḥaddād",
+    "name_ar": "جورج بن إلياس الحداد، مصوّر",
+    "name_latin": "George ibn Ilyās al-Ḥaddād, photographer",
     "dates_edtf": "1921/1990"
    }
   ],

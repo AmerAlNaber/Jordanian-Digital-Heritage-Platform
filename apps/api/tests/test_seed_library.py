@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from jdhp_api.core.orm import AccessClass
+from jdhp_api.core.orm import AccessClass, AgentRole, CollectionKind
 from jdhp_api.modules.catalog.schemas import WorkCreate
 from jdhp_api.modules.ingest.schemas import IntakeManifest
 from jdhp_api.seed.generate import generate_isolated, staging_prefix_for
@@ -52,6 +52,14 @@ def test_every_book_is_marked_fictional_and_validates_for_intake() -> None:
         WorkCreate.model_validate(book.work.work_create_fields())
         assert [page.seq for page in book.pages] == list(range(1, len(book.pages) + 1)), slug
         assert all(page.text_lines() for page in book.pages if page.type != "blank"), slug
+
+
+def test_agent_roles_and_collection_kinds_are_ones_the_catalogue_knows() -> None:
+    """Registration maps these onto enums; an unknown value would fail halfway through the seed."""
+    for slug, book in load_all():
+        for agent in book.work.agents:
+            assert agent.role in {r.value for r in AgentRole}, (slug, agent.role)
+        assert book.work.collection.kind in {k.value for k in CollectionKind}, slug
 
 
 def test_shelfmarks_are_unique_and_sequential() -> None:

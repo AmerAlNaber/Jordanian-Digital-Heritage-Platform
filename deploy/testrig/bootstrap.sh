@@ -47,7 +47,7 @@ docker compose version >/dev/null
 
 log "Kernel setting OpenSearch needs"
 sysctl -w vm.max_map_count=262144 >/dev/null
-grep -q '^vm.max_map_count' /etc/sysctl.conf || echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+grep -qs '^vm.max_map_count' /etc/sysctl.conf || echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 
 log "Repository at $TARGET (branch $BRANCH)"
 if [ -d "$TARGET/.git" ]; then

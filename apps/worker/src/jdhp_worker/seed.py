@@ -159,6 +159,14 @@ async def register(
         return batch.code, work.public_id
 
 
+async def existing_work(database: Database, book: SeedBook) -> str | None:
+    """The public name of a work with this book's title, when a previous seed run created it."""
+    async with database.session(SEED_PRINCIPAL.rls_context()) as session:
+        stmt = select(Work.public_id).where(Work.title_ar == book.work.title_ar)
+        found = (await session.scalars(stmt)).first()
+        return str(found) if found is not None else None
+
+
 def seed_one(
     rt: Runtime,
     app_database: Database,
@@ -170,7 +178,10 @@ def seed_one(
     publish: bool,
     out_dir: Path | None = None,
 ) -> dict[str, object]:
-    """Render, upload, register and ingest one book."""
+    """Render, upload, register and ingest one book; a book seeded earlier is left as it is."""
+    already = rt.run(existing_work(app_database, book))
+    if already is not None:
+        return {"book": slug, "work": already, "skipped": "already seeded"}
     with tempfile.TemporaryDirectory(prefix=f"jdhp-seed-{slug}-") as tmp:
         out = out_dir or Path(tmp)
         generate_isolated(out, scale=scale, book=slug)
