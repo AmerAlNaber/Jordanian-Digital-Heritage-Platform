@@ -133,6 +133,13 @@ class PhoneSendLimitError(RateLimitedError):
     code = "phone_send_limited"
 
 
+class ExportTooLargeError(JdhpError):
+    """An export must be narrowed until it fits; a truncated audit export would mislead (ADM-5)."""
+
+    status = http.HTTP_400_BAD_REQUEST
+    code = "export_too_large"
+
+
 class PrintQuotaError(ForbiddenError):
     """More pages than the grant's print quota has left (RDR-4)."""
 

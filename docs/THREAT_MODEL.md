@@ -284,7 +284,7 @@ Columns: STRIDE letter in brackets after the threat; L and I are likelihood and 
 | SEC-22 TLS configuration | Caddy, Cloudflare | `test_sec_22_tls_configuration` | 0 |
 | SEC-23 Encryption at rest, dedicated key for identity documents | Storage and database configuration | Bucket encryption assertion | 0, 1 |
 | SEC-24 Internal traffic isolation | Compose networks, k8s network policies, signed internal header | `test_sec_24_only_caddy_publishes_ports`, `test_sec_24_cantaloupe_rejects_unsigned_request` | 0, 1 |
-| SEC-25 Audit of every sensitive action, hash chain, write-once shipping | `core.audit`, maintenance job | `test_sec_25_hash_chain_verifies`, `test_sec_25_protected_read_writes_audit` | 0, 1 |
+| SEC-25 Audit of every sensitive action, hash chain, write-once shipping | `core.audit`, `jdhp.audit.ship` | `test_sec_25_hash_chain_verifies`, `test_sec_25_protected_read_writes_audit`, `test_sec_25_daily_shipment_is_signed_and_write_once`, `test_adm_5_export_is_signed_and_audited` | 0, 1 |
 | SEC-26 Alerts | Observability stack | Alert rule tests | 1, 4 |
 | SEC-27 Retention and log hygiene | Logging, maintenance | `test_sec_27_logs_never_contain_tokens` | 0 |
 | SEC-28, SEC-29 Data protection law and GDPR | Privacy notice, consent flags, runbooks | `test_sec_28_marketing_requires_consent`, `test_acc_5_deletion_pseudonymizes_and_keeps_audit` | 1, 2 |

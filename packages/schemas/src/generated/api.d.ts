@@ -55,6 +55,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/audit/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Events
+         * @description The matching events in chain order, signed (ADM-5). The export itself is audited.
+         */
+        get: operations["export_events_audit_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit/export/key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Key
+         * @description The public key that verifies export signatures and daily shipments.
+         */
+        get: operations["export_key_audit_export_key_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/audit/verify": {
         parameters: {
             query?: never;
@@ -868,6 +908,18 @@ export interface components {
             } | null;
             /** Work Public Id */
             work_public_id: string;
+        };
+        /**
+         * ExportKeyOut
+         * @description What verifies an export's signature offline (ADM-5).
+         */
+        ExportKeyOut: {
+            /** Algorithm */
+            algorithm: string;
+            /** Key Id */
+            key_id: string;
+            /** Public Key Pem */
+            public_key_pem: string;
         };
         /** FacetBucket */
         FacetBucket: {
@@ -1801,6 +1853,64 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_events_audit_export_get: {
+        parameters: {
+            query?: {
+                action?: string | null;
+                actor?: string | null;
+                format?: "csv" | "json";
+                resource_id?: string | null;
+                resource_kind?: string | null;
+                since?: string | null;
+                until?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "text/csv": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_key_audit_export_key_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportKeyOut"];
                 };
             };
         };

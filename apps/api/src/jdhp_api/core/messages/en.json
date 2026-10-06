@@ -42,5 +42,7 @@
   "errors.phone_code_invalid.title": "The code was not accepted",
   "errors.phone_code_invalid.detail": "The code is wrong, has expired, or too many attempts were made. Ask for a new code.",
   "errors.phone_send_limited.title": "Too many codes",
-  "errors.phone_send_limited.detail": "A code was sent recently or the hourly limit was reached. Wait before asking for another."
+  "errors.phone_send_limited.detail": "A code was sent recently or the hourly limit was reached. Wait before asking for another.",
+  "errors.export_too_large.title": "Too many events for one export",
+  "errors.export_too_large.detail": "Narrow the time window or the filters so the export stays within the limit."
 }

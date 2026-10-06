@@ -19,6 +19,7 @@ TASK_MODULES = (
     "jdhp_worker.tasks.embeddings",
     "jdhp_worker.tasks.fixity",
     "jdhp_worker.tasks.printing",
+    "jdhp_worker.tasks.audit",
 )
 
 app = Celery("jdhp", include=list(TASK_MODULES))
@@ -59,6 +60,8 @@ def configure(settings: WorkerSettings, *, eager: bool = False) -> Celery:
                 "task": "jdhp.fixity.sweep",
                 "schedule": crontab(minute=0, hour=2, day_of_month=1, month_of_year="1,4,7,10"),
             },
+            # Yesterday's audit events to the write-once archive, signed (SEC-25).
+            "audit-ship": {"task": "jdhp.audit.ship", "schedule": crontab(minute=30, hour=2)},
         },
         task_always_eager=eager,
         task_eager_propagates=eager,

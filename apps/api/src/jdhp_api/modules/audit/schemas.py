@@ -30,3 +30,11 @@ class AuditEventOut(BaseModel):
 class ChainVerification(BaseModel):
     intact: bool
     events_checked: int
+
+
+class ExportKeyOut(BaseModel):
+    """What verifies an export's signature offline (ADM-5)."""
+
+    key_id: str
+    algorithm: str
+    public_key_pem: str

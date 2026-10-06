@@ -42,5 +42,7 @@
   "errors.phone_code_invalid.title": "لم يُقبل الرمز",
   "errors.phone_code_invalid.detail": "الرمز خاطئ أو انتهت صلاحيته أو تجاوزت عدد المحاولات. اطلب رمزًا جديدًا.",
   "errors.phone_send_limited.title": "طلبات كثيرة للرمز",
-  "errors.phone_send_limited.detail": "أُرسل رمز قبل قليل أو بلغت الحد الساعي. انتظر قبل طلب رمز آخر."
+  "errors.phone_send_limited.detail": "أُرسل رمز قبل قليل أو بلغت الحد الساعي. انتظر قبل طلب رمز آخر.",
+  "errors.export_too_large.title": "أحداث أكثر مما يسع تصدير واحد",
+  "errors.export_too_large.detail": "ضيّق النطاق الزمني أو المرشحات حتى يبقى التصدير ضمن الحد."
 }
