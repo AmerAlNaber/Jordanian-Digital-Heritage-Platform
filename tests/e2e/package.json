@@ -5,7 +5,8 @@
   "description": "Playwright end-to-end tests against the Compose stack: register, verify, read, print and audit, in Arabic and English, with axe accessibility checks (Phase 1 gate).",
   "type": "module",
   "scripts": {
-    "test": "playwright test",
+    "test": "echo 'tests/e2e needs a running stack: pnpm --filter @jdhp/e2e e2e (see tests/e2e/README.md)'",
+    "e2e": "playwright test",
     "lint": "echo 'tests/e2e: formatted by the root prettier check, typed by typecheck'",
     "typecheck": "tsc --noEmit"
   },

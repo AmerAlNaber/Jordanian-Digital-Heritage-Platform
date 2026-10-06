@@ -411,7 +411,7 @@ jobs:
           set -eu
           export E2E_KC_ADMIN_USER="$(grep -E '^KEYCLOAK_ADMIN=' .env | cut -d= -f2 | cut -d'#' -f1 | tr -d ' ')"
           export E2E_KC_ADMIN_PASSWORD="$(grep -E '^KEYCLOAK_ADMIN_PASSWORD=' .env | cut -d= -f2 | cut -d'#' -f1 | tr -d ' ')"
-          pnpm --filter @jdhp/e2e test
+          pnpm --filter @jdhp/e2e e2e
       - name: End-to-end report and traces
         if: failure()
         uses: actions/upload-artifact@v4
